@@ -1,6 +1,7 @@
 package com.kh.finalproject.domain.TraitRecSec.dao;
 
-import com.kh.finalproject.domain.dto.MemberTraits;
+import com.kh.finalproject.domain.dto.MemberTraitsDto;
+import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.vo.TraitRecSec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
   private final NamedParameterJdbcTemplate template;
 
   @Override
-  public Long save(com.kh.finalproject.domain.entity.MemberTraits memberTraits) {
+  public Long save(MemberTraits memberTraits) {
     StringBuffer sql = new StringBuffer();
     sql.append("INSERT INTO MEMBER_TRAITS(TRAIT_ID, MEMBER_SEQ, MEMBER_RISK, INT_SEC, EXP_RTN) ");
     sql.append("VALUES(member_traits_seq.nextval, :memberSeq, :memberRisk, :intSec, :expRtn) ");
@@ -52,14 +53,21 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     return list;
   }
 
-  // 성향 업종 리스트 불러오기 (위험도 선택)
+  // 성향 업종 리스트 불러오기 (위험도 선택, 시장별 정렬)
   @Override
   public List<TraitRecSec> listAll(int memberRisk) {
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT * ");
     sql.append(" FROM TRAIT_REC_SEC ");
-    sql.append(" WHERE TRAIT_SEC_RISK <= :memberRisk ");
-    sql.append(" ORDER BY IS_REC DESC ");
+    sql.append(" WHERE TRAIT_REC_SEC_RISK <= :memberRisk ");
+    sql.append(" ORDER BY ");
+    sql.append(" CASE ");
+    sql.append("     WHEN MARKET_ID = 1 THEN IS_REC ");
+    sql.append("     WHEN MARKET_ID = 2 THEN IS_REC ");
+    sql.append("     WHEN MARKET_ID = 3 THEN IS_REC ");
+    sql.append("     ELSE NULL ");  // 다른 MARKET_ID에 대해서는 NULL로 처리
+    sql.append(" END DESC, ");
+    sql.append(" MARKET_ID ");  // MARKET_ID 기준으로 정렬
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("memberRisk", memberRisk);
@@ -70,7 +78,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
 
   // 고객 성향 정보를 조회
   @Override
-  public Optional<MemberTraits> findById(Long memberSeq) {
+  public Optional<MemberTraitsDto> findById(Long memberSeq) {
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT m.MEMBER_SEQ, m.MEMBER_ID, t.MEMBER_RISK, t.INT_SEC, t.EXP_RTN ");
     sql.append(" FROM MEMBER m ");
@@ -80,15 +88,15 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("memberSeq", memberSeq);
 
-    MemberTraits memberTraits = null;
+    MemberTraitsDto memberTraitsDto = null;
     try {
-      memberTraits = template.queryForObject(
+      memberTraitsDto = template.queryForObject(
           sql.toString(),
           param,
-          BeanPropertyRowMapper.newInstance(MemberTraits.class));
+          BeanPropertyRowMapper.newInstance(MemberTraitsDto.class));
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
-    return Optional.of(memberTraits);
+    return Optional.of(memberTraitsDto);
   }
 }

@@ -14,8 +14,7 @@ public class TraitSec {
   private Long secId;                       //  SEC_ID	NUMBER(6,0)
   private double traitSecRtn;               //  TRAIT_SEC_RTN	NUMBER(5,2)
   private double traitSecVol;               //  TRAIT_SEC_VOL	NUMBER(5,2)
-  private double secRisk;                   //  SEC_RISK	NUMBER(3,2)
-  private int isRec;                        //  IS_REC	NUMBER(1,0)
+  private double traitSecRisk;              //  TRAIT_SEC_RISK	NUMBER(3,2)
   private LocalDateTime cdate;              //  CDATE	TIMESTAMP(6)
   private LocalDateTime udate;              //  UDATE	TIMESTAMP(6)
 }

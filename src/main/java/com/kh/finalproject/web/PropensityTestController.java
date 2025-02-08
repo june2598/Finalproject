@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class BasicController {
+public class PropensityTestController {
   @GetMapping("/")
   @ResponseBody
   String hello() {
