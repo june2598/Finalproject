@@ -1,0 +1,11 @@
+INSERT INTO MEMBER (MEMBER_SEQ, MEMBER_ID, PW, TEL, EMAIL)
+    VALUES (MEMBER_SEQ.NEXTVAL, 'test1234', 'test1234!', 01011112222, 'test1234@test.com');
+
+
+
+
+INSERT INTO MEMBER_TRAITS (TRAIT_ID, MEMBER_SEQ, MEMBER_RISK, INT_SEC, EXP_RTN)
+VALUES (member_traits_seq.nextval, 1, 2, '조선, 복합기업', 7.1);
+
+
+commit;
