@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트투자</title>
+</head>
+<body>
+<h3>초기화면 입니다.</h3>
+<a th:href="@{/propensity-test/info}">
+  <button>성향 검사</button>
+</a>
+<ul th:if="${session.isEmpty()}">
+  <li>
+    <a th:href="@{/login}">
+      <button>로그인</button>
+    </a>
+  </li>
+</ul>
+<div class="loginOk" th:if="${!session.isEmpty()}">
+  <div class="userInfo" th:if="${session.loginOkMember != null}">
+    <p><span th:text="${session.loginOkMember.memberId}"> 님 반갑습니다.</span></p>
+    <p><span th:if="${session.loginOkMember.memberClsfc == '일반회원'}">일반회원 접속입니다.</span></p>
+    <p><a href="/logout">로그아웃</a></p>
+  </div>
+</body>
+</html>

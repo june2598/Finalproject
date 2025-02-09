@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>성향검사 1단계 : 위험단계 설정</title>
+</head>
+<body>
+<h3>위험단계 설정</h3>
+<form action="" method="POST" th:object="${memberTraits}">
+  <div>
+    <label for="risk">위험도</label>
+    <input type="radio" th:field="*{memberRisk}" value="1" id="risk1"> 위험도 1단계
+    <input type="radio" th:field="*{memberRisk}" value="2" id="risk2"> 위험도 2단계
+    <input type="radio" th:field="*{memberRisk}" value="3" id="risk3"> 위험도 3단계
+  </div>
+  <div>
+    <a th:href="@{/propensity-test/info}">
+      이전
+    </a>
+  </div>
+  <div>
+    <button type="submit">제출</button>
+  </div>
+</form>
+
+
+
+
+</body>
+</html>

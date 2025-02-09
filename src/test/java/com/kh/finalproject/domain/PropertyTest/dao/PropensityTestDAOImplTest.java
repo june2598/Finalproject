@@ -1,7 +1,7 @@
-package com.kh.finalproject.domain.TraitRecSec.dao;
+package com.kh.finalproject.domain.PropertyTest.dao;
 
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
-import com.kh.finalproject.domain.vo.TraitRecSec;
+import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

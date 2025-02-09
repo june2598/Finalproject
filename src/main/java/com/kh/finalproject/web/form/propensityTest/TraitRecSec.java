@@ -1,4 +1,4 @@
-package com.kh.finalproject.domain.vo;
+package com.kh.finalproject.web.form.propensityTest;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 public class TraitRecSec {
   private Long traitRecSecId;                   //  TRAIT_REC_SEC_ID	NUMBER(10,0)
   private Long secId;                           //  SEC_ID	NUMBER(6,0)
+  private String secNm;                         //  SEC_NM
+  private double traitRecSecRtn;                //  TRAIT_REC_SEC_RTN	NUMBER(5,2)
   private int traitRecSecRisk;                  //  TRAIT_REC_SEC_RISK	NUMBER(1,0)
   private int isRec;                            //  IS_REC	NUMBER(1,0)
   private int marketId;                         //  MARKET_ID	NUMBER(1,0)

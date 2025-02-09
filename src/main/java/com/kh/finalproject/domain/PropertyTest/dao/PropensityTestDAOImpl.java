@@ -1,8 +1,8 @@
-package com.kh.finalproject.domain.TraitRecSec.dao;
+package com.kh.finalproject.domain.PropertyTest.dao;
 
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
-import com.kh.finalproject.domain.vo.TraitRecSec;
+import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,8 @@ import java.util.Optional;
 public class PropensityTestDAOImpl implements PropensityTestDAO {
   private final NamedParameterJdbcTemplate template;
 
+
+  // 성향 정보 저장
   @Override
   public Long save(MemberTraits memberTraits) {
     StringBuffer sql = new StringBuffer();
@@ -32,7 +35,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
 
     SqlParameterSource param = new BeanPropertySqlParameterSource(memberTraits);
     KeyHolder keyholder = new GeneratedKeyHolder();
-    long rows = template.update(sql.toString(), param, keyholder, new String[]{"trait_id"});
+    template.update(sql.toString(), param, keyholder, new String[]{"trait_id"});
     Number tidNumber = (Number) keyholder.getKeys().get("trait_id");
     long tid = tidNumber.longValue();
     return tid;
@@ -57,17 +60,19 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
   @Override
   public List<TraitRecSec> listAll(int memberRisk) {
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT * ");
-    sql.append(" FROM TRAIT_REC_SEC ");
-    sql.append(" WHERE TRAIT_REC_SEC_RISK <= :memberRisk ");
+    sql.append("SELECT DISTINCT ");
+    sql.append(" trs.TRAIT_REC_SEC_RISK, ");
+    sql.append(" m.SEC_NM, ");
+    sql.append(" m.MARKET_ID, ");
+    sql.append(" trs.IS_REC, ");
+    sql.append(" trs.TRAIT_REC_SEC_RTN ");
+    sql.append(" FROM TRAIT_REC_SEC trs ");
+    sql.append(" JOIN MKT_SEC_STK m ON trs.SEC_ID = m.SEC_ID ");
+    sql.append(" WHERE trs.TRAIT_REC_SEC_RISK <= :memberRisk ");
     sql.append(" ORDER BY ");
-    sql.append(" CASE ");
-    sql.append("     WHEN MARKET_ID = 1 THEN IS_REC ");
-    sql.append("     WHEN MARKET_ID = 2 THEN IS_REC ");
-    sql.append("     WHEN MARKET_ID = 3 THEN IS_REC ");
-    sql.append("     ELSE NULL ");  // 다른 MARKET_ID에 대해서는 NULL로 처리
-    sql.append(" END DESC, ");
-    sql.append(" MARKET_ID ");  // MARKET_ID 기준으로 정렬
+    sql.append(" m.MARKET_ID ASC, ");
+    sql.append(" trs.IS_REC DESC, ");
+    sql.append(" trs.TRAIT_REC_SEC_RTN DESC ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("memberRisk", memberRisk);
@@ -98,5 +103,54 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
       return Optional.empty();
     }
     return Optional.of(memberTraitsDto);
+  }
+
+  //관심 업종 없을때 희망수익률 최대치 조회
+  @Override
+  public Optional<Double> findMaxRtn(int memberRisk) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(" SELECT TRAIT_STK_RTN ");
+    sql.append(" FROM ( ");
+    sql.append("     SELECT t.TRAIT_STK_RTN ");
+    sql.append("     FROM TRAIT_STK t ");
+    sql.append("     WHERE t.TRAIT_STK_RISK <= :memberRisk ");
+    sql.append(" ORDER BY t.TRAIT_STK_RTN DESC ");
+    sql.append(" ) ");
+    sql.append(" WHERE ROWNUM = 1 ");
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("memberRisk",memberRisk);
+
+    Double maxRtn = template.queryForObject(sql.toString(), param, Double.class);
+    return Optional.ofNullable(maxRtn); // 결과가 null일 경우 Optional.empty() 반환
+  }
+
+  @Override
+  public Optional<Double> findMaxRtn(int memberRisk, String intSec) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(" SELECT TRAIT_STK_RTN ");
+    sql.append(" FROM ( ");
+    sql.append("     SELECT t.TRAIT_STK_ID, t.TRAIT_STK_RTN, ");
+    sql.append("     ROW_NUMBER() OVER (ORDER BY t.TRAIT_STK_RTN DESC) AS rn ");
+    sql.append("     FROM TRAIT_STK t ");
+    sql.append("     JOIN MKT_SEC_STK m ON t.STK_ID = m.STK_ID ");
+    sql.append("     WHERE m.SEC_ID IN (:intSec) ");
+    sql.append("     AND t.TRAIT_STK_RISK <= :memberRisk ");
+    sql.append(" ) ");
+    sql.append(" WHERE rn = 1 ");
+
+    //쉼표로 구분된 intSec를 리스트로 변환
+    List<String> sectorIds = Arrays.asList(intSec.split(","));
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("memberRisk",memberRisk)
+        .addValue("intSec",sectorIds);
+
+    try {
+      Double maxRtn = template.queryForObject(sql.toString(), param, Double.class);
+      return Optional.ofNullable(maxRtn); // 결과가 null일경우 Optional.empty
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();// 결과가 없을경우 Optional.empty() 반환
+    }
   }
 }

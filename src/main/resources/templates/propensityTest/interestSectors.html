@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관심 업종 설정</title>
+</head>
+<body>
+<h3>관심 업종 설정 화면입니다.</h3>
+<p>선택한 위험도: <span th:text="${memberTraits.memberRisk}"></span></p> <!-- 위험도 표시 -->
+<form action="" method="POST" th:object="${memberTraits}">
+  <div th:each="entry : ${groupedSectors}">
+    <h4 th:text="${marketNames[entry.key]}">Market Name</h4> <!-- MARKET_ID에 해당하는 이름 표시 -->
+    <div th:each="sector : ${entry.value}">
+      <input type="checkbox" th:field="*{intSec}" th:value="${sector.traitRecSecId}" id="sector_${sector.traitRecSecId}">
+      <label th:for="'sector_' + ${sector.traitRecSecId}" th:text="${sector.secNm}"></label> <!-- 업종명 표시 -->
+      <span th:if="${topSectors[entry.key].contains(sector)}" style="color: green;">(추천)</span> <!-- 추천 표시 -->
+    </div>
+  </div>
+  <div>
+    <a th:href="@{/propensity-test/risks}">이전</a>
+  </div>
+  <div>
+    <button type="submit">다음</button>
+  </div>
+</form>
+</body>
+</html>
