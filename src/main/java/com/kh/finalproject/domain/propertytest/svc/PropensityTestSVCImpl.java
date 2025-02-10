@@ -1,6 +1,6 @@
-package com.kh.finalproject.domain.PropertyTest.svc;
+package com.kh.finalproject.domain.propertytest.svc;
 
-import com.kh.finalproject.domain.PropertyTest.dao.PropensityTestDAO;
+import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;

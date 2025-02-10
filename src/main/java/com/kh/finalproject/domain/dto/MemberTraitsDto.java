@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -13,6 +15,7 @@ public class MemberTraitsDto {
   private Long memberSeq;        // MEMBER_SEQ 회원시퀀스
   private String memberId;       // MEMBER_ID 회원 아이디
   private int memberRisk;        // MEMBER_RISK 위험단계
-  private String intSec;         // INT_SEC 관심업종
+  private List<String> intSec;         // INT_SEC 관심업종
+  private List<String> intSecNm; // 업종 이름
   private double expRtn;         // EXP_RTN 희망 수익률(%)
 }

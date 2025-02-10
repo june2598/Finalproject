@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,11 +12,15 @@
   <div th:each="entry : ${groupedSectors}">
     <h4 th:text="${marketNames[entry.key]}">Market Name</h4> <!-- MARKET_ID에 해당하는 이름 표시 -->
     <div th:each="sector : ${entry.value}">
-      <input type="checkbox" th:field="*{intSec}" th:value="${sector.traitRecSecId}" id="sector_${sector.traitRecSecId}">
+      <input type="checkbox" th:field="*{intSec}" th:value="${sector.secId}"
+             id="sector_${sector.traitRecSecId}">
       <label th:for="'sector_' + ${sector.traitRecSecId}" th:text="${sector.secNm}"></label> <!-- 업종명 표시 -->
+      <span>업종 ID: <span th:text="${sector.secId}"></span></span>
       <span th:if="${topSectors[entry.key].contains(sector)}" style="color: green;">(추천)</span> <!-- 추천 표시 -->
     </div>
   </div>
+  <!-- 선택된 업종 ID를 표시할 부분 추가 -->
+  <p>선택된 업종 ID: <span th:text="${memberTraits.intSec}"></span></p>
   <div>
     <a th:href="@{/propensity-test/risks}">이전</a>
   </div>

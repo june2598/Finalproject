@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>추천 종목 목록</title>
+</head>
+<body>
+<h1>추천 종목 목록</h1>
+<!-- 에러 메시지 표시 -->
+<div th:if="${error}">
+  <p style="color: red;" th:text="${error}"></p>
+</div>
+<!-- 추천 종목 테이블 -->
+<table>
+  <thead>
+  <tr>
+    <th>종목 ID</th>
+    <th>업종명</th>
+    <th>종목명</th>
+    <th>추천 수익률</th>
+    <th>추천 거래량</th>
+    <th>추천 위험도</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="stock : ${recommendedStocks}">
+    <td th:text="${stock.recStkId}"></td>
+    <td th:text="${stock.secNm}"></td>
+    <td th:text="${stock.stkNm}"></td>
+    <td th:text="${stock.recRtn}"></td>
+    <td th:text="${stock.recVol}"></td>
+    <td th:text="${stock.recRisk}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- 추가적인 기능을 위한 버튼 -->
+<div>
+  <button onclick="location.href='/recstk'">다시 추천받기</button>
+  <button onclick="location.href='/'">홈으로</button>
+</div>
+
+</body>
+</html>

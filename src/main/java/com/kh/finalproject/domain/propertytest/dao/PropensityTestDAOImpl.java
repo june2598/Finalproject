@@ -1,4 +1,4 @@
-package com.kh.finalproject.domain.PropertyTest.dao;
+package com.kh.finalproject.domain.propertytest.dao;
 
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -33,7 +32,15 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     sql.append("INSERT INTO MEMBER_TRAITS(TRAIT_ID, MEMBER_SEQ, MEMBER_RISK, INT_SEC, EXP_RTN) ");
     sql.append("VALUES(member_traits_seq.nextval, :memberSeq, :memberRisk, :intSec, :expRtn) ");
 
-    SqlParameterSource param = new BeanPropertySqlParameterSource(memberTraits);
+    //intSec을 쉼표로 구분된 문자열로 변환
+    String intSecString = String.join(",", memberTraits.getIntSec());
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("memberSeq",memberTraits.getMemberSeq())
+        .addValue("memberRisk",memberTraits.getMemberRisk())
+        .addValue("intSec",intSecString)
+        .addValue("expRtn",memberTraits.getExpRtn());
+
     KeyHolder keyholder = new GeneratedKeyHolder();
     template.update(sql.toString(), param, keyholder, new String[]{"trait_id"});
     Number tidNumber = (Number) keyholder.getKeys().get("trait_id");
@@ -61,6 +68,8 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
   public List<TraitRecSec> listAll(int memberRisk) {
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT DISTINCT ");
+    sql.append(" trs.TRAIT_REC_SEC_ID, ");
+    sql.append(" trs.SEC_ID, ");
     sql.append(" trs.TRAIT_REC_SEC_RISK, ");
     sql.append(" m.SEC_NM, ");
     sql.append(" m.MARKET_ID, ");

@@ -12,9 +12,9 @@
   <p>선택한 위험도: <span th:text="${memberTraits.memberRisk}"></span></p> <!-- 위험도 표시 -->
   <span th:if="${memberTraits == null}">위험도가 설정되지 않았습니다.</span>
   <p>선택한 위험단계에서 설정할수 있는 최대 희망수익률: <span th:text="${maxRtn}"></span></p>
-  <form th:action="@{/propensity-test/set-min-return}" method="POST">
-    <label for="desiredReturn">희망 수익률 입력:</label>
-    <input type="number" id="desiredReturn" name="desiredReturn" step="0.01" required>
+  <form th:action="@{/propensity-test/min-return}" method="POST">
+    <label for="expRtn">희망 수익률 입력:</label>
+    <input type="number" id="expRtn" name="expRtn" step="0.01" required>
     <button type="submit">설정</button>
   </form>
 

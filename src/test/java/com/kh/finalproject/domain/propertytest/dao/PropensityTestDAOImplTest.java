@@ -1,4 +1,4 @@
-package com.kh.finalproject.domain.PropertyTest.dao;
+package com.kh.finalproject.domain.propertytest.dao;
 
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;

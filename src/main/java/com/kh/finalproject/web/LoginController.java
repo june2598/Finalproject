@@ -1,7 +1,9 @@
 package com.kh.finalproject.web;
 
+import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.member.dao.MemberDAO;
+import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
 import com.kh.finalproject.web.form.login.LoginForm;
 import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,31 +25,32 @@ import java.util.Optional;
 public class LoginController {
 
   private final MemberDAO memberDAO;
+  private final PropensityTestDAO propensityTestDAO;
 
   // 로그인 GET요청
   @GetMapping("/login")
-  public String loginForm(Model model){
-    model.addAttribute("loginForm",new LoginForm());
+  public String loginForm(Model model) {
+    model.addAttribute("loginForm", new LoginForm());
     return "/login/loginForm";
   }
 
   // 로그인 POST요청
   @PostMapping("/login")
-  public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request){
-    log.info("loginForm={}",loginForm);
+  public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request) {
+    log.info("loginForm={}", loginForm);
 
     //회원 존재 유무
-    if(!memberDAO.isExist(loginForm.getMemberId())) {
-      bindingResult.rejectValue("memberId","invalidMember");
+    if (!memberDAO.isExist(loginForm.getMemberId())) {
+      bindingResult.rejectValue("memberId", "invalidMember");
       return "/login/loginForm";
     }
 
     //비밀번호 일치 여부
     Optional<Member> optionalMember = memberDAO.findByMemberId(loginForm.getMemberId());
     Member loginMember = optionalMember.get();
-    log.info("loginMember={}",loginMember);
+    log.info("loginMember={}", loginMember);
 
-    if(!loginForm.getPw().equals(loginMember.getPw())) {
+    if (!loginForm.getPw().equals(loginMember.getPw())) {
       bindingResult.rejectValue("pw", "invalidMember");
       return "/login/loginForm";
     }
@@ -65,9 +68,13 @@ public class LoginController {
         loginMember.getMemberClsfc()
     );
 
-    session.setAttribute("loginOkMember",loginOkMember);
+    session.setAttribute("loginOkMember", loginOkMember);
 
     log.info("세션에 저장된 회원 정보: {}", session.getAttribute("loginOkMember"));
+
+    // 성향 정보 저장
+    Long memberSeq = loginMember.getMemberSeq(); // 로그인한 회원의 시퀀스
+    storeMemberTraitsInSession(request, memberSeq); // 성향 정보를 세션에 저장하는 메서드 호출
 
     return "redirect:/";
   }
@@ -82,4 +89,21 @@ public class LoginController {
     return "redirect:/";
   }
 
+  // 성향 정보를 세션에 저장하는 메서드
+  private void storeMemberTraitsInSession(HttpServletRequest request, Long memberSeq) {
+    Optional<Member> memberOpt = memberDAO.findByMemberSeq(memberSeq);
+    HttpSession session = request.getSession();
+
+    if (memberOpt.isPresent()) {
+      Member member = memberOpt.get();
+
+      // 성향 정보를 조회
+      Optional<MemberTraitsDto> memberTraitsOpt = propensityTestDAO.findById(member.getMemberSeq());
+
+      if (memberTraitsOpt.isPresent()) {
+        MemberTraitsDto memberTraits = memberTraitsOpt.get();
+        session.setAttribute("MEMBER_TRAITS", memberTraits);
+      }
+    }
+  }
 }
