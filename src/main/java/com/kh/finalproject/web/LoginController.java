@@ -1,7 +1,7 @@
 package com.kh.finalproject.web;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.Member;
+import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.member.dao.MemberDAO;
 import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
 import com.kh.finalproject.web.form.login.LoginForm;
@@ -98,11 +98,11 @@ public class LoginController {
       Member member = memberOpt.get();
 
       // 성향 정보를 조회
-      Optional<MemberTraitsDto> memberTraitsOpt = propensityTestDAO.findById(member.getMemberSeq());
+      Optional<MemberTraits> memberTraitsOpt = propensityTestDAO.findById(member.getMemberSeq());
 
       if (memberTraitsOpt.isPresent()) {
-        MemberTraitsDto memberTraits = memberTraitsOpt.get();
-        session.setAttribute("MEMBER_TRAITS", memberTraits);
+        MemberTraits memberTraits = memberTraitsOpt.get();
+        session.setAttribute("memberTraits", memberTraits);
       }
     }
   }

@@ -1,6 +1,6 @@
 package com.kh.finalproject.domain.propertytest.dao;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
+import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -48,11 +48,10 @@ class PropensityTestDAOImplTest {
   @DisplayName("고객 성향 조회")
   void findById() {
     Long memberSeq = 1L;
-    Optional<MemberTraitsDto> memberTraits = propensityTestDAO.findById(memberSeq);
-    MemberTraitsDto findedMemberTraitsDto = memberTraits.orElseThrow();
-    log.info("findedMemberTraits={}", findedMemberTraitsDto);
-    Assertions.assertThat(findedMemberTraitsDto.getMemberId()).isEqualTo("test1234");
-    Assertions.assertThat(findedMemberTraitsDto.getMemberRisk()).isEqualTo(2L);
+    Optional<MemberTraits> memberTraits = propensityTestDAO.findById(memberSeq);
+    MemberTraits findedMemberTraits = memberTraits.orElseThrow();
+    log.info("findedMemberTraits={}", findedMemberTraits);
+    Assertions.assertThat(findedMemberTraits.getMemberRisk()).isEqualTo(2L);
 
 
   }

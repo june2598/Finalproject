@@ -82,6 +82,7 @@ public class TrendDAOImpl implements TrendDAO {
     sql.append(" ) sector_counts ");
     sql.append(" ORDER BY ");
     sql.append(orderBy + " DESC ");
+    sql.append(" FETCH FIRST 10 ROWS ONLY ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("marketId", marketId);

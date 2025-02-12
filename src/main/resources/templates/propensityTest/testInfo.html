@@ -8,6 +8,15 @@
 </head>
 <body>
 <h3>성향검사 소개 화면입니다</h3>
+<!-- 로그인 에러 메시지 출력 -->
+<div th:if="${nonLoginError}" class="alert alert-danger">
+  <span th:text="${nonLoginError}"></span>
+</div>
+
+<!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
+<div th:if="${isExistTraitError}" class="alert alert-warning">
+  <span th:text="${isExistTraitError}"></span>
+</div>
 <a href="/">
   초기화면
 </a>

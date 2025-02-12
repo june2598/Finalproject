@@ -10,6 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+
+//실제 데이터베이스에 저장된 성향정보
 public class MemberTraits {
   private Long traitId;                //  TRAIT_ID	NUMBER(10,0)
   private Long memberSeq;                //  MEMBER_SEQ	VARCHAR2(15 BYTE)

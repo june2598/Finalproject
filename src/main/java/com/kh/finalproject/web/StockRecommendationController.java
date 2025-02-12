@@ -1,6 +1,6 @@
 package com.kh.finalproject.web;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
+import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.stockrecommendation.svc.StockRecommendationSVC;
 import com.kh.finalproject.web.form.stockRecommendation.RecStk;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class StockRecommendationController {
   // 기간 제출
   @GetMapping("/recstk/list")
   public String recommendList(Model model, HttpServletRequest request, HttpSession session) {
-    MemberTraitsDto memberTraits = (MemberTraitsDto) session.getAttribute("MEMBER_TRAITS");
+    MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
     if (memberTraits == null) {
       model.addAttribute("error", "Member traits not found in session.");

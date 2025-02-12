@@ -1,6 +1,5 @@
 package com.kh.finalproject.domain.propertytest.dao;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import lombok.RequiredArgsConstructor;
@@ -92,9 +91,9 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
 
   // 고객 성향 정보를 조회
   @Override
-  public Optional<MemberTraitsDto> findById(Long memberSeq) {
+  public Optional<MemberTraits> findById(Long memberSeq) {
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT m.MEMBER_SEQ, m.MEMBER_ID, t.MEMBER_RISK, t.INT_SEC, t.EXP_RTN ");
+    sql.append("SELECT m.MEMBER_SEQ, m.MEMBER_ID, t.MEMBER_RISK, t.INT_SEC, t.EXP_RTN, t.cdate, t.udate ");
     sql.append(" FROM MEMBER m ");
     sql.append(" JOIN MEMBER_TRAITS t ON m.member_seq = t.member_seq ");
     sql.append(" WHERE m.MEMBER_SEQ = :memberSeq ");
@@ -102,16 +101,16 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("memberSeq", memberSeq);
 
-    MemberTraitsDto memberTraitsDto = null;
+    MemberTraits memberTraits = null;
     try {
-      memberTraitsDto = template.queryForObject(
+      memberTraits = template.queryForObject(
           sql.toString(),
           param,
-          BeanPropertyRowMapper.newInstance(MemberTraitsDto.class));
+          BeanPropertyRowMapper.newInstance(MemberTraits.class));
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
-    return Optional.of(memberTraitsDto);
+    return Optional.of(memberTraits);
   }
 
   //관심 업종 없을때 희망수익률 최대치 조회

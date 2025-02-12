@@ -8,7 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SectorsTrendRateDto {
-  public String secNm;
-  public double newsIncreaseRate;
-  public double communityIncreaseRate;
+  private String secNm;
+  private double newsIncreaseRate;
+  private double communityIncreaseRate;
 }

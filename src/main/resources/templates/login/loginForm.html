@@ -7,6 +7,11 @@
   <title>로그인</title>
 </head>
 <body>
+<!-- login.html -->
+<div th:if="${nonLoginError}" class="alert alert-danger">
+  <span th:text="${nonLoginError}"></span>
+</div>
+
 <h3>로그인</h3>
 <form action="" method="POST", th:object="${loginForm}">
   <div>

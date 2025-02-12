@@ -1,6 +1,5 @@
 package com.kh.finalproject.domain.propertytest.dao;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 
@@ -24,7 +23,7 @@ public interface PropensityTestDAO {
   Long save(MemberTraits memberTraits);
 
   //성향 조회
-  Optional<MemberTraitsDto> findById(Long memberSeq);
+  Optional<MemberTraits> findById(Long memberSeq);
 
 
 }

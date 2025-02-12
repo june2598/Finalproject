@@ -39,7 +39,11 @@
 <!-- 추가적인 기능을 위한 버튼 -->
 <div>
   <button onclick="location.href='/recstk'">다시 추천받기</button>
-  <button onclick="location.href='/'">홈으로</button>
+  <a th:href="@{/}">
+    <button>
+      메인 화면 이동
+    </button>
+  </a>
 </div>
 
 </body>

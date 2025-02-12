@@ -1,6 +1,6 @@
 package com.kh.finalproject.domain.stockrecommendation.dao;
 
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
+import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.stockRecommendation.RecStk;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,16 +25,16 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
   private final NamedParameterJdbcTemplate template;
 
   // 세션에서 성향 불러오는 메서드
-  private MemberTraitsDto getMemberTraits(HttpServletRequest request) {
+  private MemberTraits getMemberTraits(HttpServletRequest request) {
     HttpSession session = request.getSession();
-    return (MemberTraitsDto) session.getAttribute("MEMBER_TRAITS");
+    return (MemberTraits) session.getAttribute("memberTraits");
   }
 
   @Override
   public List<RecStk> listByTraitSector(HttpServletRequest request) {
 
     // 성향 정보 불러오기
-    MemberTraitsDto memberTraits = getMemberTraits(request);
+    MemberTraits memberTraits = getMemberTraits(request);
 
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT DISTINCT ");
@@ -88,7 +88,7 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
   public List<RecStk> listWithoutTraitSector(HttpServletRequest request) {
 
     // 성향 정보 불러오기
-    MemberTraitsDto memberTraits = getMemberTraits(request);
+    MemberTraits memberTraits = getMemberTraits(request);
 
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT DISTINCT ");

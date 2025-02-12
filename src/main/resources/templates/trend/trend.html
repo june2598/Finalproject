@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>업종별 트렌드 조회</title>
+  <script th:src="@{/js/common.js}" defer></script>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+<h1>업종별 실시간 트렌드</h1>
+
+<label for="marketId">시장 선택:</label>
+<select id="marketId">
+  <option value="1">KOSPI</option>
+  <option value="2">KOSDAQ</option>
+</select>
+
+<label for="orderBy">정렬 기준:</label>
+<select id="orderBy">
+  <option value="NEWS_INCREASE_RATE">뉴스 기사 수</option>
+  <option value="COMMUNITY_INCREASE_RATE">커뮤니티 수</option>
+</select>
+
+<button id="fetchSectorData">업종 조회</button>
+
+<table id="trendTable">
+  <thead>
+  <tr>
+    <th>업종명</th>
+    <th>뉴스 증가율 (%)</th>
+    <th>커뮤니티 증가율 (%)</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- 업종 데이터-->
+  </tbody>
+</table>
+
+<h2>주식 트렌드</h2>
+
+<label for="stocksOrderBy">주식 정렬 기준:</label>
+<select id="stocksOrderBy">
+  <option value="NEWS_INCREASE_RATE">뉴스 증가율</option>
+  <option value="COMMUNITY_INCREASE_RATE">커뮤니티 증가율</option>
+</select>
+<button id="fetchStocksData">주식 조회</button>
+<table id="stocksTable">
+  <thead>
+  <tr>
+    <th>주식명</th>
+    <th>뉴스 증가율 (%)</th>
+    <th>커뮤니티 증가율 (%)</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- 주식 데이터 -->
+  </tbody>
+</table>
+<a th:href="@{/}">
+  <button>
+    메인 화면 이동
+  </button>
+</a>
+<script>
+  // 페이지 로드 시 기본 데이터 로드
+  document.addEventListener('DOMContentLoaded', () => {
+    // KOSPI 시장의 뉴스 증가율을 기준으로 업종 데이터 로드
+    loadTrendData(1, 'NEWS_INCREASE_RATE');
+    // 주식 데이터의 뉴스 증가율을 기준으로 로드
+    loadStocksTrend('NEWS_INCREASE_RATE');
+});
+
+// 업종 데이터 로드 함수
+const loadTrendData = async (marketId, orderBy) => {
+    // API 호출 URL 생성
+    const url = `/api/trend?marketId=${marketId}&orderBy=${orderBy}`;
+    
+    // AJAX GET 요청을 통해 데이터 가져오기
+    const data = await ajax.get(url);
+
+    // 업종 테이블의 tbody 요소 선택
+    const tbody = document.getElementById('trendTable').querySelector('tbody');
+    tbody.innerHTML = ''; // 기존 데이터 삭제
+
+    // 데이터가 없는 경우 메시지 표시
+    if (data.body.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">데이터가 없습니다.</td></tr>';
+    } else {
+        // 데이터가 있는 경우 각 항목을 테이블에 추가
+        data.body.forEach(item => {
+            const row = document.createElement('tr'); // 새로운 행 생성
+            row.innerHTML = `
+                <td>${item.secNm}</td> <!-- 업종명 -->
+                <td>${item.newsIncreaseRate || 'N/A'}</td> <!-- 뉴스 증가율 --> 
+                <td>${item.communityIncreaseRate || 'N/A'}</td> <!-- 커뮤니티 증가율 -->
+            `;
+            tbody.appendChild(row); // 생성한 행을 테이블에 추가
+        });
+    }
+};
+
+// 주식 트렌드 데이터 로드 함수
+const loadStocksTrend = async (orderBy) => {
+    // API 호출 URL 생성
+    const url = `/api/trend/stocks?orderBy=${orderBy}`;
+    
+    // AJAX GET 요청을 통해 데이터 가져오기
+    const data = await ajax.get(url);
+
+    // 주식 테이블의 tbody 요소 선택
+    const stocksTableBody = document.getElementById('stocksTable').querySelector('tbody');
+    stocksTableBody.innerHTML = ''; // 기존 데이터 삭제
+
+    // 데이터가 없는 경우 메시지 표시
+    if (data.body.length === 0) {
+        stocksTableBody.innerHTML = '<tr><td colspan="3">데이터가 없습니다.</td></tr>';
+    } else {
+        // 데이터가 있는 경우 각 항목을 테이블에 추가
+        data.body.forEach(item => {
+            const row = document.createElement('tr'); // 새로운 행 생성
+            row.innerHTML = `
+                <td>${item.stkNm}</td> <!-- 주식명 -->
+                <td>${item.newsIncreaseRate || 'N/A'}</td> <!-- 뉴스 증가율 -->
+                <td>${item.communityIncreaseRate || 'N/A'}</td> <!-- 커뮤니티 증가율 -->
+            `;
+            stocksTableBody.appendChild(row); // 생성한 행을 테이블에 추가
+        });
+    }
+};
+
+
+ // 업종 조회 버튼 클릭 시 데이터 요청
+  document.getElementById('fetchSectorData').addEventListener('click', function () {
+    const marketId = document.getElementById('marketId').value;
+    const orderBy = document.getElementById('orderBy').value;
+    loadTrendData(marketId, orderBy); // 선택된 시장과 정렬 기준으로 업종 데이터 로드
+    });
+
+  // 주식 조회 버튼 클릭 시 데이터 요청
+  document.getElementById('fetchStocksData').addEventListener('click', function () {
+    const stocksOrderBy = document.getElementById('stocksOrderBy').value; // 주식 정렬 기준 가져오기
+    loadStocksTrend(stocksOrderBy); // 선택된 정렬 기준으로 주식 트렌드 데이터 로드
+    });
+</script>
+
+</body>
+</html>

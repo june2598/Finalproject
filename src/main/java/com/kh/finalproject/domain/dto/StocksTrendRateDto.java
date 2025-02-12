@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 
 public class StocksTrendRateDto {
-  public String stkNm;
-  public double newsIncreaseRate;
-  public double communityIncreaseRate;
+  private String stkNm;
+  private double newsIncreaseRate;
+  private double communityIncreaseRate;
 }

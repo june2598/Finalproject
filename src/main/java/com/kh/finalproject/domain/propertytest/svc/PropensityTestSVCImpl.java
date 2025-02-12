@@ -1,8 +1,7 @@
 package com.kh.finalproject.domain.propertytest.svc;
 
-import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
-import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
+import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public class PropensityTestSVCImpl implements PropensityTestSVC{
   }
 
   @Override
-  public Optional<MemberTraitsDto> findById(Long memberSeq) {
+  public Optional<MemberTraits> findById(Long memberSeq) {
     return propensityTestDAO.findById(memberSeq);
   }
 

@@ -13,4 +13,5 @@ public class LoginMember {
   private String email;         //  회원 이메일
   private String memberClsfc;   //  회원 유형
 
+
 }
