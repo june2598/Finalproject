@@ -4,49 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <title>투자 성향 검사 완료</title>
 </head>
-<body>
-<h3>
-  고객 성향 검사 완료
-</h3>
+<body class="bg-gray-200">
+  <div class="container mx-auto">
+    <div class="grid grid-cols-10">
+      <!-- 헤더 영역 -->
+      <div th:replace="~{fragments/header :: header}"></div>
 
-<div>
-  <h4>저장된 성향 정보</h4>
-  <p>회원 ID: <span th:text="${memberTraits.memberSeq}"></span></p>
-  <p>위험도: <span th:text="${memberTraits.memberRisk}"></span></p>
-  <p>희망 수익률: <span th:text="${memberTraits.expRtn}"></span></p>
-<!--  <p>업종명:-->
-<!--    <span th:each="sec, iterStat : ${memberTraits.intSec}"-->
-<!--          th:text="${sec + (!iterStat.last ? ', ' : '')}"></span>-->
-<!--  </p>-->
-  <p>업종이름:
-    <span th:each="secNm, iterStat : ${memberTraits.intSecNm}"
-          th:text="${secNm + (!iterStat.last ? ', ' : '')}"></span>
-  </p>
-<!--  <p>업종명: <span th:text="${memberTraits.intSec}"></span></p>-->
-<!--  <p>업종이름: <span th:text="${memberTraits.intSecNm}"></span></p>-->
-<!--  <p>업종id 타입: <span th:text="${#lists.size(memberTraits.intSec) > 0 ? memberTraits.intSec[0].getClass().getName() : '없음'}"></span></p>-->
-<!--  <p>업종이름 타입: <span th:text="${#lists.size(memberTraits.intSecNm) > 0 ? memberTraits.intSecNm[0].getClass().getName() : '없음'}"></span></p>-->
+      <!-- 검색 영역 -->
+      <div th:replace="~{fragments/search :: search}"></div>
+
+      <!-- Nav 영역 -->
+      <div th:replace="~{fragments/nav :: nav}"></div>
+
+      <!-- Main 영역 -->
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-6 h-[65vh] bg-white text-black flex flex-col justify-center items-center">
+        <div th:replace="~{fragments/main-header :: main-header(title='고객 성향 검사 완료')}"></div>
+        <div th:replace="~{fragments/propertyTest/testfinish-content :: testfinish-content}"></div>
+      </div>
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <!-- footer 영역-->
+      <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+  </div>
 </div>
-<div>
-  <a href="">
-    <button>
-      검사 결과 조회
-    </button>
-  </a>
-  <a th:href="@{/}">
-    <button>
-      메인 화면 이동
-    </button>
-  </a>
-  <a href="">
-    <button>
-      종목 추천 받기
-    </button>
-  </a>
-
-</div>
-
 </body>
 </html>

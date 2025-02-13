@@ -32,7 +32,10 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     sql.append("VALUES(member_traits_seq.nextval, :memberSeq, :memberRisk, :intSec, :expRtn) ");
 
     //intSec을 쉼표로 구분된 문자열로 변환
-    String intSecString = String.join(",", memberTraits.getIntSec());
+    String intSecString = null;
+    if (memberTraits.getIntSec() != null && !memberTraits.getIntSec().isEmpty()) {
+      intSecString = String.join(",", memberTraits.getIntSec());
+    }
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("memberSeq",memberTraits.getMemberSeq())

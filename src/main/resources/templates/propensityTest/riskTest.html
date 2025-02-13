@@ -4,29 +4,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script>
+
+    // 위험도 체크하고 제출 했는지 검증
+    function validateForm(event) {
+      const radios = document.querySelectorAll('input[name="memberRisk"]');
+      let isChecked = false;
+
+      for (const radio of radios) {
+        if (radio.checked) {
+          isChecked = true;
+          break;
+        }
+      }
+      if (!isChecked) {
+        event.preventDefault(); // 폼 제출 방지
+        alert('위험 단계를 선택해 주세요.'); // 경고 메시지
+      }
+    }
+  </script>
   <title>성향검사 1단계 : 위험단계 설정</title>
 </head>
-<body>
-<h3>위험단계 설정</h3>
-<form action="" method="POST" th:object="${memberTraits}">
-  <div>
-    <label for="risk">위험도</label>
-    <input type="radio" th:field="*{memberRisk}" value="1" id="risk1"> 위험도 1단계
-    <input type="radio" th:field="*{memberRisk}" value="2" id="risk2"> 위험도 2단계
-    <input type="radio" th:field="*{memberRisk}" value="3" id="risk3"> 위험도 3단계
+<body class="bg-gray-200">
+<!-- 로그인 에러 메시지 출력 -->
+<div th:if="${nonLoginError}" class="alert alert-danger">
+  <span th:text="${nonLoginError}"></span>
+</div>
+<!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
+<div th:if="${isExistTraitError}" class="alert alert-warning">
+  <span th:text="${isExistTraitError}"></span>
+</div>
+
+<div class="container mx-auto">
+  <div class="grid grid-cols-10">
+    <!-- 헤더 영역 -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- 검색 영역 -->
+    <div th:replace="~{fragments/search :: search}"></div>
+
+    <!-- Nav 영역 -->
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+    <!-- Main 영역 -->
+    <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+    <div class="col-span-6 h-[65vh] bg-white text-black flex flex-col justify-center items-center">
+      <div th:replace="~{fragments/main-header :: main-header(title='투자 성향 검사')}"></div>
+      <div th:replace="~{fragments/propertyTest/risktest-content :: risktest-content}"></div>
+    </div>
+    <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+    <!-- footer 영역-->
+    <div th:replace="~{fragments/footer :: footer}"></div>
   </div>
-  <div>
-    <a th:href="@{/propensity-test/info}">
-      이전
-    </a>
-  </div>
-  <div>
-    <button type="submit">제출</button>
-  </div>
-</form>
-
-
-
-
+</div>
 </body>
 </html>

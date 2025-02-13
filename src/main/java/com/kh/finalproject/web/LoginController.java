@@ -90,7 +90,7 @@ public class LoginController {
   }
 
   // 성향 정보를 세션에 저장하는 메서드
-  private void storeMemberTraitsInSession(HttpServletRequest request, Long memberSeq) {
+  public void storeMemberTraitsInSession(HttpServletRequest request, Long memberSeq) {
     Optional<Member> memberOpt = memberDAO.findByMemberSeq(memberSeq);
     HttpSession session = request.getSession();
 

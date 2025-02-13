@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="trend-content">
+    <div class="p-6 w-full flex flex-1">
+      <div class="flex-1">
+        워드클라우드 이미지
+      </div>
+      <div class="flex-1">
+        <h1 class="font-extrabold text-xl mb-4">실시간 이슈 업종</h1>
+        <div id="marketSelection" class="flex space-x-4">
+          <span id="kospi"
+            class="font-bold text-black market-option cursor-pointer p-2 border border-transparent">KOSPI</span>
+          <span class="p-2">|</span>
+          <span id="kosdaq"
+            class="text-gray-300 market-option cursor-pointer p-2 border border-transparent">KOSDAQ</span>
+        </div>
+        <input type="hidden" id="marketId" value="1"> <!-- 기본값 설정 -->
+        <table id="trendTable">
+          <thead>
+            <tr>
+              <th class="text-sm">업종명</th>
+              <th class="text-sm">
+                뉴스 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+              </th>
+              <th class="text-sm">
+                여론 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 업종 데이터-->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="px-6 pt-6 w-full h-full">
+      <h1 class="font-extrabold text-xl mb-4">실시간 이슈 종목</h1>
+      <table id="stocksTable">
+        <thead>
+          <tr>
+            <th class="text-sm">종목명</th>
+            <th class="text-sm">
+              뉴스 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+            </th>
+            <th class="text-sm">
+              여론 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 주식 데이터 -->
+        </tbody>
+      </table>
+      <div class="m-2 flex-1 w-full flex justify-end items-end">
+        <a th:href="@{/}"
+           class="bg-blue-500 text-white text-center mr-2 p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+          메인 화면
+        </a>
+      </div>
+    </div>
+  </th:block>
+</body>
+
+</html>

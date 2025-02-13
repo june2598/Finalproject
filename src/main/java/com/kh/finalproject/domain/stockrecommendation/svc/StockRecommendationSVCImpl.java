@@ -25,4 +25,9 @@ public class StockRecommendationSVCImpl implements StockRecommendationSVC {
   public List<RecStk> listWithoutTraitSector(HttpServletRequest request) {
     return stockRecommendationDAO.listWithoutTraitSector(request);
   }
+
+  @Override
+  public String findIntSecNmByIntSecId(HttpServletRequest request) {
+    return stockRecommendationDAO.findIntSecNmByIntSecId(request);
+  }
 }

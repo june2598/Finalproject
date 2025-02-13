@@ -4,47 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
   <title>추천 종목 목록</title>
 </head>
-<body>
-<h1>추천 종목 목록</h1>
-<!-- 에러 메시지 표시 -->
-<div th:if="${error}">
-  <p style="color: red;" th:text="${error}"></p>
-</div>
-<!-- 추천 종목 테이블 -->
-<table>
-  <thead>
-  <tr>
-    <th>종목 ID</th>
-    <th>업종명</th>
-    <th>종목명</th>
-    <th>추천 수익률</th>
-    <th>추천 거래량</th>
-    <th>추천 위험도</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="stock : ${recommendedStocks}">
-    <td th:text="${stock.recStkId}"></td>
-    <td th:text="${stock.secNm}"></td>
-    <td th:text="${stock.stkNm}"></td>
-    <td th:text="${stock.recRtn}"></td>
-    <td th:text="${stock.recVol}"></td>
-    <td th:text="${stock.recRisk}"></td>
-  </tr>
-  </tbody>
-</table>
-
-<!-- 추가적인 기능을 위한 버튼 -->
-<div>
-  <button onclick="location.href='/recstk'">다시 추천받기</button>
-  <a th:href="@{/}">
-    <button>
-      메인 화면 이동
-    </button>
-  </a>
-</div>
-
+<body class="bg-gray-200">
+  <!-- 로그인 에러 메시지 출력 -->
+  <div th:if="${nonLoginError}" class="alert alert-danger">
+   <span th:text="${nonLoginError}"></span>
+ </div>
+ <div class="container mx-auto">
+   <div class="grid grid-cols-10">
+     <!-- 헤더 영역 -->
+     <div th:replace="~{fragments/header :: header}"></div>
+     <!-- 검색 영역 -->
+     <div th:replace="~{fragments/search :: search}"></div>
+     <!-- Nav 영역 -->
+     <div th:replace="~{fragments/nav :: nav}"></div>
+     <!-- Main 영역 -->
+     <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
+     <div class="col-span-6 h-full bg-white text-black flex flex-col justify-center items-center">
+       <div th:replace="~{fragments/main-header :: main-header(title='추천 종목')}"></div>
+       <div th:replace="~{fragments/stockRecommendation/stockreclist :: stockreclist}"></div>
+     </div>
+     <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+     <!-- footer 영역-->
+     <div th:replace="~{fragments/footer :: footer}"></div>
+   </div>
+ </div>
 </body>
 </html>

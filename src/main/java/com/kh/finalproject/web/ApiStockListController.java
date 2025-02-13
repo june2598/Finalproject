@@ -39,11 +39,18 @@ public class ApiStockListController {
     ApiResponse<List<StockListDto>> res = null;
     List<StockListDto> stockList = stockListSVC.getStockList(marketId, orderBy, risk, offset);
 
-    if (stockList.size() != 0) {
-      res = ApiResponse.of(ApiResponseCode.SUCCESS, stockList);
-    } else {
-      throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND,null);
+    // 데이터가 없을 경우 페이지를 초기화
+    if (stockList.isEmpty()) {
+      // 페이지를 초기화하기 위해 기본값으로 설정
+      int resetOffset = 0; // 페이지 초기화
+      stockList = stockListSVC.getStockList(marketId, orderBy, risk, resetOffset); // 기본값으로 데이터 요청
     }
+    // 데이터가 여전히 없으면 예외 발생
+    if (stockList.isEmpty()) {
+      throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND, null);
+    }
+
+    res = ApiResponse.of(ApiResponseCode.SUCCESS, stockList);
     return res;
 
   }

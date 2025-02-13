@@ -24,7 +24,7 @@ public class StockListDAOImpl implements StockListDAO{
   public List<StockListDto> getStockList(int marketId, String orderBy, int risk, int offset) {
 
     // 허용된 정렬 기준 목록
-    List<String> validOrderBys = List.of("R.MARCAP", "T.TRAIT_STK_RISK", "R.CHANGE_RATIO", "VOLUME");
+    List<String> validOrderBys = List.of("R.MARCAP", "T.TRAIT_STK_RISK", "R.CHANGE_RATIO", "R.VOLUME");
 
     // orderBy 검증
     if (!validOrderBys.contains(orderBy.toUpperCase())) {

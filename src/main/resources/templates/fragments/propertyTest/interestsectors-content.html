@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+<th:block th:fragment="interestsectors-content">
+<!--  <div class="bg-white text-black flex-1 w-full">-->
+<!--    <h4 class="text-2xl p-4 flex items-center">관심 업종</h4>-->
+<!--  </div>-->
+  <div class="bg-white text-black flex-1 w-full">
+    <p class="px-4 my-3">관심 업종이 존재한다면, 관심 업종 내에서 우선적으로 종목이 추천됩니다.</p>
+    <p class="px-4 mb-3">'추천'은 앞서 선택한 위험단계 내에서 최근 한달 수익률 지표가 좋은 업종입니다</p>
+    <p class="px-4 mb-3"> 관심 업종 선택을 하지 않아도, 다음 단계로 진행하실 수 있습니다.</p>
+    <p class="px-4 my-3">선택한 위험도: <span th:text="${memberTraitsDto.memberRisk} + '단계'"></span></p> <!-- 위험도 표시 -->
+  </div>
+  <form action="" method="POST" th:object="${memberTraitsDto}"
+        class="flex-5 flex flex-col justify-between border-t overflow-y-auto">
+    <div th:each="entry : ${groupedSectors}">
+      <h4 th:text="${marketNames[entry.key]}" class="text-lg font-bold mb-2 p-4">Market Name</h4>
+      <!-- MARKET_ID에 해당하는 이름 표시 -->
+      <div class="grid grid-cols-3 gap-4">
+        <div th:each="sector : ${entry.value}" class="flex items-center px-6">
+          <input type="checkbox" th:field="*{intSec}" th:value="${sector.secId}" id="sector_${sector.traitRecSecId}" class="mr-2">
+          <label th:for="'sector_' + ${sector.traitRecSecId}" class="block">
+            <span th:text="${sector.secNm}"></span>   <!-- 업종명 표시 -->
+            <span th:if="${topSectors[entry.key].contains(sector)}" class="text-green-500">(추천)</span>  <!-- 추천 표시 -->
+          </label>
+<!--          <span>업종 ID: <span th:text="${sector.secId}"></span></span>-->
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 w-full sticky bottom-0 flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-400 p-4">*표시는 코스닥 업종 표시입니다.</p>
+      </div>
+      <div class="flex justify-end items-center">
+        <a th:href="@{/propensity-test/risks}"
+           class="bg-gray-300 text-black text-center px-4 py-2 rounded w-32 mr-4 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
+          이전
+        </a>
+        <button type="submit"
+                class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+          다음>>
+        </button>
+      </div>
+    </div>
+  </form>
+
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+<body>
+  <th:block th:fragment="footer">
+    <div class="col-span-2 h-[15vh] bg-gray-200 p-4"></div>
+    <div class="col-span-6 h-[15vh] bg-gray-100 p-4 text-xs text-stone-400 flex flex-col justify-center">
+      <p>스마트투자 | 대표 : 김준우</p>
+      <p>주소 : 울산광역시 남구 삼산로 35번길 19</p>
+      <p>사업자등록번호 : 000-000-00000</p>
+      <p>Tel : 010-1234-5678</p>
+      <p>Copyright © 스마트투자. All Rights Reserved.</p>
+    </div>
+    <div class="col-span-2 h-[15vh] bg-gray-200 p-4"></div>
+  </th:block>
+</body>
+</html>

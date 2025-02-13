@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="main-header(title)">
+  <div class="bg-green-300 w-full flex justify-left border-b-2 border-black min-h-16">
+    <h2 class="p-2 text-2xl font-extrabold flex items-center" th:text="${title}">기본 제목</h2>
+  </div>
+</th:block>
+</body>
+
+</html>

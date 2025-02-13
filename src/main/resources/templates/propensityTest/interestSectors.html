@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <title>관심 업종 설정</title>
 </head>
-<body>
-<h3>관심 업종 설정 화면입니다.</h3>
-<p>선택한 위험도: <span th:text="${memberTraits.memberRisk}"></span></p> <!-- 위험도 표시 -->
-<form action="" method="POST" th:object="${memberTraits}">
-  <div th:each="entry : ${groupedSectors}">
-    <h4 th:text="${marketNames[entry.key]}">Market Name</h4> <!-- MARKET_ID에 해당하는 이름 표시 -->
-    <div th:each="sector : ${entry.value}">
-      <input type="checkbox" th:field="*{intSec}" th:value="${sector.secId}"
-             id="sector_${sector.traitRecSecId}">
-      <label th:for="'sector_' + ${sector.traitRecSecId}" th:text="${sector.secNm}"></label> <!-- 업종명 표시 -->
-      <span>업종 ID: <span th:text="${sector.secId}"></span></span>
-      <span th:if="${topSectors[entry.key].contains(sector)}" style="color: green;">(추천)</span> <!-- 추천 표시 -->
+<body class="bg-gray-200 flex flex-col min-h-screen">
+  <!-- 로그인 에러 메시지 출력 -->
+  <div th:if="${nonLoginError}" class="alert alert-danger">
+    <span th:text="${nonLoginError}"></span>
+  </div>
+  <!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
+  <div th:if="${isExistTraitError}" class="alert alert-warning">
+    <span th:text="${isExistTraitError}"></span>
+  </div>
+  <div class="container mx-auto flex-grow">
+    <div class="grid grid-cols-10 h-full">
+      <!-- 헤더 영역 -->
+      <div th:replace="~{fragments/header :: header}"></div>
+
+      <!-- 검색 영역 -->
+      <div th:replace="~{fragments/search :: search}"></div>
+
+      <!-- Nav 영역 -->
+      <div th:replace="~{fragments/nav :: nav}"></div>
+
+      <!-- Main 영역 -->
+      <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div> <!-- 공간 확보를 위해 h-full 적용해 footer쪽 영역을 확보-->
+      <div class="col-span-6 h-full bg-white text-black flex flex-col">
+        <div th:replace="~{fragments/main-header :: main-header(title='관심 업종 선택')}"></div>
+        <div th:replace="~{fragments/propertyTest/interestsectors-content :: interestsectors-content}"></div>
+      </div>
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <!-- footer 영역-->
+      <div th:replace="~{fragments/footer :: footer}"></div>
     </div>
   </div>
-  <!-- 선택된 업종 ID를 표시할 부분 추가 -->
-  <p>선택된 업종 ID: <span th:text="${memberTraits.intSec}"></span></p>
-  <div>
-    <a th:href="@{/propensity-test/risks}">이전</a>
-  </div>
-  <div>
-    <button type="submit">다음</button>
-  </div>
-</form>
+
+
 </body>
 </html>

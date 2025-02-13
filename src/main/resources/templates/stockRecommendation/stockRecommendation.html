@@ -1,22 +1,64 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script>
+    function setDate(days, checkbox) {
+      const dateInput = document.getElementById('dateInput');
+      const today = new Date();
+      today.setDate(today.getDate() + days); // 현재 날짜에서 days 만큼 더하기
+
+      // 날짜 포맷을 yyyy-mm-dd로 설정
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+      const day = String(today.getDate()).padStart(2, '0');
+
+      dateInput.value = `${year}-${month}-${day}`; // 날짜 입력 필드에 값 설정
+
+      // 체크박스 상태 초기화
+      resetCheckboxes(checkbox);
+    }
+
+    function resetCheckboxes(currentCheckbox) {
+      const checkboxes = [document.getElementById('oneMonth'), document.getElementById('threeMonths'), document.getElementById('sixMonths')];
+
+      checkboxes.forEach(checkbox => {
+        if (checkbox !== currentCheckbox) {
+          checkbox.checked = false; // 현재 선택된 체크박스를 제외하고 모두 해제
+        }
+      });
+    }
+  </script>
   <title>Title</title>
 </head>
-<body>
-<h3>종목추천 소개 화면입니다.</h3>
-<a href="/">
-  초기화면
-</a>
-<form action="" method="POST">
 
-  <button type="submit">종목추천!</button>
-</form>
-
-
-
+<body class="bg-gray-200">
+  <!-- 로그인 에러 메시지 출력 -->
+  <div th:if="${nonLoginError}" class="alert alert-danger">
+    <span th:text="${nonLoginError}"></span>
+  </div>
+  <div class="container mx-auto">
+    <div class="grid grid-cols-10">
+      <!-- 헤더 영역 -->
+      <div th:replace="~{fragments/header :: header}"></div>
+      <!-- 검색 영역 -->
+      <div th:replace="~{fragments/search :: search}"></div>
+      <!-- Nav 영역 -->
+      <div th:replace="~{fragments/nav :: nav}"></div>
+      <!-- Main 영역 -->
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-6 h-[65vh] bg-white text-black flex flex-col justify-center items-center">
+        <div th:replace="~{fragments/main-header :: main-header(title='투자 성향별 종목 추천')}"></div>
+        <div th:replace="~{fragments/stockRecommendation/stockrecinfo :: stockrecinfo}"></div>
+      </div>
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <!-- footer 영역-->
+      <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+  </div>
 </body>
+
 </html>

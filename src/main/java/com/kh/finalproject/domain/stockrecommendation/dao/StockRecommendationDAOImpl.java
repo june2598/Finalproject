@@ -130,4 +130,29 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
 
 
   }
+
+  @Override
+  public String findIntSecNmByIntSecId(HttpServletRequest request) {
+
+    // 성향 정보 불러오기
+    MemberTraits memberTraits = getMemberTraits(request);
+
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" SELECT DISTINCT SEC_NM ");
+    sql.append(" FROM MKT_SEC_STK m ");
+    sql.append(" JOIN MEMBER_TRAITS t ON REGEXP_LIKE(t.INT_SEC, '(^|,)' || m.SEC_ID || '($|,)') ");
+    sql.append(" WHERE t.MEMBER_SEQ = :memberSeq ");
+
+    Long memberSeq = memberTraits.getMemberSeq();
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("memberSeq", memberSeq);
+
+    // 업종명을 리스트로 받음
+    List<String> secNm = template.query(sql.toString(), param, (rs, rowNum) -> rs.getString("SEC_NM"));
+
+    // 리스트의 요소를 콤마로 구분된 문자열로 결합
+    return String.join(", ", secNm);
+  }
 }

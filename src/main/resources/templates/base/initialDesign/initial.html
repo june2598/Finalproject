@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <title>Title</title>
+</head>
+
+<body class="bg-gray-200">
+  <div class="container mx-auto">
+    <div class="grid grid-cols-10">
+      <!-- 헤더 영역 -->
+
+      <div class="col-span-2 h-[6vh] bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-6 h-[6vh] bg-white p-2 text-black flex justify-between items-center">
+        <span class="font-extrabold text-xl">스마트투자</span>
+        <span>로그인 | 회원가입</span>
+      </div>
+      <div class="col-span-2 h-[6vh] bg-gray-200 p-4 text-white"></div>
+
+      <!-- 검색 영역 -->
+      <div class="col-span-2 h-[6vh] bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-6 h-[6vh] bg-white p-2 flex items-center">
+        <input type="text" 
+               placeholder="종목명 입력" 
+               class="flex-grow h-full p-2 mr-2 rounded-l border border-gray-300 flex items-center justify-center text-lg" 
+               style="flex-basis:90%;" />
+        <button class="bg-blue-600 text-white rounded h-full text-base" 
+                style="flex-basis: 10%;">
+                검색
+              </button>
+      </div>
+      <div class="col-span-2 h-[6vh] bg-gray-200 p-4  text-white"></div>
+
+      <!-- Nav 영역 -->
+      <div class="col-span-2 h-[8vh] bg-gray-200 p-4  text-white"></div>
+      <!-- Nav -->
+      <div class="col-span-6 h-[8vh] bg-slate-800 p-4  text-white flex items-center">
+        <div class="flex space-x-12 justify-center items-center w-full">
+          <div class="relative group">
+            <span class="cursor-pointer">종목 추천 서비스</span>
+            <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block w-50">
+              <li class="p-2 hover:bg-gray-200">투자 성향검사</li>
+              <li class="p-2 hover:bg-gray-200">투자 성향별 종목 추천</li>
+              <li class="p-2 hover:bg-gray-200">성향 검사 결과 조회/수정</li>
+            </ul>
+          </div>
+          <div class="relative group">
+            <span class="cursor-pointer">주식 정보 서비스</span>
+            <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block">
+              <li class="p-2 hover:bg-gray-200">종목 리스트</li>
+              <li class="p-2 hover:bg-gray-200">종목 상세 지표</li>
+            </ul>
+          </div>
+          <div class="relative group">
+            <span class="cursor-pointer">한눈에 보는 시장 트렌드</span>
+            <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block">
+              <li class="p-2 hover:bg-gray-200">실시간 이슈 정보</li>
+              <li class="p-2 hover:bg-gray-200">실시간 상위 지표 종목</li>
+            </ul>
+          </div>
+          <div class="relative group">
+            <span class="cursor-pointer">마이페이지</span>
+            <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block w-40">
+              <li class="p-2 hover:bg-gray-200">회원정보 조회/수정</li>
+              <li class="p-2 hover:bg-gray-200">관심 종목 리스트</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-2 h-[8vh] bg-gray-200 p-4 text-white"></div>
+
+      <!-- Main 영역 -->
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4  text-white"></div>
+      <div class="col-span-6 h-[65vh] bg-white text-black flex flex-col justify-center items-center">
+        
+        <div class="bg-green-300 w-full flex-4 flex justify-center items-center">실시간 국내 지수</div>
+        <div class="bg-gray-500 text-white flex-1 w-full flex justify-center items-center">주요 이슈</div>
+        <div class="flex-5 w-full flex justify-center items-center">지표별 상위 종목</div>
+        
+      </div>
+      <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <!-- footer 영역-->
+      <div class="col-span-2 h-[15vh] bg-gray-200 p-4 "></div>
+      <div class="col-span-6 h-[15vh] bg-gray-100 p-4 text-xs text-stone-400 flex flex-col justify-center">
+        <p>스마트투자   |   대표 : 김준우</p>
+        <p>주소 : 울산광역시 남구 삼산로 35번길 19</p>
+        <p>사업자등록번호 : 000-000-00000</p>
+        <p>Tel : 010-1234-5678</p>
+        <p>Copyright © 스마트투자. All Rights Reserved.</p>
+      </div>
+      <div class="col-span-2 h-[15vh] bg-gray-200 p-4 "></div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

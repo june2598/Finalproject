@@ -13,4 +13,7 @@ public interface StockRecommendationDAO {
   // 추천 종목 목록(관심 업종이 없을때)
   List<RecStk> listWithoutTraitSector(HttpServletRequest request);
 
+  // 성향에 저장된 업종 ID로 업종명 찾기
+  String findIntSecNmByIntSecId(HttpServletRequest request);
+
 }

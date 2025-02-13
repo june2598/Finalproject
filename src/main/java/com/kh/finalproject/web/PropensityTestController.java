@@ -5,6 +5,7 @@ import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.login.LoginMember;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class PropensityTestController {
   // URL 경로 상수 정의
   private static final String PROPENSITY_TEST_PREFIX = "/propensity-test/";
   private static final String propensity_test_root = "/propensityTest/";
+
+  private final LoginController loginController;
 
   @GetMapping
   public String index() {
@@ -63,7 +66,7 @@ public class PropensityTestController {
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
-    // 로그인 중이 아니거나 성향 정보가 없는 경우
+    // 로그인 중이 아니거나 성향 정보가 이미 존재하는 경우
     if (loginOkMember == null) {
       redirectAttributes.addFlashAttribute("nonLoginError", "로그인을 진행해야 합니다.");
       return "redirect:/login"; // 로그인 페이지로 리다이렉트
@@ -272,13 +275,22 @@ public class PropensityTestController {
   }
 
   @GetMapping(PROPENSITY_TEST_PREFIX + "finish")
-  public String showTestFinish(Model model, HttpSession session) {
+  public String showTestFinish(Model model, HttpSession session, HttpServletRequest request) {
     // 세션에서 저장된 memberTraitsDto 가져오기
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
 
     log.info("memberTraitsDto 내용: {}", memberTraitsDto);
     // 모델에 성향 정보 추가
     model.addAttribute("memberTraitsDto", memberTraitsDto); // DTO를 모델에 추가
+
+    // 세션에서 로그인된 회원정보 가져오기 (재로그인 없이 바로 종목 추천을 받을 수 있게)
+    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+    Long memberSeq = loginOkMember.getMemberSeq(); // 로그인한 회원의 시퀀스
+
+    // 데이터베이스에 저장된 성향정보 현재 세션에 저장
+    loginController.storeMemberTraitsInSession(request, memberSeq);
+
+
     return propensity_test_root + "testFinish"; // 결과 페이지 경로
   }
 

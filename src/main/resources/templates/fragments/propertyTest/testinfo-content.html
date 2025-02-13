@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="testinfo-content">
+    <div class="bg-white text-black flex-5 w-full flex-col items-center">
+      <p class="px-2 py-6 text-xl">고객 성향 검사는 고객의 감당 위험단계, 관심 업종, 희망 수익률을 고객으로 부터 제공 받아 고객의 투자성향을 결정하여, 투자 성향에 맞는 종목을 제공하기 위한 검사입니다.</p>
+
+      <h3 class="px-2 py-6 text-2xl">검사를 진행 하시려면 검사 시작을 눌러 주세요.</h3>
+    </div>
+      <div class="flex-1 w-full flex justify-end items-center">
+        <a th:href="@{/}" class="bg-gray-300 text-black text-center px-4 py-2 rounded w-32 mr-4 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
+          초기화면
+        </a>
+        <a th:href="@{/propensity-test/risks}" class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+          검사 시작
+        </a>
+      </div>
+  </th:block>
+</body>
+
+</html>

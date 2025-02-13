@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+<body>
+  <th:block th:fragment="risktest-content">
+  <div class="bg-white text-black flex-1 w-full">
+    <h4 class="text-2xl p-4 flex items-center">감당 위험 단계 설정</h4>
+  </div>
+  <form action="" method="POST" th:object="${memberTraitsDto}" class="flex-5 flex flex-col justify-between">
+    <div class="bg-white text-black w-full flex flex-3">
+      <div class="flex-1 flex flex-col">
+        <label for="risk" class="text-center text-xl font-bold">위험도 1단계</label>
+        <input type="radio" th:field="*{memberRisk}" value="1" id="risk1" name="memberRisk"
+              class="my-6">
+        <p class="px-4 mb-3">변동성이 아주 낮은 종목 위주로 추천 종목을 선정합니다.</p>
+        <p class="px-4 mt-3">안정적인 대신 기대할 수 있는 수익률이 낮습니다.</p>
+      </div>
+      <div class="flex-1 flex flex-col">
+        <label for="risk"  class="text-center text-xl font-bold">위험도 2단계</label>
+        <input type="radio" th:field="*{memberRisk}" value="2" id="risk2" name="memberRisk"
+              class="my-6">
+        <p class="px-4 mb-3">투자 리스크와 수익의 균형을 추구하시는 분들에게 추천합니다.</p>
+        <p class="px-4 mt-3">리스크도 존재하지만, 그에 맞는 수익률을 기대할 수 있습니다.</p>
+      </div>
+      <div class="flex-1 flex flex-col">
+        <label for="risk"  class="text-center text-xl font-bold">위험도 3단계</label>
+        <input type="radio" th:field="*{memberRisk}" value="3" id="risk3" name="memberRisk"
+              class="my-6">
+        <p class="px-4 mb-3">리스크를 배제하고 최고의 수익률을 추구하시는 분들에게 추천합니다.</p>
+        <p class="px-4 mt-3">투자 리스크가 큰 대신 선택에 따라 매우 높은 수익률을 기대할 수 있습니다.</p>
+      </div>
+    </div>
+    <div class="flex-1 w-full flex justify-end items-center">
+      <a th:href="@{/propensity-test/info}"
+        class="bg-gray-300 text-black px-4 py-2 text-center w-32 mr-4 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
+        이전
+      </a>
+      <button type="submit"
+        class="bg-blue-500 text-white mr-2 px-4 py-2 text-center rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+        다음>></button>
+    </div>
+  </form>
+</th:block>
+</body>
+
+</html>

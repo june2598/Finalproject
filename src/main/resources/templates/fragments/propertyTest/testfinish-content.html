@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="testfinish-content">
+    <div class="bg-white text-black mt-6 flex-1 w-full">
+      <p class="px-4 mb-3">고객 투자 성향 검사가 완료 되었습니다.</p>
+      <p class="px-4 mb-3">지금 바로 고객님 투자 성향에 맞는 종목을 추천 받으실 수 있습니다.</p>
+      <p class="px-4 mb-3">투자 성향은 마이 페이지에서 언제든지 변경하실 수 있습니다.</p>
+    </div>
+    <div class="mt-4 p-2 w-full flex flex-5 flex-col">
+      <h4 class="px-2 pb-6 text-2xl">저장된 성향 정보</h4>
+      <p class="p-4 text-xl">위험단계 : <span th:text="${memberTraitsDto.memberRisk} + '단계'" class=" text-xl text-bold"></span>
+      </p>
+      <p class="p-4 text-xl">희망 수익률 : <span th:text="${memberTraitsDto.expRtn} + '% 이상'" class="text-xl text-bold"></span>
+      </p>
+      <p class="p-4 text-xl">관심업종 :
+        <span th:each="secNm, iterStat : ${memberTraitsDto.intSecNm}" th:text="${secNm + (!iterStat.last ? ', ' : '')}"
+          class="text-xl text-bold"></span>
+      </p>
+      <div class="flex-1 w-full flex justify-end items-end">
+        <a th:href="@{/}"
+          class="bg-blue-500 text-white text-center p-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
+          검사 결과 수정
+        </a>
+        <a th:href="@{/}"
+          class="bg-blue-500 text-white text-center p-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
+          초기화면
+        </a>
+        <a th:href="@{/recstk}" 
+          class="bg-blue-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
+          종목 추천 받기
+        </a>
+      </div>
+    </div>
+  </th:block>
+
+</body>
+
+</html>
