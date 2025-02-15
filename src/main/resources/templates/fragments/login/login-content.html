@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="login-content">
+    <form action="" method="POST" , th:object="${loginForm}" class="h-full">
+      <div id="login-container" class="h-full flex flex-col justify-center items-center space-y-6">
+        <!-- 로그인 에러 메시지 출력 -->
+        <div th:if="${nonLoginError}" class="mt-2 alert alert-danger flex justify-center">
+          <span th:text="${nonLoginError}" class="text-center text-red-400 font-bold"></span>
+        </div>
+        <div id="insert-id" class="flex flex-col">
+          <label for="memberId" class="my-2 text-xs font-bold">아이디</label>
+          <input type="text" id="memberId" name="memberId" class="border p-2 h-8 w-80" th:field="*{memberId}" required>
+        </div>
+        <div id="insert-pw" class="flex flex-col">
+          <label for="pw" class="my-2 text-xs font-bold">비밀번호</label>
+          <input type="password" id="pw" name="pw" class="border p-2 h-8 w-80" th:field="*{pw}" required>
+        </div>
+        <div id="login-sub-menu" class="mb-4 flex flex-col items-center space-y-2">
+          <div id="search-member-info" class="my-2 flex justify-center">
+            <span id="search-id" class="mx-1 text-xs font-bold">아이디 찾기</span>
+            <span class="mx-1 text-xs font-bold">|</span>
+            <span id="search-pw" class="mx-1 text-xs font-bold">비밀번호 찾기</span>
+          </div>
+          <div id="login-button">
+            <button
+              class="w-48 h-8 text-center text-sm font-bold bg-gray-200 rounded border border-1 cursor-pointer">로그인
+            </button>
+          </div>
+          <div>
+            <span class="mx-1 text-xs font-bold">아직 회원이 아니신가요?</span>
+          </div>
+          <div id="join-button" class="w-48 h-8 bg-gray-200 rounded border border-1">
+            <a th:href="@{/register}" class="w-48 h-8 flex justify-center items-center">
+              <span class="text-sm font-bold">회원가입</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </th:block>
+</body>
+
+</html>

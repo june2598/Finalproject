@@ -10,15 +10,6 @@
   <title>Title</title>
 </head>
 <body class="bg-gray-200">
-<!-- 로그인 에러 메시지 출력 -->
-<div th:if="${nonLoginError}" class="alert alert-danger">
-  <span th:text="${nonLoginError}"></span>
-</div>
-<!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
-<div th:if="${isExistTraitError}" class="alert alert-warning">
-  <span th:text="${isExistTraitError}"></span>
-</div>
-
 <div class="container mx-auto">
   <div class="grid grid-cols-10">
     <!-- 헤더 영역 -->
