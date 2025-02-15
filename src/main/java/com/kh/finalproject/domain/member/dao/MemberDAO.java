@@ -12,8 +12,10 @@ public interface MemberDAO {
   //회원 존재 유무
   boolean isExist(String memberId);
 
-
   //회원 조회
   Optional<Member> findByMemberSeq(Long memberSeq);
   Optional<Member> findByMemberId(String memberId);
+
+  // 회원 id 찾기
+  Optional<String> findmemberIdByEmail(String email);
 }

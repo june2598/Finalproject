@@ -32,4 +32,10 @@ public class EmailAuthDAOImpl implements EmailAuthDAO {
     entityManager.persist(authCode);
 
   }
+
+  @Override
+  public String findPwByEmail(String email) {
+
+    return "";
+  }
 }

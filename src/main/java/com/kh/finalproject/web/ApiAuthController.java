@@ -28,20 +28,7 @@ public class ApiAuthController {
   @Autowired
   private MemberSVC memberSVC;
 
-//  @GetMapping ("/check-member-id")
-//  public Map<String, String> checkMemberId(@RequestParam(name = "memberId") String memberId) {
-//    System.out.println("Received memberId: " + memberId); // 로그 추가
-//    boolean isMember = memberSVC.isMember(memberId);
-//
-//    Map<String, String> response = new HashMap<>();
-//    if (isMember) {
-//      response.put("message", "이미 사용 중인 아이디입니다."); // 중복된 아이디 메시지
-//    } else {
-//      response.put("message", "사용 가능한 아이디입니다."); // 사용 가능한 아이디 메시지
-//    }
-//    return response;
-//  }
-
+  // 아이디 중복 검사 요청
   @PostMapping ("/check-member-id")
   public Map<String, String> checkMemberId(@RequestBody CheckMemberIdDto checkMemberIdDto) {
 
@@ -58,6 +45,7 @@ public class ApiAuthController {
     return response;
   }
 
+  // 회원 가입
   @PostMapping("/register")
   public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody JoinForm joinForm,
                          BindingResult bindingResult) {
@@ -110,7 +98,7 @@ public class ApiAuthController {
     }
   }
 
-  // 이메일 전송 요청
+  // 인증 이메일 전송 요청
   @PostMapping("/send-verification-email")
   public ResponseEntity<Map<String, String>> sendAuthenticationEmail(@RequestBody EmailAuthDto emailAuthDto) {
     emailAuthSVC.sendVerificationEmail(emailAuthDto.getEmail());

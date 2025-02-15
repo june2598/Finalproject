@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-  <title>로그인</title>
+  <title>회원 정보 조회 이메일 인증</title>
 </head>
 <body class="bg-gray-200">
   <div class="container mx-auto">
@@ -20,18 +20,16 @@
       <div th:replace="~{fragments/nav :: nav}"></div>
   
       <!-- Main 영역 -->
-      <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
-      <div class="col-span-6 h-full bg-white text-black flex flex-col justify-center items-center">
-        <div th:replace="~{fragments/main-header :: main-header(title='로그인')}"></div>
-        <div th:replace="~{fragments/login/login-content :: login-content}"></div>
+      <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-6 h-full min-h-[65vh] bg-white text-black flex flex-col justify-center items-center">
+        <div th:replace="~{fragments/main-header :: main-header(title='마이페이지')}"></div>
+        <div th:replace="~{fragments/member/infoindex-content :: infoindex-content}"></div>
       </div>
-      <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
+      <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
       <!-- footer 영역-->
       <div th:replace="~{fragments/footer :: footer}"></div>
     </div>
   </div>
   
-
-
 </body>
 </html>

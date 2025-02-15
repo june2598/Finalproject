@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,40 +26,40 @@ public class LoginController {
   private final MemberDAO memberDAO;
   private final PropensityTestDAO propensityTestDAO;
 
-  // 로그인 GET요청
-  @GetMapping("/login")
-  public String loginForm(Model model) {
-    model.addAttribute("loginForm", new LoginForm());
-    return "/login/loginForm";
-  }
-
   // 로그인 POST요청
   @PostMapping("/login")
   public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request) {
-    log.info("loginForm={}", loginForm);
+    log.info("로그인 요청: {}", loginForm);
 
-    //회원 존재 유무
+    // 회원 존재 유무
     if (!memberDAO.isExist(loginForm.getMemberId())) {
       bindingResult.rejectValue("memberId", "invalidMember");
+      log.warn("존재하지 않는 회원 ID: {}", loginForm.getMemberId());
       return "/login/loginForm";
     }
 
-    //비밀번호 일치 여부
+    // 비밀번호 일치 여부
     Optional<Member> optionalMember = memberDAO.findByMemberId(loginForm.getMemberId());
-    Member loginMember = optionalMember.get();
-    log.info("loginMember={}", loginMember);
+    if (optionalMember.isEmpty()) {
+      bindingResult.rejectValue("memberId", "invalidMember");
+      log.warn("회원 정보를 찾을 수 없습니다: {}", loginForm.getMemberId());
+      return "/login/loginForm";
+    }
 
+    Member loginMember = optionalMember.get();
+    log.info("로그인 시도한 회원 정보: {}", loginMember);
+    log.info("입력된 비밀번호: {}", loginForm.getPw());
+    log.info("저장된 해싱된 비밀번호: {}", loginMember.getPw());
+
+    // 입력된 비밀번호와 비밀번호 비교
     if (!loginForm.getPw().equals(loginMember.getPw())) {
       bindingResult.rejectValue("pw", "invalidMember");
+      log.warn("비밀번호 불일치: {}", loginForm.getMemberId());
       return "/login/loginForm";
     }
 
-    //로그인 세션 변경
-
-    //세션이 존재하면 해당 세션을 가져오고 없으면 신규 생성
-
+    // 로그인 세션 변경
     HttpSession session = request.getSession(true);
-
     LoginMember loginOkMember = new LoginMember(
         loginMember.getMemberSeq(),
         loginMember.getMemberId(),
@@ -69,12 +68,11 @@ public class LoginController {
     );
 
     session.setAttribute("loginOkMember", loginOkMember);
-
     log.info("세션에 저장된 회원 정보: {}", session.getAttribute("loginOkMember"));
 
     // 성향 정보 저장
-    Long memberSeq = loginMember.getMemberSeq(); // 로그인한 회원의 시퀀스
-    storeMemberTraitsInSession(request, memberSeq); // 성향 정보를 세션에 저장하는 메서드 호출
+    Long memberSeq = loginMember.getMemberSeq();
+    storeMemberTraitsInSession(request, memberSeq);
 
     return "redirect:/";
   }

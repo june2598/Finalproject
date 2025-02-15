@@ -24,7 +24,7 @@
         <span th:each="secNm, iterStat : ${memberTraitsDto.intSecNm}" th:text="${secNm + (!iterStat.last ? ', ' : '')}"
           class="text-xl text-bold"></span>
       </p>
-      <div class="flex-1 w-full flex justify-end items-end">
+      <div class="p-2 flex-1 w-full flex justify-end items-end">
         <a th:href="@{/}"
           class="bg-blue-500 text-white text-center p-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
           검사 결과 수정

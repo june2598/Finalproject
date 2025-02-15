@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="memberinfo-content">
+    <div id="member-info" class="h-full flex flex-col">
+      <form id="registerForm" method="POST" th:object="${memberInfo}" 
+            class="p-4 h-full w-full flex flex-col space-y-2">
+        <div id="info-container" class="flex-4">
+          <div id="id-input" class="flex flex-col">
+            <label for="memberId" class="my-2 text-xs font-bold">아이디</label>
+            <input type="text" th:placeholder="${memberInfo.memberId}" id="memberId" name="memberId" class="border p-2 h-10 w-80" disabled required>
+          </div>
+          <div id="pw-input" class="flex flex-col">
+            <label for="pw" class="my-2 text-xs font-bold">비밀번호*</label>
+            <input type="password" th:placeholder="${memberInfo.pw}" id="pw" name="pw" class="border p-2 h-10 w-80" disabled required>
+
+          </div>
+          <div id="tel-input" class="flex flex-col">
+            <label for="tel" class="my-2 text-xs font-bold">전화번호*</label>
+            <input type="text" th:placeholder="${memberInfo.tel}" id="tel" name="tel" class="border p-2 h-10 w-80" disabled required>
+          </div>
+          <div id="email-input" class="flex flex-col">
+            <label for="email" class="my-2 text-xs font-bold">이메일*</label>
+            <input type="email" th:placeholder="${memberInfo.email}" id="email" name="email" class="border p-2 h-10 w-80" disabled required>
+          </div>
+        </div>
+        <div id="button-wrap" class="flex-1">
+          <button type="submit"
+                  class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            회원 정보 수정
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </th:block>
+
+
+</body>
+
+</html>

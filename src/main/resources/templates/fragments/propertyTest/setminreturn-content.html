@@ -16,19 +16,19 @@
       <p class="px-4 my-6 text-xl">선택한 위험도 : <span th:text="${memberTraitsDto.memberRisk} + '단계'" class="text-2xl text-bold"></span></p> <!-- 위험도 표시 -->
       <p class="px-4 my-6 text-xl">최대 희망 수익률 : <span th:text="${maxRtn} + '%'" class="text-2xl text-bold"></span></p> <!-- 위험도 표시 -->
     </div>
-    <form th:action="@{/propensity-test/min-return}" method="POST" class="mt-4 p-2 w-full flex flex-5 flex-col">
-      <div>
+    <form th:action="@{/propensity-test/min-return}" method="POST" class="mt-4 w-full flex flex-5 flex-col">
+      <div class="mb-6">
         <label for="expRtn" class="px-4 text-xl">희망 수익률 입력:</label>
         <input type="number" id="expRtn" name="expRtn" step="0.01" required class="p-2 border-2 rounded border-black">
         <span class="px-2 text-xl">% 이상</span>
       </div>
-      <div class="flex-1 w-full flex justify-end items-end">
+      <div class="p-2 mt-6 flex-1 w-full flex justify-end items-end">
         <a th:href="@{/}"
           class="bg-gray-300 text-black text-center px-4 py-2 rounded mr-4 w-32 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
           초기화면
         </a>
         <button type="submit"
-          class="bg-blue-500 text-white text-center p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer" >
+          class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer" >
           마침
         </button>
       </div>

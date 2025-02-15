@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="infoindex-content">
+    <form id="registerForm" method="POST" class="h-full p-4 w-full flex-2 flex flex-col items-center justify-center space-y-2">
+      <div class="mb-6">
+        <span class="text-lg font-bold">회원 정보를 조회 하시려면 비밀번호를 한번 더 입력해주세요.</span>
+      </div>
+      <div>
+        <div id="pw-input" class="my-6 flex flex-col">
+          <label for="pw" class="my-2 text-xs font-bold">비밀번호*</label>
+          <input type="password" id="pw" name="pw" class="border p-2 h-10 w-80" required>
+        </div>
+      </div>
+      <div>
+        <button type="submit"
+          class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+          회원 정보 조회
+        </button>
+      </div>
+    </form>
+  </th:block>
+</body>
+
+</html>

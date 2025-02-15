@@ -7,4 +7,6 @@ public interface EmailAuthDAO {
   AuthCode findByEmail(String email);
 
   void save(AuthCode authCode);
+
+  String findPwByEmail(String email);
 }

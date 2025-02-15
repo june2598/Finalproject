@@ -12,7 +12,7 @@
     <h4 class="text-2xl p-4 flex items-center">감당 위험 단계 설정</h4>
   </div>
   <form action="" method="POST" th:object="${memberTraitsDto}" class="flex-5 flex flex-col justify-between">
-    <div class="bg-white text-black w-full flex flex-3">
+    <div class="mb-6 bg-white text-black w-full flex flex-3">
       <div class="flex-1 flex flex-col">
         <label for="risk" class="text-center text-xl font-bold">위험도 1단계</label>
         <input type="radio" th:field="*{memberRisk}" value="1" id="risk1" name="memberRisk"
@@ -35,7 +35,7 @@
         <p class="px-4 mt-3">투자 리스크가 큰 대신 선택에 따라 매우 높은 수익률을 기대할 수 있습니다.</p>
       </div>
     </div>
-    <div class="flex-1 w-full flex justify-end items-center">
+    <div class="flex-1 w-full mt-6 p-2 flex justify-end items-center">
       <a th:href="@{/propensity-test/info}"
         class="bg-gray-300 text-black px-4 py-2 text-center w-32 mr-4 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
         이전

@@ -22,8 +22,10 @@ public class MemberDAOImpl implements MemberDAO {
 
   private final NamedParameterJdbcTemplate template;
 
+
   @Override
   public Member insertMember(Member member) {
+
     StringBuffer sql = new StringBuffer();
     sql.append("INSERT INTO MEMBER (MEMBER_SEQ, MEMBER_ID, PW, TEL, EMAIL) ");
     sql.append("VALUES (MEMBER_SEQ.NEXTVAL, :memberId, :pw, :tel, :email) ");
@@ -94,6 +96,22 @@ public class MemberDAOImpl implements MemberDAO {
           sql.toString(), param, BeanPropertyRowMapper.newInstance(Member.class));
 
       return Optional.of(member);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<String> findmemberIdByEmail(String email) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(" select member_id ");
+    sql.append(" from member ");
+    sql.append(" where email =  :email ");
+
+    Map<String, String> param = Map.of("email", email);
+    try{
+      Member member = template.queryForObject(sql.toString(), param, BeanPropertyRowMapper.newInstance(Member.class));
+      return Optional.ofNullable(member != null ? member.getMemberId() : null);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
