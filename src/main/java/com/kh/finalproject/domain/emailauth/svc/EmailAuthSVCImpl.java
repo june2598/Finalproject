@@ -21,7 +21,6 @@ public class EmailAuthSVCImpl implements EmailAuthSVC {
   private EmailAuthDAO emailauthDAO;
 
   @Override
-
   @Transactional
   public void sendVerificationEmail(String email) {
     String code = generateAuthCode();
@@ -53,7 +52,13 @@ public class EmailAuthSVCImpl implements EmailAuthSVC {
     return false;
   }
 
+
+
+
+
   private String generateAuthCode() {
     return String.valueOf(new Random().nextInt(999999));
   }
+
+
 }

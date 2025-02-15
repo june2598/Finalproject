@@ -1,11 +1,11 @@
 package com.kh.finalproject.web;
 
-import com.kh.finalproject.domain.dto.CheckMemberIdDto;
-import com.kh.finalproject.domain.dto.SearchMemberIdDto;
+import com.kh.finalproject.domain.dto.SearchMemberDto;
 import com.kh.finalproject.domain.emailauth.svc.EmailAuthSVC;
 import com.kh.finalproject.domain.member.svc.MemberSVC;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,10 +29,10 @@ public class ApiSearchInfoController {
   private MemberSVC memberSVC;
 
   @PostMapping ("/search-id")
-  public Map<String, String> searchMemberId(@RequestBody SearchMemberIdDto searchMemberIdDto, Model model) {
+  public Map<String, String> searchMemberId(@RequestBody SearchMemberDto searchMemberDto, Model model) {
 
     Map<String, String> response = new HashMap<>();
-    String email = searchMemberIdDto.getEmail();
+    String email = searchMemberDto.getEmail();
 
     // 이메일을 입력 안하고 요청했을때 처리
     if (email == null || email.isEmpty()) {
@@ -55,4 +55,14 @@ public class ApiSearchInfoController {
     return response;
   }
 
+  @PostMapping("/search-pw")
+  public ResponseEntity<Map<String, String>> sendFindPwToEmail(@RequestBody SearchMemberDto searchMemberDto) {
+    log.info("searchMemberDto={}", searchMemberDto);
+    String email = searchMemberDto.getEmail();;
+    String memberId = searchMemberDto.getMemberId();
+    memberSVC.sendFindPwToEmail(email,memberId);
+    Map<String, String> response = new HashMap<>();
+    response.put("message", "가입하신 이메일로 비밀번호가 전송되었습니다.");
+    return ResponseEntity.ok(response);
+  }
 }

@@ -5,7 +5,11 @@ import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.member.dao.MemberDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -13,6 +17,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberSVCImpl implements MemberSVC{
+
+  @Autowired
+  private JavaMailSender mailSender;
+
   private final MemberDAO memberDAO;
   private final EmailAuthSVC emailAuthSVC;
 
@@ -56,4 +64,23 @@ public class MemberSVCImpl implements MemberSVC{
   public Optional<String> findMemberIdByEmail(String email) {
     return memberDAO.findMemberIdByEmail(email);
   }
+
+  @Override
+  @Transactional
+  public void sendFindPwToEmail(String email, String memberId) {
+
+    Optional<String> optionalPw = memberDAO.findPw(email,memberId);
+
+    if (optionalPw.isPresent()) {
+      String pw = optionalPw.get();
+      SimpleMailMessage message = new SimpleMailMessage();
+      message.setTo(email);
+      message.setSubject("회원님의 비밀번호");
+      message.setText("비밀번호: " + pw);
+      mailSender.send(message);
+    } else {
+      log.warn("비밀번호를 찾을수 업음, 예상치 못한 오류");
+    }
+  }
+
 }

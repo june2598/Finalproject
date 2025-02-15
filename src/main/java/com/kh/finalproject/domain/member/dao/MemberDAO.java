@@ -18,4 +18,7 @@ public interface MemberDAO {
 
   // 회원 id 찾기
   Optional<String> findMemberIdByEmail(String email);
+
+  // 회원 비밀번호 찾기
+  Optional<String> findPw(String email, String memberId);
 }

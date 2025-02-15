@@ -23,4 +23,6 @@ public interface MemberSVC {
 
   // 이메일로 회원 아이디 찾기
   Optional<String> findMemberIdByEmail(String email);
+
+  void sendFindPwToEmail(String email, String memberId);
 }

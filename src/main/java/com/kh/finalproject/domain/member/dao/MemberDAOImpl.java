@@ -116,4 +116,21 @@ public class MemberDAOImpl implements MemberDAO {
       return Optional.empty();
     }
   }
+
+  @Override
+  public Optional<String> findPw(String email, String memberId) {
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" SELECT PW ");
+    sql.append(" FROM MEMBER ");
+    sql.append(" WHERE MEMBER_ID = :memberId AND EMAIL = :email ");
+
+    Map<String, String> param = Map.of("email", email, "memberId", memberId);
+    try{
+      Member member = template.queryForObject(sql.toString(), param, BeanPropertyRowMapper.newInstance(Member.class));
+      return Optional.ofNullable(member != null ? member.getPw() : null);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
 }
