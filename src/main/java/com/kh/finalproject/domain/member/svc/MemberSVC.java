@@ -20,4 +20,7 @@ public interface MemberSVC {
   //회원 조회
   Optional<Member> findByMemberSeq(Long memberSeq);
   Optional<Member> findByMemberId(String memberId);
+
+  // 이메일로 회원 아이디 찾기
+  Optional<String> findMemberIdByEmail(String email);
 }

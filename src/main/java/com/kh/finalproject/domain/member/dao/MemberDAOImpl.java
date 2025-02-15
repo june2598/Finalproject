@@ -102,7 +102,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   @Override
-  public Optional<String> findmemberIdByEmail(String email) {
+  public Optional<String> findMemberIdByEmail(String email) {
     StringBuffer sql = new StringBuffer();
     sql.append(" select member_id ");
     sql.append(" from member ");

@@ -51,4 +51,9 @@ public class MemberSVCImpl implements MemberSVC{
   public boolean isValidPassword(String password) {
     return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}:<>?])[A-Za-z\\d!@#$%^&*()_+{}:<>?]{8,15}$");
   }
+
+  @Override
+  public Optional<String> findMemberIdByEmail(String email) {
+    return memberDAO.findMemberIdByEmail(email);
+  }
 }

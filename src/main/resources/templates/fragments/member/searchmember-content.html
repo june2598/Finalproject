@@ -6,56 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
 </head>
-<script>
-  document.getElementById('searchId').addEventListener('click',async () => {
-    const inputEmail = document.getElementById('searchId').value;
 
-    console.log('입력한 이메일:', inputEmail);
-    try{
-      const response = await ajax.post('',{
-        email: inputEmail
-      });
-      console.log('서버 응답:', response);
-      document.getElementById('message').innerText = response.message;
-    } catch (error) {
-      console.error('서버 응답 처리중 오류가 발생했습니다.')
-      document.getElementById('message').innerText = '서버 응답을 처리하는 중 오류가 발생했습니다.';
-    }
-  });
-
-</script>
 <body>
-  <th:block th:fragment="infoindex-content">
+  <th:block th:fragment="searchmember-content">
     <div id="searchForm" class="h-full p-4 w-full flex-2 flex flex-col items-center justify-center space-y-2">
-      <div id="search-id-wrap">
+      <div id="search-id-wrap" class="flex flex-col"> 
         <label for="searchId" class="my-2 text-xs font-bold">가입 이메일</label>
-        <input type="text" id="searchId" name="searchId" placeholder="이메일 입력" required>
+        <input type="text" id="searchId" name="searchId" placeholder="이메일 입력" class="border border-1  p-2 h-10 w-80" required>
         <div id="message" class="p-2 text-sm text-red-500"></div>
       </div>
       <div id="searchId-btn">
-        <button type="button" class="text-center bg-gray-300 font-bold border border-1">아이디 찾기</button>
+        <button id="search-id-btn" type="button" class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">아이디 찾기</button>
       </div>
-      <div>
+      <div id="joinedId" class="flex flex-col">
         <label for="joinId" class="my-2 text-xs font-bold">가입 아이디</label>
-        <input type="text" id="joinId" name="searchId" placeholder="아이디 찾기에서 찾은 아이디가 입력됩니다." disabled required>
+        <input type="text" id="joinId" name="searchId" class="border border-1  p-2 h-10 w-80" required>
       </div>
-      <div>
+      <div id="joinedEmail" class="flex flex-col">
         <label for="joinId" class="my-2 text-xs font-bold">가입 이메일</label>
-        <input type="text" id="joinId" name="searchId" placeholder="아이디 찾기에서 찾은 아이디가 입력됩니다." disabled required>
+        <input type="text" id="currentId" name="currentId" class="border border-1  p-2 h-10 w-80" required>
         <div id="send-pw-message" class="p-2 text-sm text-red-500"></div>
       </div>
       <div id="searchPw-btn">
-        <button type="button" class="text-center bg-gray-300 font-bold border border-1">비밀번호 찾기</button>
-      </div>
-      <div>
-        <a th:href="@{/}"
-          class="bg-blue-500 text-white text-center p-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
-          초기화면
-        </a>
+        <button type="button" class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">비밀번호 찾기</button>
       </div>
     </div>
+    <div class="w-full mb-4 flex justify-end items-end">
+      <a th:href="@{/}"
+         class="bg-blue-500 text-white text-center p-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
+        초기화면
+      </a>
+    </div>
   </th:block>
-
 </body>
 
 </html>

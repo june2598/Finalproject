@@ -87,6 +87,13 @@ public class LoginController {
     return "redirect:/";
   }
 
+  @GetMapping("/search-info")
+  public String showSearchMemberInfo() {
+    return "member/searchMember";
+  }
+
+
+
   // 성향 정보를 세션에 저장하는 메서드
   public void storeMemberTraitsInSession(HttpServletRequest request, Long memberSeq) {
     Optional<Member> memberOpt = memberDAO.findByMemberSeq(memberSeq);
@@ -104,4 +111,7 @@ public class LoginController {
       }
     }
   }
+
+
+
 }

@@ -73,4 +73,6 @@ public class IndexController {
     return "member/memberInfoIndex";
 
   }
+
+
 }

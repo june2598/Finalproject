@@ -17,5 +17,5 @@ public interface MemberDAO {
   Optional<Member> findByMemberId(String memberId);
 
   // 회원 id 찾기
-  Optional<String> findmemberIdByEmail(String email);
+  Optional<String> findMemberIdByEmail(String email);
 }
