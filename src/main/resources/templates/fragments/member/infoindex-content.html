@@ -15,8 +15,9 @@
       </div>
       <div>
         <div id="pw-input" class="my-6 flex flex-col">
-          <label for="pw" class="my-2 text-xs font-bold">비밀번호*</label>
+          <label for="pw" class="my-2 text-xs font-bold">비밀번호</label>
           <input type="password" id="pw" name="pw" class="border p-2 h-10 w-80" required>
+          <div th:if="${error}" th:text="${error}" class="text-red-500 text-xs mt-1"></div>
         </div>
       </div>
       <div>

@@ -7,6 +7,7 @@ import com.kh.finalproject.domain.emailauth.svc.EmailAuthSVC;
 import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.member.svc.MemberSVC;
 import com.kh.finalproject.web.form.member.JoinForm;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +110,7 @@ public class ApiAuthController {
 
   // 코드 인증
   @PostMapping("/verify-code")
-  public ResponseEntity<Map<String, Object>> verifyCode(@RequestBody AuthDto authDto) {
+  public ResponseEntity<Map<String, Object>> verifyCode(@RequestBody AuthDto authDto, HttpSession session) {
 
     log.info("authDto = {}", authDto);
     String email = authDto.getEmail();
@@ -119,8 +120,46 @@ public class ApiAuthController {
     Map<String, Object> response = new HashMap<>();
     response.put("success", isValid);
     response.put("message", isValid ? "인증 성공" : "인증 실패");
+
+    if (isValid) {
+      session.setAttribute("emailVerified",true);
+      session.setAttribute("verifiedEmail",email);
+//      session.setAttribute("emailVerifiedAt",System.currentTimeMillis()); // 인증 시간 저장(인증 유지 시간에 제한을 두기 위함)
+    }
+
     return ResponseEntity.ok(response);
   }
+
+  // 인증 여부 확인 (클라이언트 상태 유지용도)
+//  @GetMapping("/check-email-verified")
+//  public ResponseEntity<Map<String, Object>> checkEmailVerified(HttpSession session) {
+//    Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
+//    Long verifiedAt = (Long) session.getAttribute("emailVerifiedAt");
+//    long EXPIRATION_TIME = 5 * 60 * 1000; // 5분 (밀리초 단위)
+//
+//    Map<String, Object> response = new HashMap<>();
+//
+//    if (emailVerified != null && emailVerified && verifiedAt != null) {
+//      long elapsedTime = System.currentTimeMillis() - verifiedAt;
+//
+//      if (elapsedTime < EXPIRATION_TIME) {
+//        response.put("emailVerified", true);
+//        response.put("verifiedEmail", session.getAttribute("verifiedEmail"));
+//      } else {
+//        session.removeAttribute("emailVerified");
+//        session.removeAttribute("verifiedEmail");
+//        session.removeAttribute("emailVerifiedAt");
+//        response.put("emailVerified", false);
+//        response.put("message", "인증 시간이 만료되었습니다. 다시 인증해주세요.");
+//      }
+//    } else {
+//      response.put("emailVerified", false);
+//    }
+//
+//    return ResponseEntity.ok(response);
+//  }
+
+
 
 
 }

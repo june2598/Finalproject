@@ -3,7 +3,9 @@ package com.kh.finalproject.web;
 import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.member.dao.MemberDAO;
+import com.kh.finalproject.domain.member.svc.MemberSVC;
 import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
+import com.kh.finalproject.domain.propertytest.svc.PropensityTestSVC;
 import com.kh.finalproject.web.form.login.LoginForm;
 import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoginController {
 
-  private final MemberDAO memberDAO;
-  private final PropensityTestDAO propensityTestDAO;
+  private final MemberSVC memberSVC;
+  private final PropensityTestSVC propensityTestSVC;
 
   // 로그인 POST요청
   @PostMapping("/login")
@@ -34,7 +36,7 @@ public class LoginController {
     log.info("로그인 요청: {}", loginForm);
 
     // 비밀번호 일치 여부
-    Optional<Member> optionalMember = memberDAO.findByMemberId(loginForm.getMemberId());
+    Optional<Member> optionalMember = memberSVC.findByMemberId(loginForm.getMemberId());
     if (optionalMember.isEmpty()) {
       bindingResult.rejectValue("memberId", "invalidMember");
       log.warn("회원 정보를 찾을 수 없습니다: {}", loginForm.getMemberId());
@@ -93,14 +95,14 @@ public class LoginController {
 
   // 성향 정보를 세션에 저장하는 메서드
   public void storeMemberTraitsInSession(HttpServletRequest request, Long memberSeq) {
-    Optional<Member> memberOpt = memberDAO.findByMemberSeq(memberSeq);
+    Optional<Member> memberOpt = memberSVC.findByMemberSeq(memberSeq);
     HttpSession session = request.getSession();
 
     if (memberOpt.isPresent()) {
       Member member = memberOpt.get();
 
       // 성향 정보를 조회
-      Optional<MemberTraits> memberTraitsOpt = propensityTestDAO.findById(member.getMemberSeq());
+      Optional<MemberTraits> memberTraitsOpt = propensityTestSVC.findById(member.getMemberSeq());
 
       if (memberTraitsOpt.isPresent()) {
         MemberTraits memberTraits = memberTraitsOpt.get();

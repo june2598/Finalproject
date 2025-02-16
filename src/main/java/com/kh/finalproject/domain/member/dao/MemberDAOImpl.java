@@ -140,14 +140,15 @@ public class MemberDAOImpl implements MemberDAO {
     StringBuffer sql = new StringBuffer();
 
     sql.append(" UPDATE MEMBER ");
-    sql.append(" SET PW = :PW, TEL= :TEL, EMAIL=:EMAIL, UDATE=SYSDATE ");
-    sql.append(" WHERE MEMBER_SEQ = :MEMBER_SEQ ");
+    sql.append(" SET PW = :pw, TEL= :tel, EMAIL=:email, UDATE=sysdate ");
+    sql.append(" WHERE MEMBER_SEQ = :memberSeq ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("pw", member.getPw())
         .addValue("tel", member.getTel())
         .addValue("email", member.getEmail())
         .addValue("memberSeq",memberSeq);
+
 
     int rows = template.update(sql.toString(), param);
     return rows;
