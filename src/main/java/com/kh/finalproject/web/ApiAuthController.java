@@ -121,4 +121,6 @@ public class ApiAuthController {
     response.put("message", isValid ? "인증 성공" : "인증 실패");
     return ResponseEntity.ok(response);
   }
+
+
 }

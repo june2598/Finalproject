@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="mypage-content">
+    <!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
+    <div th:if="${isExistTraitError}" th:text="${isExistTraitError}" class="mt-4 font-bold text-red-500 text-xl flex justify-center">
+    </div>
+    <div id="traits-container" class="h-full w-full mt-4 p-2">
+      <p class="px-2 mb-3">
+        <span th:text="${session.loginOkMember.memberId} + '님의 투자 성향은 다음과 같습니다.'" class="px-2 pb-6 text-2xl"></span>
+      </p>
+      <p class="p-4 text-xl font-bold">위험도 :
+        <span th:text="${memberTraits.memberRisk} + ' 단계'" class="text-xl text-bold"></span>
+      </p>
+      <div class="wrap w-full flex flex-col items-center">
+        <div class="risk-info flex justify-between w-[58%]">
+          <div class="font-bold text-green-500">보수적</div>
+          <div class="font-bold text-blue-500">중도적</div>
+          <div class="font-bold text-red-500">공격적</div>
+        </div>
+        <div class="risk-container">
+          <div class="risk-level" data-level="1"></div>
+          <div class="risk-level" data-level="2"></div>
+          <div class="risk-level" data-level="3"></div>
+        </div>
+        <div class="risk-step flex justify-between w-[58%]">
+          <div class="font-bold text-green-500">1단계</div>
+          <div class="font-bold text-blue-500">2단계</div>
+          <div class="font-bold text-red-500">3단계</div>
+        </div>
+      </div>
+      <p class="p-4 font-bold text-xl">관심업종 :
+        <span th:text="${intSecNm}" class="text-xl font-bold">
+        </span>
+      </p>
+      <p class="p-4 font-bold text-xl"> 희망 수익률 :
+        <span th:text="${memberTraits.expRtn} + '% 이상'" class="text-xl text-bold">
+        </span>
+      </p>
+    </div>
+    <div id="modify" class="p-2 mt-6 w-full flex justify-end item-center">
+      <a th:href="@{/}"
+        class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
+        검사 결과 수정
+      </a>
+    </div>
+
+  </th:block>
+
+
+</body>
+
+</html>

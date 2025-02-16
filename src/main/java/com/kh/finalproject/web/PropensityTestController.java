@@ -1,8 +1,9 @@
 package com.kh.finalproject.web;
 
-import com.kh.finalproject.domain.propertytest.svc.PropensityTestSVC;
 import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
+import com.kh.finalproject.domain.propertytest.svc.PropensityTestSVC;
+import com.kh.finalproject.domain.stockrecommendation.svc.StockRecommendationSVC;
 import com.kh.finalproject.web.form.login.LoginMember;
 import com.kh.finalproject.web.form.propensityTest.TraitRecSec;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,20 +31,15 @@ public class PropensityTestController {
   private static final String PROPENSITY_TEST_PREFIX = "/propensity-test/";
   private static final String propensity_test_root = "/propensityTest/";
   private final LoginController loginController;
+  private final StockRecommendationSVC stockRecommendationSVC;
 
   // 위험단계 검사 요청
   @GetMapping(PROPENSITY_TEST_PREFIX + "risks")
   public String showRiskTest(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
-    // 세션에서 로그인된 회원 정보 가져오기
-    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
-
-    // 로그인 중이 아니거나 성향 정보가 이미 존재하는 경우
-    if (loginOkMember == null) {
-      redirectAttributes.addFlashAttribute("nonLoginError", "로그인을 진행해야 합니다.");
-      return "redirect:/login"; // 로그인 페이지로 리다이렉트
-    } else if (memberTraits != null) {
+    if (memberTraits != null) {
       redirectAttributes.addFlashAttribute("isExistTraitError", "이미 성향검사를 진행하셨습니다. 조회나 수정을 이용해주세요.");
       return "redirect:/"; // 홈 페이지로 리다이렉트
     }
@@ -71,16 +67,10 @@ public class PropensityTestController {
   @GetMapping(PROPENSITY_TEST_PREFIX + "sectors")
   public String showInterestSectors(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 
-    // 세션에서 로그인된 회원 정보 가져오기
-    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
-    // 로그인 중이 아니거나 성향 정보가 없는 경우
-    if (loginOkMember == null) {
-      redirectAttributes.addFlashAttribute("nonLoginError", "로그인을 진행해야 합니다.");
-      return "redirect:/login"; // 로그인 페이지로 리다이렉트
-    } else if (memberTraits != null) {
+    if (memberTraits != null) {
       redirectAttributes.addFlashAttribute("isExistTraitError", "이미 성향검사를 진행하셨습니다. 조회나 수정을 이용해주세요.");
       return "redirect:/"; // 홈 페이지로 리다이렉트
     }
@@ -182,20 +172,14 @@ public class PropensityTestController {
   @GetMapping(PROPENSITY_TEST_PREFIX + "min-return")
   public String showMinReturn(RedirectAttributes redirectAttributes, Model model, HttpSession session) {
 
-    // 세션에서 로그인된 회원 정보 가져오기
-    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
-    // 로그인 중이 아니거나 성향 정보가 없는 경우
-    if (loginOkMember == null) {
-      redirectAttributes.addFlashAttribute("nonLoginError", "로그인을 진행해야 합니다.");
-      return "redirect:/login"; // 로그인 페이지로 리다이렉트
-    } else if (memberTraits != null) {
+    // 성향 정보가 없는 경우
+    if (memberTraits != null) {
       redirectAttributes.addFlashAttribute("isExistTraitError", "이미 성향검사를 진행하셨습니다. 조회나 수정을 이용해주세요.");
       return "redirect:/"; // 홈 페이지로 리다이렉트
     }
-
 
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
     model.addAttribute("memberTraitsDto", memberTraitsDto); // 모델에 memberTraits 추가
@@ -217,7 +201,6 @@ public class PropensityTestController {
 
     memberTraits.setIntSec(memberTraitsDto.getIntSec());
     memberTraits.setExpRtn(expRtn);
-
 
     // 세션에서 로그인된 회원 정보 가져오기
     LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
@@ -265,6 +248,26 @@ public class PropensityTestController {
 
 
     return propensity_test_root + "testFinish"; // 결과 페이지 경로
+  }
+
+
+
+  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page")
+  public String showMyTraits(Model model, HttpSession session, HttpServletRequest request,
+                             RedirectAttributes redirectAttributes) {
+    MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+    model.addAttribute("memberTraits",memberTraits);
+
+    // 관심 업종이 있는지 체크
+    if (memberTraits.getIntSec() != null && !memberTraits.getIntSec().isEmpty()) {
+      String intSecNm = stockRecommendationSVC.findIntSecNmByIntSecId(request);
+      model.addAttribute("intSecNm", intSecNm);
+    } else {
+      model.addAttribute("intSecNm", "없음");
+    }
+
+    return propensity_test_root + "myPage";
+
   }
 
 }

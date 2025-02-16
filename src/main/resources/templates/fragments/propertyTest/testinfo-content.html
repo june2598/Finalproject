@@ -9,6 +9,9 @@
 
 <body>
   <th:block th:fragment="testinfo-content">
+    <!-- noTraitsError 메시지를 표시 -->
+    <div th:if="${noTraitsError}" th:text="${noTraitsError}" class="mt-4 font-bold text-red-500 text-xl flex justify-center"></div>
+
     <div class="bg-white text-black flex-5 w-full flex-col items-center">
       <p class="px-2 py-6 text-xl">고객 성향 검사는 고객의 감당 위험단계, 관심 업종, 희망 수익률을 고객으로 부터 제공 받아 고객의 투자성향을 결정하여, 투자 성향에 맞는 종목을 제공하기 위한 검사입니다.</p>
 

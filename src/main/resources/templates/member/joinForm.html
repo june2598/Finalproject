@@ -22,12 +22,12 @@
     <div th:replace="~{fragments/nav :: nav}"></div>
 
     <!-- Main 영역 -->
-    <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
-    <div class="col-span-6 h-full bg-white text-black flex flex-col justify-center items-center">
+    <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
+    <div class="col-span-6 h-full min-h-[65vh] bg-white text-black flex flex-col justify-center items-center">
       <div th:replace="~{fragments/main-header :: main-header(title='회원가입')}"></div>
       <div th:replace="~{fragments/member/join-content :: join-content}"></div>
     </div>
-    <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
+    <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
     <!-- footer 영역-->
     <div th:replace="~{fragments/footer :: footer}"></div>
   </div>

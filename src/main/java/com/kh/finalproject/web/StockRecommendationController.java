@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,13 +28,10 @@ public class StockRecommendationController {
   private final StockRecommendationSVC stockRecommendationSVC;
 
   @GetMapping("/recstk")
-  public String showRecStkPage(Model model, HttpServletRequest request, HttpSession session) {
+  public String showRecStkPage(Model model, HttpServletRequest request, HttpSession session,
+                               RedirectAttributes redirectAttributes) {
     // 세션에서 성향정보 조회
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
-    if (memberTraits == null) {
-      model.addAttribute("error", "Member traits not found in session.");
-      return "error"; // 에러 페이지로 리턴
-    }
 
     // 성향 정보 모델에 추가
     model.addAttribute("memberTraits", memberTraits);

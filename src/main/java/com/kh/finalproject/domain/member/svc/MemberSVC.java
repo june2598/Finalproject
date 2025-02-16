@@ -24,5 +24,9 @@ public interface MemberSVC {
   // 이메일로 회원 아이디 찾기
   Optional<String> findMemberIdByEmail(String email);
 
+  // 가입 이메일로 찾은 비밀번호 전송
   void sendFindPwToEmail(String email, String memberId);
+
+  // 회원 정보 수정
+  int updateById(Long memberSeq, Member member);
 }

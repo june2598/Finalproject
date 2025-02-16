@@ -22,12 +22,15 @@ import java.util.Optional;
 public class MemberController {
 
   private final MemberDAO memberDAO;
+  private final ApiAuthController apiAuthController;
+
 
   // 회원정보 조회 전 비밀번호 인증
   @PostMapping("/pw-auth")
   public String pwAuth(HttpSession session, @RequestParam("pw") String inputPw, Model model) {
     // 세션에서 로그인된 회원 정보 가져오기
     LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+
     // 시퀀스 가져오기
     Long memberSeq = loginOkMember.getMemberSeq();
     // 시퀀스로부터 회원정보
@@ -57,5 +60,12 @@ public class MemberController {
       model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
       return "member/pwAuth"; // 다시 비밀번호 입력 페이지로 이동
     }
+  }
+
+  @GetMapping("/member-info")
+  public String showMemberInfo() {
+
+    return "member/memberInfo";
+
   }
 }

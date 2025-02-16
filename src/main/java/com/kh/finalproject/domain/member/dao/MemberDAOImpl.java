@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -132,5 +133,23 @@ public class MemberDAOImpl implements MemberDAO {
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
+  }
+
+  @Override
+  public int updateById(Long memberSeq, Member member) {
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" UPDATE MEMBER ");
+    sql.append(" SET PW = :PW, TEL= :TEL, EMAIL=:EMAIL, UDATE=SYSDATE ");
+    sql.append(" WHERE MEMBER_SEQ = :MEMBER_SEQ ");
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("pw", member.getPw())
+        .addValue("tel", member.getTel())
+        .addValue("email", member.getEmail())
+        .addValue("memberSeq",memberSeq);
+
+    int rows = template.update(sql.toString(), param);
+    return rows;
   }
 }

@@ -83,4 +83,8 @@ public class MemberSVCImpl implements MemberSVC{
     }
   }
 
+  @Override
+  public int updateById(Long memberSeq, Member member) {
+    return memberDAO.updateById(memberSeq,member);
+  }
 }

@@ -7,39 +7,98 @@
   <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
 </head>
 
+<script>
+  // 회원정보 수정 버튼
+  document.getElementById('request-modify').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+
+    try {
+      const response = await ajax.post('/api/auth/send-verification-email', { email });
+      alert(response.message); // 서버에서 전송된 메시지 표시
+    } catch (error) {
+      console.error('Error parsing JSON response:', error);
+      alert('이메일 전송 중 오류가 발생했습니다.');
+    }
+  });
+
+  // 인증하기 버튼 기능
+  document.getElementById('emailValid').addEventListener('click', async function () {
+    const email = document.getElementById('email').value;
+    const code = document.getElementById('code').value;
+    try {
+      const response = await ajax.post('/api/auth/verify-code', {
+        email: email,
+        code: code
+      });
+      if (response && response.success) {
+        isVerified = true; // 인증 성공
+        alert('인증이 완료되었습니다. 회원정보 수정을 활성화합니다.');
+        document.getElementById('pw').removeAttribute('disabled');
+        document.getElementById('tel').removeAttribute('disabled');
+        document.getElementById('email').removeAttribute('disabled');
+        document.getElementById('request-modify').classList.add('hidden');
+        document.getElementById('modify').removeAttribute('disabled');
+        document.getElementById('modify').classList.remove('hidden');
+      } else {
+        alert('인증 실패: ' + response.message);
+      }
+    } catch (error) {
+      console.error('인증 오류:', error);
+      alert('인증 중 오류가 발생했습니다.');
+    }
+  });
+
+</script>
+
 <body>
   <th:block th:fragment="memberinfo-content">
     <div id="member-info" class="h-full flex flex-col">
-      <form id="registerForm" method="POST" th:object="${memberInfo}" 
-            class="p-4 h-full w-full flex flex-col space-y-2">
+      <form id="registerForm" method="POST" th:object="${memberInfo}" class="p-4 h-full w-full flex flex-col space-y-2">
         <div id="info-container" class="flex-4">
           <div id="id-input" class="flex flex-col">
             <label for="memberId" class="my-2 text-xs font-bold">아이디</label>
-            <input type="text" th:placeholder="${memberInfo.memberId}" id="memberId" name="memberId" class="border p-2 h-10 w-80" disabled required>
+            <input type="text" th:placeholder="${memberInfo.memberId}" id="memberId" name="memberId"
+              class="border p-2 h-10 w-80" disabled required>
           </div>
           <div id="pw-input" class="flex flex-col">
-            <label for="pw" class="my-2 text-xs font-bold">비밀번호*</label>
-            <input type="password" th:placeholder="${memberInfo.pw}" id="pw" name="pw" class="border p-2 h-10 w-80" disabled required>
+            <label for="pw" class="my-2 text-xs font-bold">비밀번호</label>
+            <input type="password" th:placeholder="${memberInfo.pw}" id="pw" name="pw" class="border p-2 h-10 w-80"
+              disabled required>
 
           </div>
           <div id="tel-input" class="flex flex-col">
-            <label for="tel" class="my-2 text-xs font-bold">전화번호*</label>
-            <input type="text" th:placeholder="${memberInfo.tel}" id="tel" name="tel" class="border p-2 h-10 w-80" disabled required>
+            <label for="tel" class="my-2 text-xs font-bold">전화번호</label>
+            <input type="text" th:placeholder="${memberInfo.tel}" id="tel" name="tel" class="border p-2 h-10 w-80"
+              disabled required>
           </div>
           <div id="email-input" class="flex flex-col">
-            <label for="email" class="my-2 text-xs font-bold">이메일*</label>
-            <input type="email" th:placeholder="${memberInfo.email}" id="email" name="email" class="border p-2 h-10 w-80" disabled required>
+            <label for="email" class="my-2 text-xs font-bold">이메일</label>
+            <input type="email" th:placeholder="${memberInfo.email}" id="email" name="email"
+              class="border p-2 h-10 w-80" disabled required>
           </div>
-        </div>
-        <div id="button-wrap" class="flex-1">
-          <button type="submit"
-                  class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-            회원 정보 수정
-          </button>
-        </div>
+
+          <div id="auth-input" class="hidden">
+            <label for="code" class="my-2 text-xs font-bold">인증 코드</label>
+            <div class="flex">
+              <input type="text" id="code" name="code" class="border p-2 h-10 w-80" required>
+              <button type="button" id="emailValid"
+                class="bg-blue-500 text-white ml-4 px-4 w-36 text-center rounded transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+                인증하기
+              </button>
+            </div>
+          </div>
+          <div id="button-wrap" class="flex-1">
+            <button type="button" id="request-modify"
+              class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+              회원 정보 수정
+            </button>
+            <button type="submit" id="modify"
+              class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer hidden" disabled>
+              수정 완료
+            </button>
+          </div>
       </form>
     </div>
-
   </th:block>
 
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -28,22 +29,17 @@ public class LoginController {
 
   // 로그인 POST요청
   @PostMapping("/login")
-  public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request) {
+  public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request,
+                      RedirectAttributes redirectAttributes) {
     log.info("로그인 요청: {}", loginForm);
-
-    // 회원 존재 유무
-    if (!memberDAO.isExist(loginForm.getMemberId())) {
-      bindingResult.rejectValue("memberId", "invalidMember");
-      log.warn("존재하지 않는 회원 ID: {}", loginForm.getMemberId());
-      return "/login/loginForm";
-    }
 
     // 비밀번호 일치 여부
     Optional<Member> optionalMember = memberDAO.findByMemberId(loginForm.getMemberId());
     if (optionalMember.isEmpty()) {
       bindingResult.rejectValue("memberId", "invalidMember");
       log.warn("회원 정보를 찾을 수 없습니다: {}", loginForm.getMemberId());
-      return "/login/loginForm";
+      redirectAttributes.addFlashAttribute("error","존재하지 않는 ID 입니다.");
+      return "redirect:/login";
     }
 
     Member loginMember = optionalMember.get();
@@ -55,7 +51,8 @@ public class LoginController {
     if (!loginForm.getPw().equals(loginMember.getPw())) {
       bindingResult.rejectValue("pw", "invalidMember");
       log.warn("비밀번호 불일치: {}", loginForm.getMemberId());
-      return "/login/loginForm";
+      redirectAttributes.addFlashAttribute("error","비밀번호가 일치하지 않습니다.");
+      return "redirect:/login";
     }
 
     // 로그인 세션 변경

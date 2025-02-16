@@ -21,4 +21,7 @@ public interface MemberDAO {
 
   // 회원 비밀번호 찾기
   Optional<String> findPw(String email, String memberId);
+
+  // 회원 정보 수정
+  int updateById(Long memberSeq, Member member);
 }
