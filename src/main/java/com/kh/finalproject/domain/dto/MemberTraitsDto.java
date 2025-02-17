@@ -23,11 +23,23 @@ public class MemberTraitsDto {
   private double expRtn;         // EXP_RTN 희망 수익률(%)
 
 
-  // 변환 메서드 추가
+  // DTO -> entity
   public MemberTraits toEntity() {
     MemberTraits entity = new MemberTraits();
     entity.setMemberRisk(this.memberRisk);
     entity.setIntSec(this.intSec);
     return entity;
+  }
+
+  // entity -> DTO
+
+  public static MemberTraitsDto fromEntity(MemberTraits entity) {
+    MemberTraitsDto dto = new MemberTraitsDto();
+    dto.setMemberSeq(entity.getMemberSeq());
+    dto.setMemberRisk(entity.getMemberRisk());
+    dto.setExpRtn(entity.getExpRtn());
+    dto.setIntSec(entity.getIntSec());
+
+    return dto;
   }
 }

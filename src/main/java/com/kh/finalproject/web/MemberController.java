@@ -2,18 +2,14 @@ package com.kh.finalproject.web;
 
 import com.kh.finalproject.domain.dto.MemberInfoDto;
 import com.kh.finalproject.domain.entity.Member;
-import com.kh.finalproject.domain.member.dao.MemberDAO;
 import com.kh.finalproject.domain.member.svc.MemberSVC;
 import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -69,71 +65,87 @@ public class MemberController {
       return "redirect:/pw-auth";
     }
 
-    // 세션에서 로그인된 회원 정보 가져오기
-    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+    MemberInfoDto memberInfoDto = getMemberInfoDto(session, model);
 
-    // 시퀀스 가져오기
-    Long memberSeq = loginOkMember.getMemberSeq();
-
-    // 시퀀스로부터 회원정보
-    Optional<Member> memberInfo = memberSVC.findByMemberSeq(memberSeq);
-    if (memberInfo.isEmpty()) {
-      model.addAttribute("error", "회원 정보를 찾을 수 없습니다.");
-      return "redirect:/login";
+    if (memberInfoDto == null) {
+      return "redirect:/login";  // 오류 발생 시 로그인 페이지로 이동
     }
 
-    Member member = memberInfo.get();
-
-    // Member 객체를 MemberInfoDto로 변환
-    MemberInfoDto memberInfoDto = new MemberInfoDto();
-
-    memberInfoDto.setMemberSeq(member.getMemberSeq());
-    memberInfoDto.setMemberId(member.getMemberId());
-    // 비밀번호 마스킹 처리
-    String pwMasked = "*".repeat(member.getPw().length());
-    memberInfoDto.setPw(pwMasked);
-    memberInfoDto.setTel(member.getTel());
-    memberInfoDto.setEmail(member.getEmail());
     model.addAttribute("memberInfoDto", memberInfoDto);
 
     return "member/memberInfo";
 
   }
 
-  @PostMapping("/member-info")
-  public String updateMemberInfo(@ModelAttribute MemberInfoDto memberInfoDto,
-                                 HttpSession session,
-                                 Model model,
-                                 RedirectAttributes redirectAttributes) {
-
-    // 1. 비밀번호 길이 체크 (8~15자)
-    if (memberInfoDto.getPw().length() < 8 || memberInfoDto.getPw().length() > 15) {
-      redirectAttributes.addFlashAttribute("error", "비밀번호는 8자 이상 15자 이하이어야 합니다.");
-      return "redirect:/member-info";
-    }
-
-    // 2. 비밀번호 패턴 체크 (대소문자, 숫자, 특수문자 포함)
-    String pwPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+{}:<>?]).{8,15}$";
-    if (!memberInfoDto.getPw().matches(pwPattern)) {
-      redirectAttributes.addFlashAttribute("error", "비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다.");
-      return "redirect:/member-info";
-    }
+  @GetMapping("/member-info/modify-auth")
+  public String showMemberInfoModifyAuth (HttpSession session, Model model) {
 
     // 세션에서 로그인된 회원 정보 가져오기
     LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+
+    String email = loginOkMember.getEmail();
+    model.addAttribute("email", email);
+
+    return "member/memberInfoModifyAuth";
+
+
+  }
+
+  // 성향 수정 화면
+  @GetMapping("/member-info/modify")
+  public String showMemberInfoModifyForm (HttpSession session, Model model) {
+
+    MemberInfoDto memberInfoDto = getMemberInfoDto(session, model);
+    if (memberInfoDto == null) {
+      return "redirect:/login";  // 오류 발생 시 로그인 페이지로 이동
+    }
+
+    model.addAttribute("memberInfoDto", memberInfoDto);
+    return "member/memberInfoModify";
+  }
+
+
+
+  // 회원 정보 조회 로직을 별도 메서드로 분리
+  private MemberInfoDto getMemberInfoDto(HttpSession session, Model model) {
+
+    // 세션에서 로그인된 회원 정보 가져오기
+    LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+    if (loginOkMember == null) {
+      model.addAttribute("error", "로그인이 필요합니다.");
+      return null;  // 로그인 정보가 없으면 null 반환
+    }
+
+    // 시퀀스 가져오기
     Long memberSeq = loginOkMember.getMemberSeq();
 
-    // 회원 정보 업데이트 로직
-    Optional<Member> existingMember = memberSVC.findByMemberSeq(memberSeq);
-    if (existingMember.isPresent()) {
-      Member member = existingMember.get();
-      member.setPw(memberInfoDto.getPw());
-      member.setTel(memberInfoDto.getTel());
-      member.setEmail(memberInfoDto.getEmail());
-
-      memberSVC.updateById(memberSeq, member);
-      redirectAttributes.addFlashAttribute("success", "회원 정보가 성공적으로 수정되었습니다.");
+    // 시퀀스로부터 회원정보 조회
+    Optional<Member> memberInfo = memberSVC.findByMemberSeq(memberSeq);
+    if (memberInfo.isEmpty()) {
+      model.addAttribute("error", "회원 정보를 찾을 수 없습니다.");
+      return null;
     }
-    return "redirect:/member-info"; // 수정 후 정보 페이지로 리다이렉트
+
+    Member member = memberInfo.get();
+
+    // Member 객체를 MemberInfoDto로 변환
+    MemberInfoDto memberInfoDto = new MemberInfoDto();
+    memberInfoDto.setMemberSeq(member.getMemberSeq());
+    memberInfoDto.setMemberId(member.getMemberId());
+
+    // 비밀번호 마스킹 처리
+    String pwMasked = "*".repeat(member.getPw().length());
+    memberInfoDto.setPw(pwMasked);
+
+    memberInfoDto.setTel(member.getTel());
+    memberInfoDto.setEmail(member.getEmail());
+
+    return memberInfoDto;
   }
+
+
+
+
+
+
 }

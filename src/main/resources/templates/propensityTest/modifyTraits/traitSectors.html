@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-  <title>관심 업종 설정</title>
+  <script th:src="@{/js/common.js}" defer></script>
+  <script th:src="@{/js/modifyTraits/sectors.js}" defer></script>
+
+  <title>Title</title>
 </head>
 <body class="bg-gray-200 flex flex-col min-h-screen">
   <!-- 로그인 에러 메시지 출력 -->
@@ -30,8 +33,8 @@
       <!-- Main 영역 -->
       <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div> <!-- 공간 확보를 위해 h-full 적용해 footer쪽 영역을 확보-->
       <div class="col-span-6 h-full bg-white text-black flex flex-col">
-        <div th:replace="~{fragments/main-header :: main-header(title='관심 업종 선택')}"></div>
-        <div th:replace="~{fragments/propensityTest/interestsectors-content :: interestsectors-content}"></div>
+        <div th:replace="~{fragments/main-header :: main-header(title='관심 업종 수정')}"></div>
+        <div th:replace="~{fragments/propensityTest/modifyTraits/sectors :: sectors}"></div>
       </div>
       <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
       <!-- footer 영역-->

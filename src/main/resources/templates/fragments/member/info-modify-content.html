@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+
+<body>
+  <th:block th:fragment="info-modify-content">
+    <div id="member-modify-info" class="h-full flex flex-col">
+      <div id="registerForm" th:object="${memberInfoDto}" class="p-4 h-full w-full flex flex-col space-y-2">
+        <!-- 수정완료 메시지 출력 -->
+        <div th:if="${success}" th:text="${success}" class="mt-4 font-bold text-red-500 text-xl flex justify-center">
+        </div>
+
+        <div id="info-container" class="flex-4">
+          <!-- 회원 ID 숨김 -->
+          <input type="hidden" th:field="*{memberId}" id="memberId">
+
+          <!-- 비밀번호 영역 -->
+          <div id="pw-input" class="flex flex-col">
+            <label for="pw" class="my-2 text-xs font-bold">비밀번호</label>
+            <input type="password" th:field="*{pw}" id="pw" name="pw" class="border p-2 h-10 w-80" required>
+            <div id="pwError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden">
+            </div>
+          </div>
+          <!-- 전화 번호 영역 -->
+          <div id="tel-input" class="flex flex-col">
+            <label for="tel" class="my-2 text-xs font-bold">전화번호</label>
+            <input type="text" th:field="*{tel}" id="tel" name="tel" class="border p-2 h-10 w-80" required>
+            <div id="telError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden">
+            </div>
+          </div>
+          <!-- 이메일 영역 -->
+          <div id="email-input" class="flex flex-col">
+            <label for="email" class="my-2 text-xs font-bold">이메일</label>
+            <div class="flex">
+              <input type="email" th:field="*{email}" id="email" name="email" class="border p-2 h-10 w-80" required>
+              </div>
+              <button type="button" id="sendVerificationEmail"
+                class="bg-blue-500 text-white ml-4 px-4 w-36 text-center rounded transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+                인증 코드 전송
+              </button>
+            </div>
+            <div id="emailError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden"></div>
+            <div id="emailSuccessMessage" class="hidden font-bold text-green-500 text-sm mt-2"></div>
+          </div>
+          <div class="flex flex-col w-full">
+            <label for="code" class="my-2 text-xs font-bold">인증 코드</label>
+            <div class="flex">
+              <input type="text" id="code" name="code" class="border p-2 h-10 w-80" required>
+              <button type="button" id="emailValid"
+                      class="bg-blue-500 text-white ml-4 px-4 w-36 text-center rounded transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+                인증하기
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- 버튼 영역 -->
+        <div id="button-wrap" class="flex-1">
+          <button type="button" id="request-modify"
+            class="bg-gray-500 text-black my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"
+            disabled>
+            수정 완료
+          </button>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
+
+</body>
+
+</html>

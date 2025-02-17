@@ -270,6 +270,147 @@ public class PropensityTestController {
 
   }
 
+  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify")
+  public String modifyMyTraits(Model model, HttpSession session, HttpServletRequest request) {
+
+    // 1️⃣ DTO가 있으면 가져오기, 없으면 엔터티에서 변환
+    MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+
+    if (memberTraitsDto == null) {
+      MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+
+      if (memberTraits == null) {
+        log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+        return "redirect:/error-page"; // 오류 페이지 또는 로그인 페이지로 리다이렉트
+      }
+      memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
+      session.setAttribute("memberTraitsDto", memberTraitsDto); // DTO도 갱신
+    }
+
+    // 관심 업종이 있는지 체크
+    if (memberTraitsDto.getIntSec() != null && !memberTraitsDto.getIntSec().isEmpty()) {
+      String intSecNm = stockRecommendationSVC.findIntSecNmByIntSecId(request);
+      model.addAttribute("intSecNm", intSecNm);
+    } else {
+      model.addAttribute("intSecNm", "없음");
+    }
+
+//    // 관심 업종 이름을 세션에서 가져오기
+//    String intSecNm = (String) session.getAttribute("intSecNm");
+//    if (intSecNm == null) {
+//      intSecNm = "없음"; // 세션에 값이 없으면 기본값 설정
+//    }
+//    model.addAttribute("intSecNm", intSecNm);
+
+
+    // 모델에 추가
+    model.addAttribute("memberTraitsDto", memberTraitsDto);
+
+    return propensity_test_root + "modifyTraits";
+
+  }
+
+  // 위험도 수정 화면
+  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify/risk")
+  public String modifyMyRisk(Model model, HttpSession session) {
+
+    MemberTraitsDto memberTraitsDto;
+
+    // 🔹 세션에서 `memberTraitsDto` 확인 (이미 수정 중인 경우)
+    if (session.getAttribute("memberTraitsDto") != null) {
+      memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+      log.info("🔄 수정 진행 중, DTO 사용");
+    } else {
+      // 처음 수정 화면에 진입한 경우 → `memberTraits` 가져와 DTO 변환
+      MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+
+      if (memberTraits == null) {
+        log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+        return "redirect:/error-page"; // 오류 페이지 또는 로그인 페이지로 리다이렉트
+      }
+
+      // DTO 변환 및 세션에 저장
+      memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
+      session.setAttribute("memberTraitsDto", memberTraitsDto);
+      log.info("📌 엔터티에서 DTO 변환하여 세션 저장");
+    }
+
+    // 🔹 현재 위험도 가져오기
+    int currentRisk = memberTraitsDto.getMemberRisk();
+    log.info("📌 현재 위험도 단계: {}", currentRisk);
+
+    model.addAttribute("currentRisk", currentRisk);
+    model.addAttribute("memberTraitsDto", memberTraitsDto);
+
+    return propensity_test_root + "modifyTraits/risk";
+
+  }
+
+  // 관심 업종 수정 화면
+
+  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify/sectors")
+  public String modifyMyTraitSectors(Model model, HttpSession session) {
+
+
+    MemberTraitsDto memberTraitsDto;
+
+    // 🔹 세션에서 가져올 객체 확인 (DTO 우선)
+    if (session.getAttribute("memberTraitsDto") != null) {
+      memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+      log.info("🔄 수정 진행 중, DTO 사용");
+    } else {
+      MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+      if (memberTraits == null) {
+        log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+        return "redirect:/error-page"; // 오류 페이지 또는 로그인 페이지로 리다이렉트
+      }
+      memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
+      log.info("엔터티에서 DTO 변환");
+    }
+
+    // 🔹 관심 업종 데이터 가져오기
+    List<String> currentIntSec = memberTraitsDto.getIntSec();
+    log.info("현재 관심 업종: {}", currentIntSec);
+
+    model.addAttribute("currentIntSec", currentIntSec);
+    model.addAttribute("memberTraitsDto", memberTraitsDto);
+
+    int currentRisk = memberTraitsDto.getMemberRisk();
+    log.info("현재 위험도 단계: {}", currentRisk);
+
+    // 🔹 서비스 계층에서 추천 업종 목록 조회
+    List<TraitRecSec> sectors = propensityTestSVC.listAll(currentRisk);
+
+    // 🔹 시장 구분(MARKET_ID)별로 업종 그룹화
+    Map<Integer, List<TraitRecSec>> groupedSectors = sectors.stream()
+        .collect(Collectors.groupingBy(TraitRecSec::getMarketId));
+
+    // 🔹 시장 이름 매핑 정보 생성
+    Map<Integer, String> marketNames = Map.of(
+        1, "KOSPI",
+        2, "KOSDAQ",
+        3, "ETF"
+    );
+
+    // 🔹 시장별 상위 3개 추천 업종 선정
+    Map<Integer, List<TraitRecSec>> topSectors = new HashMap<>();
+    for (Map.Entry<Integer, List<TraitRecSec>> entry : groupedSectors.entrySet()) {
+      List<TraitRecSec> topThree = entry.getValue().stream()
+          .sorted(Comparator.comparingInt(TraitRecSec::getIsRec).reversed()) // IS_REC 내림차순
+          .limit(3)
+          .collect(Collectors.toList());
+      topSectors.put(entry.getKey(), topThree);
+    }
+
+    // 🔹 모델에 데이터 추가
+    model.addAttribute("groupedSectors", groupedSectors);
+    model.addAttribute("topSectors", topSectors);
+    model.addAttribute("marketNames", marketNames);
+
+    return propensity_test_root + "modifyTraits/traitSectors";
+
+  }
+
 }
 
 
