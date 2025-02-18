@@ -19,7 +19,6 @@ public class StockListDAOImpl implements StockListDAO{
 
   private final NamedParameterJdbcTemplate template;
 
-
   @Override
   public List<StockListDto> getStockList(int marketId, String orderBy, int risk, int offset) {
 

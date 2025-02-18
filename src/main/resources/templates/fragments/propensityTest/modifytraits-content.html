@@ -15,23 +15,23 @@
           class="px-2 pb-6 text-2xl"></span>
       </p>
       <!-- 위험도 구간 -->
-      <p class="p-4 text-xl font-bold">위험도 :
-        <span th:text="${memberTraitsDto.memberRisk} + ' 단계'" class="text-xl text-bold"></span>
+      <div class="p-4 flex flex-wrap items-center space-x-4">
+        <span th:text="'위험도 : ' + ${memberTraitsDto.memberRisk} + ' 단계'" class="text-xl text-xl font-bold"></span>
         <a th:href="@{/propensity-test/my-page/modify/risk}" id="risk-modify-btn"
           class="bg-blue-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-blue-600">
           위험단계 수정
         </a>
-      </p>
+      </div>
       <!-- 관심업종 구간 -->
-      <p class="p-4 font-bold text-xl">관심업종 :
-        <span th:text="${intSecNm}" class="text-xl font-bold"></span>
+      <div class="p-4 flex flex-wrap items-center space-x-4">
+        <span th:text="'관심업종 : ' + ${intSecNm}" class="text-xl font-bold"></span>
         <a th:href="@{/propensity-test/my-page/modify/sectors}" id="trait-sectors-modify-btn"
           class="bg-green-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-green-600">
           관심 업종 수정
         </a>
-      </p>
-      <div id="expReturn" class="p-4 font-bold text-xl"> 희망 수익률 :
-        <span th:text="${memberTraitsDto.expRtn} + '% 이상'" class="text-xl text-bold">
+      </div>
+      <div id="expReturn" class="p-4  flex flex-wrap items-center space-x-4">
+        <span th:text="'희망 수익률 : ' + ${memberTraitsDto.expRtn} + '% 이상'" class="font-bold text-xl">
         </span>
         <a th:href="@{/propensity-test/my-page/modify/exp-return}" id="exp-returns-modify-btn"
           class="bg-yellow-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-yellow-600">
@@ -55,7 +55,7 @@
         수정 취소
       </button>
       <button type="submit" id="update-finish-btn"
-        class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+        class="bg-blue-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
         수정 완료
       </button>
     </div>
