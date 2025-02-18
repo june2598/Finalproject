@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-<body>
 <th:block th:fragment="search">
-  <div class="col-span-2 min-h-[6vh] bg-gray-200 p-4 text-white"></div>
-  <div class="col-span-6 min-h-[6vh] bg-white p-2 flex items-center">
+  <div class="min-h-[6vh] bg-white p-2 flex items-stretch">
     <input type="text" placeholder="종목명 입력"
-           class="flex-grow h-full p-2 mr-2 rounded-l border border-gray-300 flex items-center justify-center text-lg"
-           style="flex-basis:90%;" />
-    <button class="bg-blue-600 text-white rounded h-full text-base" style="flex-basis: 10%;">
+      class="flex-grow p-2 mr-2 rounded-l border border-gray-300 text-lg" />
+    <button class="bg-blue-500 text-white rounded text-base px-4 w-24 transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
       검색
     </button>
   </div>
-  <div class="col-span-2 min-h-[6vh] bg-gray-200 p-4  text-white"></div>
 </th:block>
-</body>
-</html>

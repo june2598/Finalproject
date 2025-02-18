@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-<body>
-  <th:block th:fragment="info-modify-auth-content">
-    <form id="registerForm" method="POST" class="h-full p-4 w-full flex-2 flex flex-col items-center justify-center space-y-2">
+<th:block th:fragment="info-modify-auth-content">
+  <div id="info-modify-auth-container" class="w-full h-full min-h-[65vh] bg-white flex flex-col items-center justify-between">
+    <form id="registerForm" method="POST"
+          class="h-full p-4 w-full flex-1 flex flex-col items-center justify-center space-y-2">
       <div class="mb-6">
         <span class="text-lg font-bold">회원 정보를 수정 하시려면 이메일 인증을 해주세요.</span>
       </div>
@@ -19,7 +13,7 @@
       <div class="flex flex-col">
         <!-- 인증 코드 입력 영역 -->
         <label for="code" class="my-2 text-xl font-bold">인증 코드</label>
-        <div class="flex">
+        <div id="auth-container" class="flex">
           <input type="text" id="code" name="code" class="border p-2 h-10 w-80" required>
           <!-- 인증코드 전송 버튼 -->
           <button type="button" id="request-modify"
@@ -34,14 +28,13 @@
           </button>
         </div>
       </div>
-      <div>
-        <a th:href="@{/member-info/modify}"  id="show-modify-form"
-          class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"
-        disabled style="display:none">
+      <div id="modify-button-container">
+        <a th:href="@{/member-info/modify}" id="show-modify-form"
+           class="bg-blue-500 text-white my-4 px-4 py-2 text-center rounded w-80 h-10 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"
+           disabled style="display:none">
           회원 정보 수정
         </a>
       </div>
     </form>
-  </th:block>
-</body>
-</html>
+  </div>
+</th:block>

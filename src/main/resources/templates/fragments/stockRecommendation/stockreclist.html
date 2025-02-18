@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-
-<body>
-  <th:block th:fragment="stockreclist">
+ <th:block th:fragment="stockreclist">
     <!-- 에러 메시지 표시 -->
     <div th:if="${error}">
       <p style="color: red;" th:text="${error}"></p>
     </div>
+   <div id="stock-rec" class="w-full h-full min-h-[65vh] bg-white flex flex-col justify-between">
     <div class="bg-white text-black flex-1 flex justify-between items-center w-full">
       <p th:text="${memberId} + '님에게 아래 종목들을 추천합니다.'" class="px-4 py-2 text-xl">default</p>
       <div class="flex flex-col justify-end">
@@ -21,7 +12,7 @@
       </div>
     </div>
     <!-- 추천 종목 테이블 -->
-    <table id="recStockTable" class="flex-4 w-full">
+    <table id="recStockTable" class="flex-1 w-full">
       <thead>
         <tr>
           <th>업종명</th>
@@ -43,7 +34,7 @@
       </tbody>
     </table>
 
-    <div class="m-2 flex-1 w-full flex justify-end items-end ">
+    <div class="m-2 w-full flex justify-end items-end ">
       <a th:href="@{/recstk}" class="bg-blue-500 text-white text-center mr-2 p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
         다시 추천받기
       </a>
@@ -52,7 +43,5 @@
         메인 화면
       </a>
     </div>
+   </div>
   </th:block>
-</body>
-
-</html>

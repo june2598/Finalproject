@@ -6,35 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <script th:inline="javascript" defer>
-      const memberRisk = /*[[${memberTraits.memberRisk}]]*/;
-    </script>
-  <script th:src="@{/js/mypage.js}" defer></script>  
+    const memberRisk = /*[[${memberTraits.memberRisk}]]*/;
+  </script>
+  <script th:src="@{/js/mypage.js}" defer></script>
   <link rel="stylesheet" th:href="@{/css/mypage.css}">
   <title>Title</title>
 </head>
 <body class="bg-gray-200">
-  <div class="container mx-auto">
-    <div class="grid grid-cols-10">
-      <!-- 헤더 영역 -->
-      <div th:replace="~{fragments/header :: header}"></div>
+<div class="container mx-auto max-w-screen-xl flex flex-col">
 
-      <!-- 검색 영역 -->
-      <div th:replace="~{fragments/search :: search}"></div>
+  <!-- 헤더 영역 -->
+  <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-      <!-- Nav 영역 -->
-      <div th:replace="~{fragments/nav :: nav}"></div>
+  <!-- 검색 영역 -->
+  <th:block th:replace="~{fragments/search :: search}"></th:block>
 
-      <!-- Main 영역 -->
-      <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
-      <div class="col-span-6 h-full min-h-[65vh] bg-white text-black flex flex-col justify-center items-center">
-        <div th:replace="~{fragments/main-header :: main-header(title='투자 성향 조회/수정')}"></div>
-        <div th:replace="~{fragments/propensityTest/mypage-content :: mypage-content}"></div>
-      </div>
-      <div class="col-span-2 h-full min-h-[65vh] bg-gray-200 p-4 text-white"></div>
-      <!-- footer 영역-->
-      <div th:replace="~{fragments/footer :: footer}"></div>
-    </div>
-  </div>
+  <!-- Nav 영역 -->
+  <th:block th:replace="~{fragments/nav :: nav}"></th:block>
+
+  <!-- Main 영역 -->
+
+  <th:block th:replace="~{fragments/main-header :: main-header(title='투자 성향 조회/수정')}"></th:block>
+  <th:block th:replace="~{fragments/propensityTest/mypage-content :: mypage-content}"></th:block>
+  <!-- footer 영역-->
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 </div>
 </body>
 </html>

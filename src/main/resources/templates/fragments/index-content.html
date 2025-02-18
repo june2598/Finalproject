@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-<body>
 <th:block th:fragment="index-content">
-  <div class="w-full h-full flex flex-col items-center justify-between">
+  <div class="w-full h-full min-h-[65vh] flex flex-col items-center justify-between">
     <div class="bg-green-300 w-full flex-4 flex justify-center items-center">
       실시간 국내 지수
     </div>
     <div class="bg-gray-500 text-white flex-1 w-full flex justify-center items-center">
       주요 이슈
     </div>
-    <div id="real-time-table" class="flex-5 w-full h-full p-2 flex-col justify-center items-center">
+    <div id="real-time-table" class="flex-5 bg-white w-full h-full p-2 flex-col justify-center items-center">
       <h1 class="font-extrabold text-xl ml-4 mb-4">지표별 상위 종목</h1>
       <div class="w-full flex items-center ml-4">
         <span class="font-bold flex-1">상승률</span>
@@ -59,6 +51,3 @@
     </div>
   </div>
 </th:block>
-</body>
-
-</html>

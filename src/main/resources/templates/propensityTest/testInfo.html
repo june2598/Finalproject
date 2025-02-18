@@ -7,28 +7,25 @@
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <title>Title</title>
 </head>
-  <body class="bg-gray-200">
-    <div class="container mx-auto">
-      <div class="grid grid-cols-10">
-        <!-- 헤더 영역 -->
-        <div th:replace="~{fragments/header :: header}"></div>
+<body class="bg-gray-200">
+<div class="container mx-auto max-w-screen-xl flex flex-col">
 
-        <!-- 검색 영역 -->
-        <div th:replace="~{fragments/search :: search}"></div>
+  <!-- 헤더 영역 -->
+  <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-        <!-- Nav 영역 -->
-        <div th:replace="~{fragments/nav :: nav}"></div>
+  <!-- 검색 영역 -->
+  <th:block th:replace="~{fragments/search :: search}"></th:block>
 
-        <!-- Main 영역 -->
-        <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
-        <div class="col-span-6 h-[65vh] bg-white text-black flex flex-col justify-center items-center">
-          <div th:replace="~{fragments/main-header :: main-header(title='검사 시작 페이지')}"></div>
-          <div th:replace="~{fragments/propensityTest/testinfo-content :: testinfo-content}"></div>
-        </div>
-        <div class="col-span-2 h-[65vh] bg-gray-200 p-4 text-white"></div>
-        <!-- footer 영역-->
-        <div th:replace="~{fragments/footer :: footer}"></div>
-      </div>
-    </div>
-  </body>
+  <!-- Nav 영역 -->
+  <th:block th:replace="~{fragments/nav :: nav}"></th:block>
+
+  <!-- Main 영역 -->
+
+  <th:block th:replace="~{fragments/main-header :: main-header(title='검사 시작 페이지')}"></th:block>
+  <th:block th:replace="~{fragments/propensityTest/testinfo-content :: testinfo-content}"></th:block>
+  <!-- footer 영역-->
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</div>
+</body>
 </html>

@@ -1,56 +1,51 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-
-<body>
-  <th:block th:fragment="stockrecinfo">
-    <div class="bg-white text-black mt-6 flex-1 w-full">
-      <h3 class="px-4 text-xl text-bold">회원 성향 정보 </h3>
-      <p class="px-4 my-6 text-base">위험단계 : <span th:text="${memberTraits.memberRisk} + '단계 이하'"
-          class="text-base text-bold"></span></p>
-      <p class="px-4 my-6 text-base">선택한 업종 : <span th:text="${intSecNm}" class="text-base text-bold"></span></p>
-      <p class="px-4 my-6 text-base">희망 수익률 : <span th:text="${memberTraits.expRtn} + '%이상'"
-          class="text-base text-bold"></span></p>
+<th:block th:fragment="stockrecinfo">
+  <div id="stock-rec-index" class="w-full h-full min-h-[65vh] bg-white flex flex-col justify-between">
+    <div id="stock-rec-manual" class="p-6 w-full">
+      <h3 class="text-xl text-bold">회원 성향 정보 </h3>
+      <p class="my-6 text-base">위험단계 : <span th:text="${memberTraits.memberRisk} + '단계 이하'"
+                                             class="text-base text-bold"></span></p>
+      <p class="my-6 text-base">선택한 업종 : <span th:text="${intSecNm}" class="text-base text-bold"></span></p>
+      <p class="my-6 text-base">희망 수익률 : <span th:text="${memberTraits.expRtn} + '%이상'"
+                                               class="text-base text-bold"></span></p>
     </div>
-    <form th:action="@{/recstk}" method="POST" class="mt-4 p-2 w-full flex flex-5 flex-col">
-      <div>
+    <div id="input-period-container" class="flex-1 flex flex-col w-full">
+      <form th:action="@{/recstk}" method="POST" class="mt-4 p-2 flex-1 w-full flex flex-col">
         <!-- 체크박스 추가 -->
-        <div class="flex mx-4 my-2 justify-center space-x-4">
-          <label class="flex items-center">
-            <input type="checkbox" id="oneMonth" onclick="setDate(-30)">
-            <span class="ml-2">1개월 전</span>
-          </label>
-          <label class="flex items-center">
-            <input type="checkbox" id="threeMonths" onclick="setDate(-90)">
-            <span class="ml-2">3개월 전</span>
-          </label>
-          <label class="flex items-center">
-            <input type="checkbox" id="sixMonths" onclick="setDate(-180)">
-            <span class="ml-2">6개월 전</span>
-          </label>
+        <div id="fast-input-period" class="flex my-2">
+          <div class="mr-10 flex-1 flex justify-end space-x-10">
+            <label class=" flex items-center">
+              <input type="checkbox" id="oneMonth" onclick="setDate(-30)">
+              <span class="ml-2">1개월 전</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="threeMonths" onclick="setDate(-90)">
+              <span class="ml-2">3개월 전</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="sixMonths" onclick="setDate(-180)">
+              <span class="ml-2">6개월 전</span>
+            </label>
+          </div>
+          <div class="flex-1">
+          </div>
         </div>
-
-        <label for="dateInput" class="px-2 my-4 text-xl">지표 산출 기간 입력 :</label>
-        <input type="date" id="dateInput" name="dateInput" required class="p-2 m-4 border-2 rounded border-black w-100"
-          max="${#dates.format(#dates.addDays(new java.util.Date(), -1), 'yyyy-MM-dd')}">
-      </div>
-      <div class="flex-1 w-full flex justify-end items-end">
-        <a th:href="@{/}"
-          class="bg-gray-300 text-black text-center px-4 py-2 rounded mr-4 w-32 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
-          초기화면
-        </a>
-        <button type="submit"
-          class="bg-blue-500 text-white text-center p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-          종목추천
-        </button>
-      </div>
-    </form>
-  </th:block>
-</body>
-
-</html>
+        <div id="input-period" class="flex">
+          <label for="dateInput" class="px-2 my-4 text-xl">지표 산출 기간 입력 :</label>
+          <input type="date" id="dateInput" name="dateInput" required
+                 class="p-2 m-4 border-2 rounded border-black w-100"
+                 max="${#dates.format(#dates.addDays(new java.util.Date(), -1), 'yyyy-MM-dd')}">
+        </div>
+        <div id="button-container" class="w-full flex-1 flex justify-end items-end">
+          <a th:href="@{/}"
+             class="bg-gray-300 text-black text-center px-4 py-2 rounded mr-4 w-32 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
+            초기화면
+          </a>
+          <button type="submit"
+                  class="bg-blue-500 text-white text-center p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            종목추천
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</th:block>

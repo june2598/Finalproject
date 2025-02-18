@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-
-<body>
-  <th:block th:fragment="searchmember-content">
+<th:block th:fragment="searchmember-content">
+  <div id="search-member-container"
+       class="w-full h-full min-h-[65vh] bg-white flex flex-col items-center justify-between">
     <div id="searchForm" class="h-full p-4 w-full flex-2 flex flex-col items-center justify-center space-y-2">
-      <div id="search-id-wrap" class="flex flex-col"> 
+      <div id="search-id-wrap" class="flex flex-col">
         <label for="searchId" class="my-2 text-xs font-bold">가입 이메일</label>
-        <input type="text" id="searchId" name="searchId" placeholder="이메일 입력" class="border border-1  p-2 h-10 w-80" required>
+        <input type="text" id="searchId" name="searchId" placeholder="이메일 입력" class="border border-1  p-2 h-10 w-80"
+               required>
         <div id="message" class="p-2 text-sm text-red-500"></div>
       </div>
       <div id="searchId-btn">
-        <button id="search-id-btn" type="button" class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">아이디 찾기</button>
+        <button id="search-id-btn" type="button"
+                class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">아이디 찾기
+        </button>
       </div>
       <div id="joinedId" class="flex flex-col">
         <label for="findPwId" class="my-2 text-xs font-bold">가입 아이디</label>
@@ -28,7 +23,9 @@
         <div id="send-pw-message" class="p-2 text-sm text-red-500"></div>
       </div>
       <div id="search-pw-btn">
-        <button type="button" class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">비밀번호 찾기</button>
+        <button type="button"
+                class="text-center rounded w-60 h-10 bg-gray-300 font-bold border border-1 cursor-pointer">비밀번호 찾기
+        </button>
       </div>
     </div>
     <div class="w-full mb-4 flex justify-end items-end">
@@ -37,7 +34,5 @@
         초기화면
       </a>
     </div>
-  </th:block>
-</body>
-
-</html>
+  </div>
+</th:block>

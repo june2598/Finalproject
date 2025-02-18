@@ -10,37 +10,26 @@
   <title>관심 업종 설정</title>
 </head>
 <body class="bg-gray-200 flex flex-col min-h-screen">
-  <!-- 로그인 에러 메시지 출력 -->
-  <div th:if="${nonLoginError}" class="alert alert-danger">
-    <span th:text="${nonLoginError}"></span>
-  </div>
-  <!-- 성향 검사 이미 진행한 경우의 메시지 출력 -->
-  <div th:if="${isExistTraitError}" class="alert alert-warning">
-    <span th:text="${isExistTraitError}"></span>
-  </div>
-  <div class="container mx-auto flex-grow">
-    <div class="grid grid-cols-10 h-full">
-      <!-- 헤더 영역 -->
-      <div th:replace="~{fragments/header :: header}"></div>
 
-      <!-- 검색 영역 -->
-      <div th:replace="~{fragments/search :: search}"></div>
+<div class="container mx-auto max-w-screen-xl flex flex-col">
 
-      <!-- Nav 영역 -->
-      <div th:replace="~{fragments/nav :: nav}"></div>
+  <!-- 헤더 영역 -->
+  <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-      <!-- Main 영역 -->
-      <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div> <!-- 공간 확보를 위해 h-full 적용해 footer쪽 영역을 확보-->
-      <div class="col-span-6 h-full bg-white text-black flex flex-col">
-        <div th:replace="~{fragments/main-header :: main-header(title='관심 업종 선택')}"></div>
-        <div th:replace="~{fragments/propensityTest/interestsectors-content :: interestsectors-content}"></div>
-      </div>
-      <div class="col-span-2 h-full bg-gray-200 p-4 text-white"></div>
-      <!-- footer 영역-->
-      <div th:replace="~{fragments/footer :: footer}"></div>
-    </div>
-  </div>
+  <!-- 검색 영역 -->
+  <th:block th:replace="~{fragments/search :: search}"></th:block>
 
+  <!-- Nav 영역 -->
+  <th:block th:replace="~{fragments/nav :: nav}"></th:block>
+
+  <!-- Main 영역 -->
+
+  <th:block th:replace="~{fragments/main-header :: main-header(title='관심 업종 선택')}"></th:block>
+
+  <th:block th:replace="~{fragments/propensityTest/interestsectors-content :: interestsectors-content}"></th:block>
+  <!-- footer 영역-->
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</div>
 
 </body>
 </html>

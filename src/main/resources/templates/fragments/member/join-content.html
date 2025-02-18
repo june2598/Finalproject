@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-<body>
+
 <th:block th:fragment="join-content">
-  <div class="flex h-full w-full">
+  <div class="min-h-[65vh] bg-white flex h-full w-full">
     <div class="flex-1 h-full"></div>
     <form id="registerForm" method="POST" class="h-full p-4 w-full flex-2 flex flex-col space-y-2">
       <div class="flex flex-col w-full">
@@ -65,6 +58,3 @@
     </form>
   </div>
 </th:block>
-
-</body>
-</html>

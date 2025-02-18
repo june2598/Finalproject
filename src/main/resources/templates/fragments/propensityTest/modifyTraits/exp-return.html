@@ -1,34 +1,30 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-<body>
-  <th:block th:fragment="exp-return">
-    <div class="bg-white text-black mt-6 flex-1 w-full">
-      <p class="px-4 mb-3">고객이 희망하는 최소 수익률을 설정합니다.</p>
-      <p class="px-4 mb-3">종목추천을 받을때, 설정한 수익률 이상의 종목 리스트를 제공합니다.</p>
-      <p class="px-4 mb-3">앞서 선정한 위험 단계에 따라 설정할 수 있는 수익률이 다릅니다.</p>
-      <p class="px-4 my-6 text-xl">선택한 위험도 : <span th:text="${memberTraitsDto.memberRisk} + '단계'" class="text-2xl text-bold"></span></p> <!-- 위험도 표시 -->
-      <p class="px-4 my-6 text-xl">최대 희망 수익률 : <span th:text="${maxRtn} + '%'" class="text-2xl text-bold"></span></p> <!-- 위험도 표시 -->
+<th:block th:fragment="exp-return">
+  <div id="set-min-return-container" class="w-full h-full min-h-[65vh] bg-white flex flex-col justify-between">
+    <div id="set-min-return-manual" class="p-6 w-full">
+      <p class="mb-3">고객이 희망하는 최소 수익률을 설정합니다.</p>
+      <p class="mb-3">종목추천을 받을때, 설정한 수익률 이상의 종목 리스트를 제공합니다.</p>
+      <p class="mb-3">앞서 선정한 위험 단계에 따라 설정할 수 있는 수익률이 다릅니다.</p>
+      <p class="my-6 text-xl">선택한 위험도 : <span th:text="${memberTraitsDto.memberRisk} + '단계'"
+                                                   class="text-2xl text-bold"></span></p> <!-- 위험도 표시 -->
+      <p class="my-6 text-xl">최대 희망 수익률 : <span th:text="${maxRtn} + '%'" class="text-2xl text-bold"></span></p>
+      <!-- 위험도 표시 -->
       <input type="hidden" th:value="${maxRtn}" id="maxRtn">
     </div>
-    <form th:action="@{/propensity-test/min-return}" method="POST" class="mt-4 w-full flex flex-5 flex-col">
-      <div class="mb-6">
-        <label for="expRtn" class="px-4 text-xl">희망 수익률 입력:</label>
-        <input type="number" id="expRtn" th:placeholder="${currentExpRtn}" name="expRtn" step="0.01" required class="p-2 border-2 rounded border-black">
-        <span class="px-2 text-xl">% 이상</span>
-      </div>
-      <div class="p-2 mt-6 flex-1 w-full flex justify-end items-end">
-        <button type="submit" id="update-exp-return"
-          class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"
-           >
-          수정
-        </button>
-      </div>
-    </form>
-  </th:block>
-</body>
-</html>
+    <div id="modify-return-container" class="flex-1 mt-4 w-full flex flex-col">
+      <form th:action="@{/propensity-test/min-return}" method="POST" class="flex-1 flex flex-col">
+        <div id="input-wrap" class="flex-1 mb-6">
+          <label for="expRtn" class="px-4 text-xl">희망 수익률 입력:</label>
+          <input type="number" id="expRtn" th:placeholder="${currentExpRtn}" name="expRtn" step="0.01" required
+                 class="p-2 border-2 rounded border-black">
+          <span class="px-2 text-xl">% 이상</span>
+        </div>
+        <div id="button-container" class="p-2 mt-6 w-full flex justify-end items-end">
+          <button type="submit" id="update-exp-return"
+                  class="bg-blue-500 text-white text-center p-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            수정
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</th:block>

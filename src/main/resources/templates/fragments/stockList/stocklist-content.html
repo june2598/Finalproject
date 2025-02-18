@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
-</head>
-
-<body>
-  <th:block th:fragment="stocklist-content">
-    <div class="p-2 w-full h-full flex items-center justify-between">
+<th:block th:fragment="stocklist-content">
+  <div id="stock-list-container" class="w-full h-full min-h-[65vh] bg-white flex flex-col items-center justify-between">
+    <div id="selection-wrap" class="p-2 w-full h-full flex items-center justify-between">
       <div id="marketSelection" class="flex items-center justify-between">
         <span id="kospi"
-          class="font-bold text-black market-option cursor-pointer p-2 border border-transparent">KOSPI</span>
+              class="font-bold text-black market-option cursor-pointer p-2 border border-transparent">KOSPI</span>
         <span class="p-2">|</span>
         <span id="kosdaq" class="text-gray-300 market-option cursor-pointer p-2 border border-transparent">KOSDAQ</span>
         <span class="p-2">|</span>
@@ -27,16 +18,17 @@
           <option value="3" selected>3단계 이하</option>
         </select>
       </div>
-      <div class="flex items-center p-2">
+      <div class="p-2 flex items-stretch">
         <input type="text" placeholder="업종 입력"
-          class="mr-2 rounded border border-gray-300 text-lg" />
-        <button class="p-1 bg-blue-600 text-white rounded text-base">
+               class="p-2 mr-2 rounded-l border border-gray-300 text-lg"/>
+        <button class="p-1 w-15 bg-blue-500 text-white rounded text-base transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
           검색
         </button>
       </div>
     </div>
-    <table id="stocksTable">
-      <thead>
+    <div class="flex-grow w-full h-full">
+      <table id="stocksTable" class="w-full h-full">
+        <thead>
         <tr>
           <th>종목명</th>
           <th>가격</th>
@@ -56,17 +48,15 @@
             <span class="text-xs arrow sortable cursor-pointer" data-order="t.TRAIT_STK_RISK">▼</span>
           </th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <!-- 데이터가 여기에 삽입됩니다. -->
-      </tbody>
-    </table>
-
-    <div class="pagination">
-      <button id="prevBtn" disabled>이전</button>
-      <button id="nextBtn">다음</button>
+        </tbody>
+      </table>
+      <div class="pagination flex justify-center items-center">
+        <button id="prevBtn" disabled>이전</button>
+        <button id="nextBtn">다음</button>
+      </div>
     </div>
-  </th:block>
-</body>
-
-</html>
+  </div>
+</th:block>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+</head>
+<body>
+<th:block th:fragment="nav">
+  <div class="col-span-2 min-h-[8vh] bg-gray-200 p-4  text-white"></div>
+  <!-- Nav -->
+  <div class="col-span-6 min-h-[8vh] bg-slate-800 p-4  text-white flex items-center">
+    <div class="flex space-x-12 justify-center items-center w-full">
+      <div class="relative group">
+        <span class="cursor-pointer">종목 추천 서비스</span>
+        <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block w-50">
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/propensity-test/info}">투자 성향검사</a>
+          </li>
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/recstk}">
+              투자 성향별 종목 추천
+            </a>
+          </li>
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/propensity-test/my-page}">
+              성향 검사 결과 조회/수정
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="relative group">
+        <span class="cursor-pointer">주식 정보 서비스</span>
+        <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block">
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/stockList}">
+              종목 리스트
+            </a>
+          </li>
+          <li class="p-2 hover:bg-gray-200">종목 상세 지표</li>
+        </ul>
+      </div>
+      <div class="relative group">
+        <span class="cursor-pointer">한눈에 보는 시장 트렌드</span>
+        <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block">
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/trend}">
+              실시간 이슈 정보
+            </a>
+          </li>
+          <li class="p-2 hover:bg-gray-200">실시간 상위 지표 종목</li>
+        </ul>
+      </div>
+      <div class="relative group">
+        <span class="cursor-pointer">마이페이지</span>
+        <ul class="absolute left-0 hidden bg-white text-black rounded shadow group-hover:block w-40">
+          <li class="p-2 hover:bg-gray-200">
+            <a th:href="@{/pw-auth}">회원정보 조회/수정
+            </a>
+          </li>
+          <li class="p-2 hover:bg-gray-200">관심 종목 리스트</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-span-2 min-h-[8vh] bg-gray-200 p-4 text-white"></div>
+</th:block>
+</body>
+</html>
