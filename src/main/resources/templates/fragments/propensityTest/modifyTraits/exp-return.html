@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
 </head>
-
 <body>
-  <th:block th:fragment="setminreturn-content">
+  <th:block th:fragment="exp-return">
     <div class="bg-white text-black mt-6 flex-1 w-full">
       <p class="px-4 mb-3">고객이 희망하는 최소 수익률을 설정합니다.</p>
       <p class="px-4 mb-3">종목추천을 받을때, 설정한 수익률 이상의 종목 리스트를 제공합니다.</p>
@@ -20,23 +18,17 @@
     <form th:action="@{/propensity-test/min-return}" method="POST" class="mt-4 w-full flex flex-5 flex-col">
       <div class="mb-6">
         <label for="expRtn" class="px-4 text-xl">희망 수익률 입력:</label>
-        <input type="number" id="expRtn" name="expRtn" step="0.01" required class="p-2 border-2 rounded border-black">
+        <input type="number" id="expRtn" th:placeholder="${currentExpRtn}" name="expRtn" step="0.01" required class="p-2 border-2 rounded border-black">
         <span class="px-2 text-xl">% 이상</span>
       </div>
       <div class="p-2 mt-6 flex-1 w-full flex justify-end items-end">
-        <a th:href="@{/}"
-          class="bg-gray-300 text-black text-center px-4 py-2 rounded mr-4 w-32 inline-block transition duration-300 ease-in-out hover:bg-gray-400 hover:text-white">
-          초기화면
-        </a>
-        <button type="submit" id="finish"
-          class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer" >
-          마침
+        <button type="submit" id="update-exp-return"
+          class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded w-32 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"
+           >
+          수정
         </button>
       </div>
     </form>
   </th:block>
-
-
 </body>
-
 </html>

@@ -1,4 +1,25 @@
-document.getElementById('update-trait-sectors').addEventListener('click', async (event) => {
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const maxSelections = 5;
+const updateButton = document.getElementById('update-trait-sectors');
+
+function updateCheckboxState() {
+  const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+  const selectedCount = selectedCheckboxes.length;
+  
+  checkboxes.forEach(checkbox => {
+      if (!checkbox.checked) {
+          checkbox.disabled = selectedCount >= maxSelections;
+      }
+    });
+  }
+
+  // 체크박스 클릭 시 이벤트 리스너 추가
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateCheckboxState);
+});
+
+
+updateButton.addEventListener('click', async (event) => {
   event.preventDefault();
 
   const selectedSectors = [...document.querySelectorAll('input[type="checkbox"]:checked')].map(input => input.value);
@@ -6,12 +27,8 @@ document.getElementById('update-trait-sectors').addEventListener('click', async 
 
   console.log('선택된 관심업종:', selectedSectors);
 
-  if (selectedSectors.length === 0) {
-    alert("최소 한 개 이상의 관심 업종을 선택해야 합니다.");
-    return;
-  }
 
-  if (selectedSectors.length > 5) {
+  if (selectedSectors.length > maxSelections) {
     alert("관심업종은 최대 다섯개 까지 선택 가능합니다.");
     return;
   }
@@ -22,17 +39,6 @@ document.getElementById('update-trait-sectors').addEventListener('click', async 
       intSec: selectedSectors
 
     });
-
-  // try {
-  //   // ✅ fetch()로 JSON 형식의 데이터 전송
-  //   const response = await fetch('/api/member/traits/update-sectors', {  // ✅ URL 확인
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json' // ✅ JSON 형식으로 전송
-  //     },
-  //     body: JSON.stringify({ intSec: selectedSectors }) // ✅ JSON 변환 후 전송
-  //   });
-
 
     if (response && response.success) {
       alert('관심 업종이 성공적으로 업데이트되었습니다.');

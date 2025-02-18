@@ -25,5 +25,8 @@ public interface PropensityTestDAO {
   //성향 조회
   Optional<MemberTraits> findById(Long memberSeq);
 
+  //성향 업데이트
+  int updateMemberTraits (Long memberSeq, MemberTraits memberTraits);
+
 
 }

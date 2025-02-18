@@ -1,5 +1,6 @@
 package com.kh.finalproject.domain.stockrecommendation.svc;
 
+import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.web.form.stockRecommendation.RecStk;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,9 @@ public interface StockRecommendationSVC {
 
   // 성향에 저장된 업종 ID로 업종명 찾기
   String findIntSecNmByIntSecId(HttpServletRequest request);
+
+  // 업종 ID로 업종명 찾기(DTO)
+  String findIntSecNmByIntSecIdFromDto(MemberTraitsDto memberTraitsDto);
 
 
 }

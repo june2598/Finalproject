@@ -1,47 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/browser@4">
 </head>
-<body>
-<th:block th:fragment="modifytraits-content">
-  <div id="traits-container" class="h-full w-full mt-4 p-2">
-    <p class="px-2 mb-3">
-      <span th:text="${session.loginOkMember.memberId} + '님의 투자 성향은 다음과 같습니다.'" class="px-2 pb-6 text-2xl"></span>
-    </p>
-    <p class="p-4 text-xl font-bold">위험도 :
-      <span th:text="${memberTraitsDto.memberRisk} + ' 단계'" class="text-xl text-bold"></span>
-      <a th:href="@{/propensity-test/my-page/modify/risk}" id="risk-modify-btn">
-        위험단계 수정
-      </a>
-    </p>
-    <p class="p-4 font-bold text-xl">관심업종 :
-      <span th:text="${intSecNm}" class="text-xl font-bold"></span>
-      <a th:href="@{/propensity-test/my-page/modify/sectors}" id="trait-sectors-modify-btn">
-        관심 업종 수정
-      </a>
-    </p>
-    <p class="p-4 font-bold text-xl"> 희망 수익률 :
-      <span th:text="${memberTraitsDto.expRtn} + '% 이상'" class="text-xl text-bold">
-        </span>
-      <a id="exp-returns-modify-btn">
-        희망 수익률 수정
-      </a>
-    </p>
-  </div>
-  <div id="modify" class="p-2 mt-6 w-full flex justify-end item-center">
-    <a th:href="@{/propensity-test/my-page/modify}"
-       class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
-      수정 취소
-    </a>
-    <a th:href="@{/propensity-test/my-page/modify}"
-       class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600">
-      수정 완료
-    </a>
-  </div>
 
-</th:block>
+<body>
+  <th:block th:fragment="modifytraits-content">
+    <div id="traits-container" class="h-full w-full mt-4 p-2">
+      <p class="px-2 mb-3">
+        <span th:text="${session.loginOkMember.memberId} + '님이 수정하고자 하는 성향은 다음과 같습니다.'"
+          class="px-2 pb-6 text-2xl"></span>
+      </p>
+      <!-- 위험도 구간 -->
+      <p class="p-4 text-xl font-bold">위험도 :
+        <span th:text="${memberTraitsDto.memberRisk} + ' 단계'" class="text-xl text-bold"></span>
+        <a th:href="@{/propensity-test/my-page/modify/risk}" id="risk-modify-btn"
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-blue-600">
+          위험단계 수정
+        </a>
+      </p>
+      <!-- 관심업종 구간 -->
+      <p class="p-4 font-bold text-xl">관심업종 :
+        <span th:text="${intSecNm}" class="text-xl font-bold"></span>
+        <a th:href="@{/propensity-test/my-page/modify/sectors}" id="trait-sectors-modify-btn"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-green-600">
+          관심 업종 수정
+        </a>
+      </p>
+      <div id="expReturn" class="p-4 font-bold text-xl"> 희망 수익률 :
+        <span th:text="${memberTraitsDto.expRtn} + '% 이상'" class="text-xl text-bold">
+        </span>
+        <a th:href="@{/propensity-test/my-page/modify/exp-return}" id="exp-returns-modify-btn"
+          class="bg-yellow-500 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out hover:bg-yellow-600">
+          희망 수익률 수정
+        </a>
+        <input type="hidden" th:value="${maxRtn}" id="maxRtn">
+        <div id="over-expRtn-error" class="hidden">
+          <p>
+            <span th:text=" '현재 위험도, 관심업종 내에서 설정할 수 있는 최대 수익률 :' + ${maxRtn} + '%'"
+              class="font-bold text-red-500"></span>
+          </p>
+          <p>
+            <span th:text="'희망 수익률을 수정하셔야 됩니다.'" class="font-bold text-red-500"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div id="button-wrap" class="p-2 mt-6 w-full flex justify-end item-center">
+      <button type="submit" id="cancel-edit-btn"
+        class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+        수정 취소
+      </button>
+      <button type="submit" id="update-finish-btn"
+        class="bg-blue-500 text-white text-center mr-2 px-4 py-2 rounded mr-4 w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+        수정 완료
+      </button>
+    </div>
+
+  </th:block>
 </body>
+
 </html>

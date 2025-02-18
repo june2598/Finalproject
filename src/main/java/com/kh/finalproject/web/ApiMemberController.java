@@ -5,8 +5,9 @@ import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.member.svc.MemberSVC;
+import com.kh.finalproject.domain.propertytest.svc.PropensityTestSVC;
 import com.kh.finalproject.domain.stockrecommendation.svc.StockRecommendationSVC;
-import jakarta.servlet.http.HttpServletRequest;
+import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class ApiMemberController {
 
   private final MemberSVC memberSVC;
   private final StockRecommendationSVC stockRecommendationSVC;
+  private final PropensityTestSVC propensityTestSVC;
 
   // 회원 정보 수정
   @PostMapping("/update")
@@ -133,22 +135,21 @@ public class ApiMemberController {
 
   }
 
+  // 관심 업종 업데이트
   @PostMapping("/traits/update-sectors")
   public ResponseEntity<Map<String, Object>> updateMemberTraitSectors(
-      @RequestBody Map<String, List<String>> payload, HttpSession session, HttpServletRequest request) {
+      @RequestBody Map<String, List<String>> payload, HttpSession session) {
 
     Map<String, Object> response = new HashMap<>();
 
     try {
-
-
-      // 1️⃣ 세션에서 DTO 가져오기 (없으면 엔터티에서 변환)
+      // 1️세션에서 DTO 가져오기 (없으면 엔터티에서 변환)
       MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
 
       if (memberTraitsDto == null) {
         MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
         if (memberTraits == null) {
-          log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+          log.warn("세션에 저장된 성향 데이터가 없습니다!");
           response.put("success", false);
           response.put("message", "로그인 정보가 없습니다.");
           return ResponseEntity.status(401).body(response);
@@ -163,8 +164,8 @@ public class ApiMemberController {
       // DTO 업데이트
       memberTraitsDto.setIntSec(newIntSec);
 
-      // 3️새로운 관심 업종 이름 조회 및 업데이트
-      String updatedIntSecNm = stockRecommendationSVC.findIntSecNmByIntSecId(request);
+      // 새로운 관심 업종 이름 조회 및 업데이트
+      String updatedIntSecNm = stockRecommendationSVC.findIntSecNmByIntSecIdFromDto(memberTraitsDto);
       log.info("업데이트된 관심 업종 이름: {}", updatedIntSecNm);
 
       // 세션 업데이트
@@ -183,6 +184,143 @@ public class ApiMemberController {
     }
 
   }
+
+  @PostMapping("/traits/update-exp-return")
+  public ResponseEntity<Map<String, Object>> updateMemberExpRtn(
+      @RequestBody Map<String, Double> payload, HttpSession session) {
+
+    Map<String, Object> response = new HashMap<>();
+
+    try {
+      // 1️세션에서 DTO 가져오기 (없으면 엔터티에서 변환)
+      MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+
+      if (memberTraitsDto == null) {
+        MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+        if (memberTraits == null) {
+          log.warn("세션에 저장된 성향 데이터가 없습니다!");
+          response.put("success", false);
+          response.put("message", "로그인 정보가 없습니다.");
+          return ResponseEntity.status(401).body(response);
+        }
+        memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
+      }
+
+      Double newExpRtn = payload.get("expRtn");
+      if (newExpRtn == null) {
+        response.put("success", false);
+        response.put("message", "희망 수익률을 입력해야 합니다.");
+        return ResponseEntity.badRequest().body(response);
+      }
+
+      if (Double.isNaN(newExpRtn) || Double.isInfinite(newExpRtn)) {
+        response.put("success", false);
+        response.put("message", "올바른 수익률 값을 입력하세요.");
+        return ResponseEntity.badRequest().body(response);
+      }
+
+      log.info("희망 수익률 변경예정: {}", newExpRtn);
+
+      // DTO 업데이트
+      memberTraitsDto.setExpRtn(newExpRtn);
+
+      session.setAttribute("memberTraitsDto", memberTraitsDto);
+
+      response.put("success", true);
+      response.put("message", "희망 수익률이 성공적으로 업데이트되었습니다.");
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      log.error("희망 수익률 수정 중 오류 발생", e);
+      response.put("success", false);
+      response.put("message", "서버 내부 오류가 발생했습니다.");
+      return ResponseEntity.status(500).body(response);
+    }
+  }
+
+  // 최종 수정 완료
+  @PostMapping("/traits/update-finish")
+  public ResponseEntity<Map<String, Object>> updateTraitFinish(HttpSession session) {
+    Map<String, Object> response = new HashMap<>();
+
+    try {
+      // 1️세션에서 DTO 가져오기 (없으면 엔터티에서 변환)
+      MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+
+      if (memberTraitsDto == null) {
+        log.warn("세션에 저장된 성향 데이터가 없습니다!");
+        response.put("success", false);
+        response.put("message", "로그인 정보가 없습니다.");
+        return ResponseEntity.status(401).body(response);
+      }
+
+      // 2️⃣ 로그인된 회원 정보 가져오기
+      LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
+      if (loginOkMember == null) {
+        log.warn("로그인된 회원 정보가 없습니다!");
+        response.put("success", false);
+        response.put("message", "회원 정보가 없습니다.");
+        return ResponseEntity.status(401).body(response);
+      }
+
+      Long memberSeq = loginOkMember.getMemberSeq(); // 현재 로그인된 회원의 ID
+
+      // 3️⃣ DTO → Entity 변환
+      MemberTraits memberTraits = memberTraitsDto.toEntity();
+      memberTraits.setMemberSeq(memberSeq); // 회원 ID 설정
+
+
+      // 성향 정보 업데이트
+      int rows = propensityTestSVC.updateMemberTraits(memberSeq, memberTraits);
+
+      if (rows > 0) {
+        response.put("success", true);
+        response.put("message", "성향 정보가 성공적으로 업데이트되었습니다.");
+        // 세션 정보 최신으로 업데이트
+        session.setAttribute("memberTraits", memberTraits);
+        // 업데이트 후엔 dto 비우기
+        session.removeAttribute("memberTraitsDto");
+        return ResponseEntity.ok(response);
+      } else {
+        response.put("success", false);
+        response.put("message", "업데이트할 데이터가 없습니다.");
+        return ResponseEntity.status(400).body(response);
+      }
+
+    } catch (Exception e) {
+      log.error("⚠ 성향 정보 저장 중 오류 발생", e);
+      response.put("success", false);
+      response.put("message", "서버 내부 오류가 발생했습니다.");
+      return ResponseEntity.status(500).body(response);
+    }
+  }
+
+  // 성향 수정작업 취소
+  @PostMapping ("/traits/cancel-edit")
+  public ResponseEntity<Map<String, Object>> cancelEdit(HttpSession session) {
+    Map<String, Object> response = new HashMap<>();
+
+    try {
+      // 수정 중인 DTO 제거
+      session.removeAttribute("memberTraitsDto");
+
+      // 2️기존의 memberTraits 유지
+      if (session.getAttribute("memberTraits") == null) {
+        response.put("success", false);
+        response.put("message", "기존 성향 정보가 없습니다.");
+        return ResponseEntity.status(400).body(response);
+      }
+
+      response.put("success", true);
+      response.put("message", "수정이 취소되었습니다.");
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      log.error("⚠ 수정 취소 중 오류 발생", e);
+      response.put("success", false);
+      response.put("message", "서버 내부 오류가 발생했습니다.");
+      return ResponseEntity.status(500).body(response);
+    }
+  }
+
 
   // 비밀번호 유효성 검사
   private boolean isValidPassword(String pw) {

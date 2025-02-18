@@ -28,6 +28,7 @@ public class MemberTraitsDto {
     MemberTraits entity = new MemberTraits();
     entity.setMemberRisk(this.memberRisk);
     entity.setIntSec(this.intSec);
+    entity.setExpRtn(this.expRtn);
     return entity;
   }
 

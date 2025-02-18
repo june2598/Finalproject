@@ -1,5 +1,6 @@
 package com.kh.finalproject.domain.stockrecommendation.svc;
 
+import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.stockrecommendation.dao.StockRecommendationDAO;
 import com.kh.finalproject.web.form.stockRecommendation.RecStk;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,5 +30,10 @@ public class StockRecommendationSVCImpl implements StockRecommendationSVC {
   @Override
   public String findIntSecNmByIntSecId(HttpServletRequest request) {
     return stockRecommendationDAO.findIntSecNmByIntSecId(request);
+  }
+
+  @Override
+  public String findIntSecNmByIntSecIdFromDto(MemberTraitsDto memberTraitsDto) {
+    return stockRecommendationDAO.findIntSecNmByIntSecIdFromDto(memberTraitsDto);
   }
 }

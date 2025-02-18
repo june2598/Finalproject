@@ -287,21 +287,32 @@ public class PropensityTestController {
       session.setAttribute("memberTraitsDto", memberTraitsDto); // DTO도 갱신
     }
 
+    List<String> intSec = memberTraitsDto.getIntSec();
+
     // 관심 업종이 있는지 체크
-    if (memberTraitsDto.getIntSec() != null && !memberTraitsDto.getIntSec().isEmpty()) {
-      String intSecNm = stockRecommendationSVC.findIntSecNmByIntSecId(request);
+    if (intSec != null && !intSec.isEmpty()) {
+      String intSecNm = stockRecommendationSVC.findIntSecNmByIntSecIdFromDto(memberTraitsDto);
       model.addAttribute("intSecNm", intSecNm);
+
+      // 선택된 업종 내에서 최대 희망 수익률 설정 로직 호출
+      String selectedSectorIds = intSec.stream()
+          .collect(Collectors.joining(",")); // 리스트를 쉼표로 구분된 문자열로 변환
+      Optional<Double> optionalMaxRtn = propensityTestSVC.findMaxRtn(memberTraitsDto.getMemberRisk(), selectedSectorIds);
+      Double maxRtn = optionalMaxRtn.orElse(null); // 결과가 없을 경우 null로 설정
+
+      // 현재 설정한 위험도, 관심업종에서의 최대 수익률
+      model.addAttribute("maxRtn", maxRtn);
+
     } else {
       model.addAttribute("intSecNm", "없음");
+
+      // 모든 종목 내에서 최대 희망 수익률 설정 로직 호출
+      Optional<Double> optionalMaxRtn = propensityTestSVC.findMaxRtn(memberTraitsDto.getMemberRisk());
+      Double maxRtn = optionalMaxRtn.orElse(null); // 결과가 없을 경우 null로 설정
+
+      // 현재 설정한 위험도, 관심업종에서의 최대 수익률
+      model.addAttribute("maxRtn", maxRtn);
     }
-
-//    // 관심 업종 이름을 세션에서 가져오기
-//    String intSecNm = (String) session.getAttribute("intSecNm");
-//    if (intSecNm == null) {
-//      intSecNm = "없음"; // 세션에 값이 없으면 기본값 설정
-//    }
-//    model.addAttribute("intSecNm", intSecNm);
-
 
     // 모델에 추가
     model.addAttribute("memberTraitsDto", memberTraitsDto);
@@ -316,7 +327,7 @@ public class PropensityTestController {
 
     MemberTraitsDto memberTraitsDto;
 
-    // 🔹 세션에서 `memberTraitsDto` 확인 (이미 수정 중인 경우)
+    // 세션에서 `memberTraitsDto` 확인 (이미 수정 중인 경우)
     if (session.getAttribute("memberTraitsDto") != null) {
       memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
       log.info("🔄 수정 진행 중, DTO 사용");
@@ -332,12 +343,12 @@ public class PropensityTestController {
       // DTO 변환 및 세션에 저장
       memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
       session.setAttribute("memberTraitsDto", memberTraitsDto);
-      log.info("📌 엔터티에서 DTO 변환하여 세션 저장");
+      log.info("엔터티에서 DTO 변환하여 세션 저장");
     }
 
     // 🔹 현재 위험도 가져오기
     int currentRisk = memberTraitsDto.getMemberRisk();
-    log.info("📌 현재 위험도 단계: {}", currentRisk);
+    log.info("현재 위험도 단계: {}", currentRisk);
 
     model.addAttribute("currentRisk", currentRisk);
     model.addAttribute("memberTraitsDto", memberTraitsDto);
@@ -354,14 +365,14 @@ public class PropensityTestController {
 
     MemberTraitsDto memberTraitsDto;
 
-    // 🔹 세션에서 가져올 객체 확인 (DTO 우선)
+    // 세션에서 가져올 객체 확인 (DTO 우선)
     if (session.getAttribute("memberTraitsDto") != null) {
       memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
-      log.info("🔄 수정 진행 중, DTO 사용");
+      log.info("수정 진행 중, DTO 사용");
     } else {
       MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
       if (memberTraits == null) {
-        log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+        log.warn("세션에 저장된 성향 데이터가 없습니다!");
         return "redirect:/error-page"; // 오류 페이지 또는 로그인 페이지로 리다이렉트
       }
       memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
@@ -410,6 +421,65 @@ public class PropensityTestController {
     return propensity_test_root + "modifyTraits/traitSectors";
 
   }
+
+  @GetMapping (PROPENSITY_TEST_PREFIX + "my-page/modify/exp-return")
+  public String modifyMyExpReturn(Model model, HttpSession session) {
+
+    MemberTraitsDto memberTraitsDto;
+
+    // 세션에서 `memberTraitsDto` 확인 (이미 수정 중인 경우)
+    if (session.getAttribute("memberTraitsDto") != null) {
+      memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
+      log.info("🔄 수정 진행 중, DTO 사용");
+    } else {
+      // 처음 수정 화면에 진입한 경우 → `memberTraits` 가져와 DTO 변환
+      MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
+
+      if (memberTraits == null) {
+        log.warn("⚠ 세션에 저장된 성향 데이터가 없습니다!");
+        return "redirect:/error-page"; // 오류 페이지 또는 로그인 페이지로 리다이렉트
+      }
+
+      // DTO 변환 및 세션에 저장
+      memberTraitsDto = MemberTraitsDto.fromEntity(memberTraits);
+      session.setAttribute("memberTraitsDto", memberTraitsDto);
+      log.info("엔터티에서 DTO 변환하여 세션 저장");
+    }
+
+    // 현재 희망 수익률 가져오기
+    double currentExpRtn = memberTraitsDto.getExpRtn();
+    log.info("현재 희망수익률: {}", currentExpRtn);
+
+    List<String> intSec = memberTraitsDto.getIntSec();
+    // 관심 업종이 있는지 체크
+    if (intSec != null && !intSec.isEmpty()) {
+      String intSecNm = stockRecommendationSVC.findIntSecNmByIntSecIdFromDto(memberTraitsDto);
+      model.addAttribute("intSecNm", intSecNm);
+
+      // 선택된 업종 내에서 최대 희망 수익률 설정 로직 호출
+      String selectedSectorIds = intSec.stream()
+          .collect(Collectors.joining(",")); // 리스트를 쉼표로 구분된 문자열로 변환
+      Optional<Double> optionalMaxRtn = propensityTestSVC.findMaxRtn(memberTraitsDto.getMemberRisk(), selectedSectorIds);
+      Double maxRtn = optionalMaxRtn.orElse(null); // 결과가 없을 경우 null로 설정
+
+      // 현재 설정한 위험도, 관심업종에서의 최대 수익률
+      model.addAttribute("maxRtn", maxRtn);
+
+    } else {
+      model.addAttribute("intSecNm", "없음");
+
+      // 모든 종목 내에서 최대 희망 수익률 설정 로직 호출
+      Optional<Double> optionalMaxRtn = propensityTestSVC.findMaxRtn(memberTraitsDto.getMemberRisk());
+      Double maxRtn = optionalMaxRtn.orElse(0.0); // 결과가 없을 경우 0.0으로 설정
+
+      // 현재 설정한 위험도에서의 최대 수익률 (관심없종이 없을땐 모든 종목내에서 설정)
+      model.addAttribute("maxRtn", maxRtn);
+    }
+
+    // 모델에 추가
+    model.addAttribute("memberTraitsDto", memberTraitsDto);
+    return propensity_test_root + "modifyTraits/expReturn";
+    }
 
 }
 

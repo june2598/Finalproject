@@ -32,7 +32,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     sql.append("VALUES(member_traits_seq.nextval, :memberSeq, :memberRisk, :intSec, :expRtn) ");
 
     //intSec을 쉼표로 구분된 문자열로 변환
-    String intSecString = null;
+    String intSecString = "";
     if (memberTraits.getIntSec() != null && !memberTraits.getIntSec().isEmpty()) {
       intSecString = String.join(",", memberTraits.getIntSec());
     }
@@ -163,5 +163,34 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();// 결과가 없을경우 Optional.empty() 반환
     }
+  }
+
+  @Override
+  public int updateMemberTraits(Long memberSeq, MemberTraits memberTraits) {
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" UPDATE MEMBER_TRAITS ");
+    sql.append(" SET MEMBER_RISK = :memberRisk, INT_SEC= :intSec, EXP_RTN=:expRtn, UDATE = sysdate ");
+    sql.append(" WHERE MEMBER_SEQ = :memberSeq ");
+
+    //intSec을 쉼표로 구분된 문자열로 변환
+    String intSecString = "";
+    if (memberTraits.getIntSec() != null && !memberTraits.getIntSec().isEmpty()) {
+      intSecString = String.join(",", memberTraits.getIntSec());
+    }
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("memberRisk", memberTraits.getMemberRisk())
+        .addValue("intSec",intSecString)
+        .addValue("expRtn",memberTraits.getExpRtn())
+        .addValue("memberSeq",memberSeq);
+
+    log.info("업데이트할 데이터 - memberSeq: {}, memberRisk: {}, intSec: {}, expRtn: {}",
+        memberSeq, memberTraits.getMemberRisk(), intSecString, memberTraits.getExpRtn());
+
+
+    int rows = template.update(sql.toString(), param);
+    return rows;
+
   }
 }

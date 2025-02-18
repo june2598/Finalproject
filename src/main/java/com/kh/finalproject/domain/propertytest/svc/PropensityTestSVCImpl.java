@@ -48,4 +48,9 @@ public class PropensityTestSVCImpl implements PropensityTestSVC{
   public Optional<Double> findMaxRtn(int memberRisk, String intSec) {
     return propensityTestDAO.findMaxRtn(memberRisk, intSec);
   }
+
+  @Override
+  public int updateMemberTraits(Long memberSeq, MemberTraits memberTraits) {
+    return propensityTestDAO.updateMemberTraits(memberSeq,memberTraits);
+  }
 }

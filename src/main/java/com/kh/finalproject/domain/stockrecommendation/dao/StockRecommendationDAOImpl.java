@@ -1,5 +1,6 @@
 package com.kh.finalproject.domain.stockrecommendation.dao;
 
+import com.kh.finalproject.domain.dto.MemberTraitsDto;
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.web.form.stockRecommendation.RecStk;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,6 +85,8 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
     return list;
   }
 
+  // 관심업종없을떄 추천
+
   @Override
   public List<RecStk> listWithoutTraitSector(HttpServletRequest request) {
 
@@ -131,6 +134,8 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
 
   }
 
+  // 업종 ID로 업종명 찾기
+
   @Override
   public String findIntSecNmByIntSecId(HttpServletRequest request) {
 
@@ -151,6 +156,35 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
 
     // 업종명을 리스트로 받음
     List<String> secNm = template.query(sql.toString(), param, (rs, rowNum) -> rs.getString("SEC_NM"));
+
+    // 리스트의 요소를 콤마로 구분된 문자열로 결합
+    return String.join(", ", secNm);
+  }
+
+  // DTO에서 업종 ID로 업종명 찾기
+  @Override
+  public String findIntSecNmByIntSecIdFromDto(MemberTraitsDto memberTraitsDto) {
+
+    // DTO에서 관심 업종 ID 리스트 가져오기
+    List<String> intSecList = memberTraitsDto.getIntSec();
+    if (intSecList == null || intSecList.isEmpty()) {
+      return "";
+    }
+
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" SELECT DISTINCT SEC_NM ");
+    sql.append(" FROM MKT_SEC_STK m ");
+    sql.append(" WHERE SEC_ID IN (:intSecList) ");
+
+    Long memberSeq = memberTraitsDto.getMemberSeq();
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("intSecList", intSecList);
+
+    // 업종명을 리스트로 받음
+    List<String> secNm = template.query(sql.toString(), param, (rs, rowNum) -> rs.getString("SEC_NM"));
+
 
     // 리스트의 요소를 콤마로 구분된 문자열로 결합
     return String.join(", ", secNm);
