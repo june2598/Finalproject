@@ -57,12 +57,33 @@ public class ApiSearchInfoController {
 
   @PostMapping("/search-pw")
   public ResponseEntity<Map<String, String>> sendFindPwToEmail(@RequestBody SearchMemberDto searchMemberDto) {
+
     log.info("searchMemberDto={}", searchMemberDto);
-    String email = searchMemberDto.getEmail();;
-    String memberId = searchMemberDto.getMemberId();
-    memberSVC.sendFindPwToEmail(email,memberId);
+
     Map<String, String> response = new HashMap<>();
-    response.put("message", "가입하신 이메일로 비밀번호가 전송되었습니다.");
-    return ResponseEntity.ok(response);
+
+    String email = searchMemberDto.getEmail();
+
+    String memberId = searchMemberDto.getMemberId();
+
+    // 이메일 또는 아이디가 비어 있는 경우
+    if (email == null || email.isEmpty() || memberId == null || memberId.isEmpty()) {
+      response.put("message", "이메일과 아이디를 모두 입력해 주세요.");
+      return ResponseEntity.badRequest().body(response); // 400 Bad Request 응답
+    }
+
+    try {
+      memberSVC.sendFindPwToEmail(email, memberId);
+      response.put("message", "가입하신 이메일로 임시 비밀번호가 전송되었습니다.");
+      return ResponseEntity.ok(response); // 200 OK 응답
+    } catch (IllegalArgumentException e) {
+      log.warn("비밀번호 찾기 실패: {}", e.getMessage());
+      response.put("message", e.getMessage());
+      return ResponseEntity.badRequest().body(response); // 400 Bad Request 응답
+    } catch (Exception e) {
+      log.error("예상치 못한 에러 발생", e);
+      response.put("message", "예상치 못한 오류가 발생했습니다. 다시 시도해 주세요.");
+      return ResponseEntity.status(500).body(response); // 500 Internal Server Error 응답
+    }
   }
 }

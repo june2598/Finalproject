@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class ApiMemberController {
   private final MemberSVC memberSVC;
   private final StockRecommendationSVC stockRecommendationSVC;
   private final PropensityTestSVC propensityTestSVC;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   // 회원 정보 수정
   @PostMapping("/update")
@@ -70,8 +72,10 @@ public class ApiMemberController {
         return ResponseEntity.badRequest().body(response);
       }
 
+      String hashedPassword = passwordEncoder.encode(memberInfoDto.getPw());
+
       // 회원 정보 업데이트
-      member.setPw(memberInfoDto.getPw());
+      member.setPw(hashedPassword);
       member.setTel(memberInfoDto.getTel());
       member.setEmail(memberInfoDto.getEmail());
 

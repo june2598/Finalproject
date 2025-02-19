@@ -24,4 +24,7 @@ public interface MemberDAO {
 
   // 회원 정보 수정
   int updateById(Long memberSeq, Member member);
+
+  // 해싱된 임시 비밀번호를 db에 저장
+  public int updatePassword(String memberId, String hashedPassword);
 }

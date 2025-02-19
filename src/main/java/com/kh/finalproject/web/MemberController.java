@@ -7,6 +7,7 @@ import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class MemberController {
 
   private final MemberSVC memberSVC;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   // 회원정보 조회 전 비밀번호 인증
   @PostMapping("/pw-auth")
@@ -40,12 +42,16 @@ public class MemberController {
     }
 
     Member member = memberInfo.get();
+
+    String hashedPassword = member.getPw();
+
+
     String currentPw = member.getPw();
 
     // 입력된 비밀번호와 현재 비밀번호 비교
-    if (inputPw.equals(currentPw)) {
+    if (passwordEncoder.matches(inputPw, hashedPassword)) {
       // 비밀번호가 일치하는 경우
-      session.setAttribute("pwAuthenticated", true);     // 비밀번호 인증 상태 저장
+      session.setAttribute("pwAuthenticated", true); // 비밀번호 인증 상태 저장
       return "redirect:/member-info";
     } else {
       // 비밀번호가 일치하지 않는 경우

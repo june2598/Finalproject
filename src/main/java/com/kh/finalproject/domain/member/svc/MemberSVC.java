@@ -29,4 +29,7 @@ public interface MemberSVC {
 
   // 회원 정보 수정
   int updateById(Long memberSeq, Member member);
+
+  public int updatePassword(String memberId, String hashedPassword);
+
 }

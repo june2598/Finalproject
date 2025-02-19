@@ -9,11 +9,15 @@ import com.kh.finalproject.domain.member.svc.MemberSVC;
 import com.kh.finalproject.web.form.member.JoinForm;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +25,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
+
 public class ApiAuthController {
 
-  @Autowired
-  private EmailAuthSVC emailAuthSVC;
-
-  @Autowired
-  private MemberSVC memberSVC;
+  private final EmailAuthSVC emailAuthSVC;
+  private final MemberSVC memberSVC;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   // 아이디 중복 검사 요청
   @PostMapping ("/check-member-id")
@@ -50,6 +54,8 @@ public class ApiAuthController {
   @PostMapping("/register")
   public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody JoinForm joinForm,
                          BindingResult bindingResult) {
+
+    log.info("🔹 ApiAuthController BCryptPasswordEncoder: {}", System.identityHashCode(passwordEncoder));
 
     Map<String, Object> response = new HashMap<>();
 
@@ -80,6 +86,7 @@ public class ApiAuthController {
       response.put("message", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
       return ResponseEntity.badRequest().body(response); // 400 Bad Request 응답
     }
+
 
     Member member = new Member();
     member.setEmail(joinForm.getEmail());
@@ -124,42 +131,10 @@ public class ApiAuthController {
     if (isValid) {
       session.setAttribute("emailVerified",true);
       session.setAttribute("verifiedEmail",email);
-//      session.setAttribute("emailVerifiedAt",System.currentTimeMillis()); // 인증 시간 저장(인증 유지 시간에 제한을 두기 위함)
     }
 
     return ResponseEntity.ok(response);
   }
-
-  // 인증 여부 확인 (클라이언트 상태 유지용도)
-//  @GetMapping("/check-email-verified")
-//  public ResponseEntity<Map<String, Object>> checkEmailVerified(HttpSession session) {
-//    Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
-//    Long verifiedAt = (Long) session.getAttribute("emailVerifiedAt");
-//    long EXPIRATION_TIME = 5 * 60 * 1000; // 5분 (밀리초 단위)
-//
-//    Map<String, Object> response = new HashMap<>();
-//
-//    if (emailVerified != null && emailVerified && verifiedAt != null) {
-//      long elapsedTime = System.currentTimeMillis() - verifiedAt;
-//
-//      if (elapsedTime < EXPIRATION_TIME) {
-//        response.put("emailVerified", true);
-//        response.put("verifiedEmail", session.getAttribute("verifiedEmail"));
-//      } else {
-//        session.removeAttribute("emailVerified");
-//        session.removeAttribute("verifiedEmail");
-//        session.removeAttribute("emailVerifiedAt");
-//        response.put("emailVerified", false);
-//        response.put("message", "인증 시간이 만료되었습니다. 다시 인증해주세요.");
-//      }
-//    } else {
-//      response.put("emailVerified", false);
-//    }
-//
-//    return ResponseEntity.ok(response);
-//  }
-
-
 
 
 }

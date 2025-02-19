@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -22,10 +23,23 @@ import java.util.Optional;
 public class MemberDAOImpl implements MemberDAO {
 
   private final NamedParameterJdbcTemplate template;
+  private final BCryptPasswordEncoder passwordEncoder;
 
 
   @Override
   public Member insertMember(Member member) {
+
+    log.info("🔹 회원가입 시 입력된 비밀번호 (평문): '{}'", member.getPw());
+
+    // 📌 중복 해싱 방지: 이미 해싱된 비밀번호인지 확인
+    if (!member.getPw().startsWith("$2a$10$")) {
+      String hashedPassword = passwordEncoder.encode(member.getPw());
+      log.info("🔹 회원가입 시 해싱된 비밀번호: '{}'", hashedPassword);
+      member.setPw(hashedPassword);
+    } else {
+      log.warn("⚠ 이미 해싱된 비밀번호가 전달됨 → 중복 해싱 방지");
+    }
+
 
     StringBuffer sql = new StringBuffer();
     sql.append("INSERT INTO MEMBER (MEMBER_SEQ, MEMBER_ID, PW, TEL, EMAIL) ");
@@ -127,9 +141,9 @@ public class MemberDAOImpl implements MemberDAO {
     sql.append(" WHERE MEMBER_ID = :memberId AND EMAIL = :email ");
 
     Map<String, String> param = Map.of("email", email, "memberId", memberId);
-    try{
-      Member member = template.queryForObject(sql.toString(), param, BeanPropertyRowMapper.newInstance(Member.class));
-      return Optional.ofNullable(member != null ? member.getPw() : null);
+    try {
+      String hashedPassword = template.queryForObject(sql.toString(), param, String.class);
+      return Optional.ofNullable(hashedPassword);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
@@ -137,6 +151,7 @@ public class MemberDAOImpl implements MemberDAO {
 
   @Override
   public int updateById(Long memberSeq, Member member) {
+
     StringBuffer sql = new StringBuffer();
 
     sql.append(" UPDATE MEMBER ");
@@ -152,5 +167,19 @@ public class MemberDAOImpl implements MemberDAO {
 
     int rows = template.update(sql.toString(), param);
     return rows;
+  }
+
+  @Override
+  public int updatePassword(String memberId, String hashedPassword) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(" UPDATE MEMBER ");
+    sql.append(" SET PW = :pw, UDATE = sysdate ");
+    sql.append(" WHERE MEMBER_ID = :memberId ");
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("pw", hashedPassword)
+        .addValue("memberId", memberId);
+
+    return template.update(sql.toString(), param);
   }
 }

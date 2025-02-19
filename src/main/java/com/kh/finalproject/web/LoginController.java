@@ -2,9 +2,7 @@ package com.kh.finalproject.web;
 
 import com.kh.finalproject.domain.entity.Member;
 import com.kh.finalproject.domain.entity.MemberTraits;
-import com.kh.finalproject.domain.member.dao.MemberDAO;
 import com.kh.finalproject.domain.member.svc.MemberSVC;
-import com.kh.finalproject.domain.propertytest.dao.PropensityTestDAO;
 import com.kh.finalproject.domain.propertytest.svc.PropensityTestSVC;
 import com.kh.finalproject.web.form.login.LoginForm;
 import com.kh.finalproject.web.form.login.LoginMember;
@@ -13,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +27,15 @@ public class LoginController {
 
   private final MemberSVC memberSVC;
   private final PropensityTestSVC propensityTestSVC;
+  private final BCryptPasswordEncoder passwordEncoder;
+
 
   // 로그인 POST요청
   @PostMapping("/login")
   public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request,
                       RedirectAttributes redirectAttributes) {
     log.info("로그인 요청: {}", loginForm);
+    log.info("🔹 LoginController BCryptPasswordEncoder: {}", System.identityHashCode(passwordEncoder));
 
     // 비밀번호 일치 여부
     Optional<Member> optionalMember = memberSVC.findByMemberId(loginForm.getMemberId());
@@ -49,13 +51,19 @@ public class LoginController {
     log.info("입력된 비밀번호: {}", loginForm.getPw());
     log.info("저장된 해싱된 비밀번호: {}", loginMember.getPw());
 
-    // 입력된 비밀번호와 비밀번호 비교
-    if (!loginForm.getPw().equals(loginMember.getPw())) {
+    if (!passwordEncoder.matches(loginForm.getPw(), loginMember.getPw())) {
+      log.warn("❌ 비밀번호 검증 실패!");
+      log.warn("입력한 비밀번호: '{}'", loginForm.getPw());
+      log.warn("DB에 저장된 해싱된 비밀번호: '{}'", loginMember.getPw());
+
+      boolean testMatch = passwordEncoder.matches("Rla81680!", loginMember.getPw());
+      log.warn("🔹 테스트 비밀번호 비교 (Rla81680! vs DB): {}", testMatch);
+
       bindingResult.rejectValue("pw", "invalidMember");
-      log.warn("비밀번호 불일치: {}", loginForm.getMemberId());
-      redirectAttributes.addFlashAttribute("error","비밀번호가 일치하지 않습니다.");
+      redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
       return "redirect:/login";
     }
+
 
     // 로그인 세션 변경
     HttpSession session = request.getSession(true);
