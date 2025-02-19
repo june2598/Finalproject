@@ -11,7 +11,7 @@ public interface StockDetailDAO {
   List<StockNewsDto> getStockNewsList (Long stkId);
 
   // 특정 종목의 상세 지표 테이블 가져오기 (당일)
-  List<StockListDto> getStockDetail (Long stkId);
+  List<StockListDto> getStockDetail (String stkCode);
 
   // 종목 코드로 종목 id 가져오기
 

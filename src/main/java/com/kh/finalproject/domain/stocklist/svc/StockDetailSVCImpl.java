@@ -1,5 +1,6 @@
 package com.kh.finalproject.domain.stocklist.svc;
 
+import com.kh.finalproject.domain.dto.StockListDto;
 import com.kh.finalproject.domain.dto.StockNewsDto;
 import com.kh.finalproject.domain.stocklist.dao.StockDetailDAO;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,11 @@ public class StockDetailSVCImpl implements StockDetailSVC{
   @Override
   public List<StockNewsDto> getStockNewsList(Long stkId) {
     return stockDetailDAO.getStockNewsList(stkId);
+  }
+
+  @Override
+  public List<StockListDto> getStockDetail(String stkCode) {
+    return stockDetailDAO.getStockDetail(stkCode);
   }
 
   @Override

@@ -73,8 +73,32 @@ public class StockDetailDAOImpl implements StockDetailDAO{
   }
 
   @Override
-  public List<StockListDto> getStockDetail(Long stkId) {
-    return List.of();
+  public List<StockListDto> getStockDetail(String stkCode) {
+
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" SELECT ");
+    sql.append(" t.STK_ID, ");
+    sql.append("     m.STK_CODE, ");
+    sql.append("     m.STK_NM, ");
+    sql.append("     r.PRICE, ");
+    sql.append("     r.CHANGE, ");
+    sql.append("     r.CHANGE_RATIO, ");
+    sql.append("     r.VOLUME, ");
+    sql.append("     TO_CHAR(r.amount / 1000000, 'FM9,999,999') AS AMOUNT, ");
+    sql.append(" TO_CHAR(r.marcap / 100000000, 'FM9,999,999') AS MARCAP, ");
+    sql.append(" t.TRAIT_STK_RISK ");
+    sql.append(" FROM MKT_SEC_STK m ");
+    sql.append(" JOIN RT_STK r ON m.STK_ID = r.STK_ID ");
+    sql.append(" JOIN TRAIT_STK t ON r.STK_ID = t.STK_ID ");
+    sql.append(" WHERE STK_CODE = :stkCode ");
+    sql.append(" AND r.CDATE = (SELECT MAX(CDATE) FROM RT_STK WHERE STK_ID = m.STK_ID) ");
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("stkCode", stkCode);
+
+    List<StockListDto> list = template.query(sql.toString(), param, new BeanPropertyRowMapper<>(StockListDto.class));
+    return list;
   }
 
 

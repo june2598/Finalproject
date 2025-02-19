@@ -74,4 +74,21 @@ public class ApiStockListController {
     return res;
   }
 
+  // 종목별 상세 지표 불러오기
+  @GetMapping("/{stkCode}/detail")
+  public ApiResponse<List<StockListDto>> getStockDetail(
+      @PathVariable("stkCode") String stkCode) {
+
+    log.info("Fetching stock detail for stockCode: {}", stkCode);
+
+    ApiResponse<List<StockListDto>> res = null;
+
+    if (stkCode == null) {
+      throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND, null);
+    }
+    List<StockListDto> stockDetail = stockDetailSVC.getStockDetail(stkCode);
+    res = ApiResponse.of(ApiResponseCode.SUCCESS,stockDetail);
+    return res;
+
+  }
 }

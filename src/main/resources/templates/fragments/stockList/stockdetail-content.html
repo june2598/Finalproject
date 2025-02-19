@@ -5,10 +5,27 @@
       <span th:text="${stkNm}"></span>
       캔들 차트
     </div>
-    <div id="detail-table">
-      종목 현재 지표 테이블
+    <div id="stock-info" class="px-6 w-full flex-1 flex flex-col justify-end">
+      <h1 class="font-extrabold text-xl mb-4">종목 현재 지표</h1>
+      <table id="stock-detail-table">
+        <thead>
+          <tr>
+            <th>종목명</th>
+            <th>가격</th>
+            <th>전일비</th>
+            <th>등락률(%)</th>
+            <th>거래량</th>
+            <th>거래대금(백만)</th>
+            <th>시가총액(억)</th>
+            <th>위험도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 데이터가 여기에 삽입됩니다. -->
+        </tbody>
+      </table>
     </div>
-    <div id="stock-news-container" class="px-6 pt-6 pb-2 w-full h-full flex-1 flex flex-col justify-end">
+    <div id="stock-news-container" class="px-6 pt-6 pb-2 w-full h-full flex flex-col justify-end">
       <h1 class="font-extrabold text-xl mb-4">종목 관련 뉴스</h1>
       <table id="stock-news-table">
         <thead>
