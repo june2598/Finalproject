@@ -67,7 +67,10 @@ public class IndexController {
     return "member/memberInfoIndex";
   }
 
+  // 종목 상세 지표 페이지로 이동
 
-
-
+  @GetMapping("/stockList/stocks")
+  public String showStockDetail() {
+    return "stockList/stockDetail";
+  }
 }
