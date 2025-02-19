@@ -33,6 +33,7 @@ public class StockListDAOImpl implements StockListDAO{
     StringBuffer sql = new StringBuffer();
     sql.append(" SELECT ");
     sql.append(" t.stk_id, ");
+    sql.append(" m.stk_code, ");
     sql.append("     m.stk_nm, ");
     sql.append("     r.price, ");
     sql.append("     r.change, ");

@@ -86,7 +86,12 @@ const loadStocksList = async (marketId, orderBy, risk, offset) => {
     data.body.forEach(stock => {
       const row = document.createElement('tr'); // 새로운 행 생성
       row.innerHTML = `
-        <td>${stock.stkNm}</td>
+        <td>
+          <a href="javascript:void(0);" onclick="goToStockDetail('${stock.stkCode}')"
+         class="text-blue-500 hover:underline cursor-pointer">
+         ${stock.stkNm}
+         </a>
+        </td>
         <td>${stock.price}</td>
         <td>${stock.change}</td>
         <td>${stock.changeRatio + '%'}</td>
@@ -109,9 +114,9 @@ document.getElementById('prevBtn').addEventListener('click', () => {
   if (currentPage > 0) {
     currentPage--;
     const marketId = document.getElementById('marketId').value;
-    const orderBy = document.querySelector('#stocksTable .sortable.selected') 
-    ? document.querySelector('#stocksTable .sortable.selected').getAttribute('data-order') 
-    : 'r.MARCAP'; // 기본 정렬 기준 설정
+    const orderBy = document.querySelector('#stocksTable .sortable.selected')
+      ? document.querySelector('#stocksTable .sortable.selected').getAttribute('data-order')
+      : 'r.MARCAP'; // 기본 정렬 기준 설정
     const risk = document.getElementById('risk').value;
     loadStocksList(marketId, orderBy, risk, currentPage * pageSize);
   }
@@ -121,12 +126,16 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 document.getElementById('nextBtn').addEventListener('click', () => {
   currentPage++;
   const marketId = document.getElementById('marketId').value;
-  const orderBy = document.querySelector('#stocksTable .sortable.selected') 
-  ? document.querySelector('#stocksTable .sortable.selected').getAttribute('data-order') 
-  : 'r.MARCAP'; // 기본 정렬 기준 설정
+  const orderBy = document.querySelector('#stocksTable .sortable.selected')
+    ? document.querySelector('#stocksTable .sortable.selected').getAttribute('data-order')
+    : 'r.MARCAP'; // 기본 정렬 기준 설정
   const risk = document.getElementById('risk').value;
   // offset 계산
   const offset = currentPage * pageSize;
   console.log(`다음 버튼 클릭: currentPage=${currentPage}, offset=${offset}`); // 로그 추가
   loadStocksList(marketId, orderBy, risk, offset);
 });
+
+function goToStockDetail(stkCode) {
+  window.location.href = `http://localhost:9080/stockList/stocks?stkCode=${stkCode}`;
+}

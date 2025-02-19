@@ -5,7 +5,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script th:src="@{/js/common.js}" defer></script>
+  <script th:src="@{/js/stock-detail.js}" defer></script>
   <title>Title</title>
+
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body class="bg-gray-200">
 <div class="container mx-auto max-w-screen-xl flex flex-col">
@@ -17,7 +36,7 @@
   <th:block th:replace="~{fragments/nav :: nav}"></th:block>
   <!-- Main 영역 -->
 
-  <th:block th:replace="~{fragments/main-header :: main-header(title='종목 리스트')}"></th:block>
+  <th:block th:replace="~{fragments/main-header :: main-header(title='종목 상세 지표')}"></th:block>
   <th:block th:replace="~{fragments/stockList/stockdetail-content :: stockdetail-content}"></th:block>
 
   <!-- footer 영역-->

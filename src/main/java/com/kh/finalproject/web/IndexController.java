@@ -1,6 +1,7 @@
 package com.kh.finalproject.web;
 
 import com.kh.finalproject.domain.entity.MemberTraits;
+import com.kh.finalproject.domain.stocklist.svc.StockDetailSVC;
 import com.kh.finalproject.web.form.login.LoginForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -15,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 
 public class IndexController {
+
+  private final StockDetailSVC stockDetailSVC;
 
   @GetMapping
   public String index() {
@@ -70,7 +74,13 @@ public class IndexController {
   // 종목 상세 지표 페이지로 이동
 
   @GetMapping("/stockList/stocks")
-  public String showStockDetail() {
+  public String showStockDetail(@RequestParam("stkCode") String stkCode, Model model) {
+
+    String stkNm = stockDetailSVC.getStkNmByStkCode(stkCode);
+
+    model.addAttribute("stkNm",stkNm);
+    model.addAttribute("stkCode",stkCode);
+
     return "stockList/stockDetail";
   }
 }

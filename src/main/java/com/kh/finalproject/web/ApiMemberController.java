@@ -78,8 +78,13 @@ public class ApiMemberController {
       memberSVC.updateById(member.getMemberSeq(), member);
 
 
-      // 수정후에 세션정보 최신으로 업데이트
-      session.setAttribute("loginOkMember", member);
+      // 수정 후 세션 정보 최신화
+      session.setAttribute("loginOkMember", new LoginMember(
+          member.getMemberSeq(),
+          member.getMemberId(),
+          member.getEmail(),
+          member.getMemberClsfc()
+      ));
 
       response.put("success", true);
       response.put("message", "회원 정보가 성공적으로 수정되었습니다.");
