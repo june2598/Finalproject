@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadTrendData(1, 'NEWS_INCREASE_RATE');
   // 주식 데이터의 뉴스 증가율을 기준으로 로드
   loadStocksTrend('NEWS_INCREASE_RATE');
+  loadWordCloud();
 
   // KOSPI 클릭 이벤트
   document.getElementById('kospi').addEventListener('click', () => {
@@ -114,3 +115,21 @@ const loadStocksTrend = async (orderBy) => {
     });
   }
 };
+
+// 워드 클라우드 샘플 테스트
+const loadWordCloud = async () => {
+  try {
+
+    const url = `http://127.0.0.1:8000/wordcloud`;
+
+    const data = await ajax.get(url);
+
+    if (data && data.image) {
+      document.getElementById('wordcloud').src = data.image;
+    } else {
+      console.error("error", data);
+    }
+  } catch (error) {
+    console.error("error loading word cloud:", error);
+  }
+}

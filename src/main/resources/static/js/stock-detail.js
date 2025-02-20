@@ -1,10 +1,44 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const stkCode = new URLSearchParams(window.location.search).get('stkCode'); // url에서 stkCode
+document.addEventListener('DOMContentLoaded', async () => {
+  let stkCode = new URLSearchParams(window.location.search).get('stkCode'); // URL에서 stkCode 가져오기
+
   if (stkCode) {
-    loadStockNews(stkCode);
-    loadStockDetail(stkCode);
+    // stkCode가 숫자 6자리가 아니라면(즉, 한글이라면) 종목 코드로 변환 요청
+    if (!/^[0-9A-Z]{6}$/.test(stkCode)) {
+      stkCode = await getStockCodeFromName(stkCode);
+    }
+
+    // 변환된 종목 코드로 API 호출
+    if (stkCode) {
+      loadStockNews(stkCode);
+      loadStockDetail(stkCode);
+
+      // 초기 차트 로딩
+      updateChart(stkCode);
+    }
   }
+
+  // 라디오 버튼 변경 시 차트 업데이트
+  document.querySelectorAll('input[name="chartType"]').forEach(radio => {
+    radio.addEventListener('change', () => updateChart(stkCode));
+  });
+
 });
+
+
+
+function updateChart(stkCode) {
+  if (!stkCode) return;
+
+  // 체크된 값 가져오기
+  const type = document.querySelector('input[name="chartType"]:checked')?.value || 'return'; // 기본값 return
+  const iframe = document.getElementById("stock-chart-frame");
+
+  console.log(`✅ 업데이트: ${stkCode}_candle_${type}_3m.html`); // 디버깅용 로그
+
+  // iframe의 src 업데이트
+  iframe.src = `http://localhost:8000/images/${stkCode}_candle_${type}_3m.html`;
+}
+
 
 const loadStockNews = async (stkCode) => {
 
@@ -67,3 +101,15 @@ const loadStockDetail = async (stkCode) => {
     });
   }
 }
+
+
+// 🔄 종목명을 종목 코드로 변환하는 함수
+const getStockCodeFromName = async (stkNm) => {
+  try {
+    const response = await ajax.get(`http://localhost:9080/api/stockList/convert?stkNm=${encodeURIComponent(stkNm)}`);
+    return response.body ? response.body.stkCode : null;
+  } catch (error) {
+    console.error('종목 코드 변환 실패:', error);
+    return null;
+  }
+};

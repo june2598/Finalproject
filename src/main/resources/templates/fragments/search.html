@@ -1,9 +1,30 @@
 <th:block th:fragment="search">
   <div class="min-h-[6vh] bg-white p-2 flex items-stretch">
-    <input type="text" placeholder="종목명 입력"
-      class="flex-grow p-2 mr-2 rounded-l border border-gray-300 text-lg" />
-    <button class="bg-blue-500 text-white rounded text-base px-4 w-24 transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-      검색
-    </button>
+    <form id="search-form" class="flex w-full" onsubmit="return searchStock();">
+      <input type="text" id="search-input" placeholder="종목명 또는 종목코드 입력"
+             class="flex-grow p-2 mr-2 rounded-l border border-gray-300 text-lg" />
+      <button type="submit"
+              class="bg-blue-500 text-white rounded text-base px-4 w-24 transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+        검색
+      </button>
+    </form>
   </div>
+  <script>
+    function searchStock() {
+      var searchValue = document.getElementById("search-input").value.trim();
+
+      if (searchValue === "") {
+        alert("종목명 또는 종목코드를 입력하세요.");
+        return false; // 검색 실행 X
+      }
+
+      // 검색 URL 구성 (Spring Controller 매핑에 맞게)
+      var searchUrl = "/stockList/stocks?stkCode=" + encodeURIComponent(searchValue);
+
+      // 상세 페이지로 이동
+      window.location.href = searchUrl;
+
+      return false; // 폼 기본 제출 방지
+    }
+  </script>
 </th:block>

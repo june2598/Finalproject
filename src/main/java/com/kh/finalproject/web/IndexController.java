@@ -76,6 +76,11 @@ public class IndexController {
   @GetMapping("/stockList/stocks")
   public String showStockDetail(@RequestParam("stkCode") String stkCode, Model model) {
 
+    // 종목 코드 정규표현식 : 6자리, 숫자와 대문자로 구성
+    if (!stkCode.matches("^[0-9A-Z]{6}$")) {
+      stkCode = stockDetailSVC.getStkCodeByStkNm(stkCode);
+    }
+
     String stkNm = stockDetailSVC.getStkNmByStkCode(stkCode);
 
     model.addAttribute("stkNm",stkNm);

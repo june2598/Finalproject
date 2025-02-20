@@ -21,6 +21,10 @@ public interface StockDetailDAO {
 
   String getStkNmByStkCode (String stkCode);
 
+  // 종목 명으로 종목 코드 가져오기
+
+  String getStkCodeByStkNm (String stkNm);
+
 
 
 }

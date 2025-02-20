@@ -1,11 +1,20 @@
 <th:block th:fragment="stockdetail-content">
   <div id="stock-detail-container"
-    class="w-full h-full min-h-[65vh] bg-white flex flex-col items-center justify-between">
-    <div id="detail-graph">
-      <span th:text="${stkNm}"></span>
-      캔들 차트
+    class="w-full h-full min-h-[100vh] bg-white flex flex-col items-center justify-between">
+    <div id="detail-graph" class="w-full h-full flex-1 flex flex-col min-h-[100vh]">
+      <h3 th:text="${stkNm}" class="w-full text-center"></h3>
+      <iframe th:src="@{'http://localhost:8000/images/' + ${stkCode} + '_candle_' + 'default' + '_3m.html'}"
+        id="stock-chart-frame" class="w-full h-full flex-1">
+      </iframe>
+
+      <label>
+        <input type="radio" name="chartType" value="return" onclick="updateChart()" checked> Return
+      </label>
+      <label>
+        <input type="radio" name="chartType" value="pos" onclick="updateChart()"> Position
+      </label>
     </div>
-    <div id="stock-info" class="px-6 w-full flex-1 flex flex-col justify-end">
+    <div id="stock-info" class="px-6 w-full flex flex-col justify-end">
       <h1 class="font-extrabold text-xl mb-4">종목 현재 지표</h1>
       <table id="stock-detail-table">
         <thead>

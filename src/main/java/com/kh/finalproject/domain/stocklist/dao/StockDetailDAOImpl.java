@@ -101,5 +101,18 @@ public class StockDetailDAOImpl implements StockDetailDAO{
     return list;
   }
 
+  @Override
+  public String getStkCodeByStkNm(String stkNm) {
 
+    StringBuffer sql = new StringBuffer();
+    sql.append(" SELECT STK_CODE ");
+    sql.append(" FROM STOCKS ");
+    sql.append(" WHERE STK_NM = :stkNm ");
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("stkNm",stkNm);
+
+    String stkCode = template.queryForObject(sql.toString(),param, String.class);
+    return stkCode;
+  }
 }

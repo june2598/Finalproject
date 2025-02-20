@@ -15,4 +15,6 @@ public interface StockDetailSVC {
 
   String getStkNmByStkCode (String stkCode);
 
+  String getStkCodeByStkNm (String stkNm);
+
 }

@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -90,5 +92,19 @@ public class ApiStockListController {
     res = ApiResponse.of(ApiResponseCode.SUCCESS,stockDetail);
     return res;
 
+  }
+
+  // 종목명을 종목 코드로 변환하는 API
+  @GetMapping("/convert")
+  public ApiResponse<Map<String, String>> convertStockNameToCode(@RequestParam("stkNm") String stkNm) {
+    String stkCode = stockDetailSVC.getStkCodeByStkNm(stkNm);
+
+    if (stkCode == null) {
+      throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND, null);
+    }
+
+    Map<String, String> response = new HashMap<>();
+    response.put("stkCode", stkCode);
+    return ApiResponse.of(ApiResponseCode.SUCCESS, response);
   }
 }
