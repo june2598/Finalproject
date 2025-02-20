@@ -11,6 +11,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 IMAGE_DIR = os.path.join(BASE_DIR, "images", "wordcloud")
 cached_wordcloud_path = os.path.join(IMAGE_DIR, "wordcloud.png")
 
+CHART_DIR = os.path.join("images")
+
 
 @router.get("/wordcloud")
 async def get_wordcloud():
@@ -48,5 +50,5 @@ async def get_wordcloud():
 #
 # @router.get("/images/wordcloud/{filename}")
 # async def get_image(filename: str):
-#     file_path = os.path.join(IMAGE_DIR, filename)
+#     file_path = os.path.join(CHART_DIR, filename)
 #     return FileResponse(file_path)

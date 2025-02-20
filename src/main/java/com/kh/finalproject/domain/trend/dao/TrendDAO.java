@@ -25,6 +25,9 @@ public interface TrendDAO {
   // 이슈종목 커뮤니티 정렬
   List<StocksTrendRateDto> stocksTrendByCommunity();
 
+  // 메인페이지에 띄울 주요 단어 다섯개
+
+
 
 
 
