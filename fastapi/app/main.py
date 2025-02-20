@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from app.api.routes import router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI()
 
@@ -13,6 +15,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# ✅ 이미지 저장 폴더 설정
+IMAGE_DIR = os.path.join("images", "wordcloud")
+
+# 디렉토리가 없으면 오류 발생
+app.mount("/images", StaticFiles(directory=IMAGE_DIR), name="images")
 
 
 # 라우터 등록

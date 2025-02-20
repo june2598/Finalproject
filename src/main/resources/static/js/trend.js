@@ -119,17 +119,19 @@ const loadStocksTrend = async (orderBy) => {
 // 워드 클라우드 샘플 테스트
 const loadWordCloud = async () => {
   try {
+    const url = `http://127.0.0.1:8000/api/wordcloud`;
 
-    const url = `http://127.0.0.1:8000/wordcloud`;
+    const res = await fetch(url);
 
-    const data = await ajax.get(url);
-
-    if (data && data.image) {
-      document.getElementById('wordcloud').src = data.image;
-    } else {
-      console.error("error", data);
+    if (!res.ok) {
+      throw new Error(`응답 오류: ${res.status}`);
     }
+
+    // ✅ 이미지 URL을 직접 `<img>` 태그에 설정
+    document.getElementById("wordcloud").src = url;
+
   } catch (error) {
-    console.error("error loading word cloud:", error);
+    console.error("워드 클라우드 로드 중 오류 발생:", error);
   }
+ 
 }

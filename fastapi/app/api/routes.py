@@ -1,9 +1,7 @@
 from fastapi import APIRouter
-from app.api.endpoints.wordcloud_trend import generate_wordcloud, generate_wordcloud2, get_image
+from app.api.endpoints.wordcloud_trend import router as wordcloud_router
 
 router = APIRouter()
 
 # 엔드포인트 등록
-router.add_api_route("/wordcloud", generate_wordcloud, methods=["GET"])
-router.add_api_route("/wordcloud2", generate_wordcloud2, methods=["GET"])
-router.add_api_route("/images/{filename}", get_image, methods=["GET"])
+router.include_router(wordcloud_router, prefix="/api", tags=["WordCloud"])
