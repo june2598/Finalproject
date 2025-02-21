@@ -15,15 +15,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# ✅ 이미지 저장 폴더 설정
+# 이미지 저장 폴더 설정
 IMAGE_DIR = os.path.join("images", "wordcloud")
 
 # /images 경로로 기본 images 폴더 제공
 app.mount("/images", StaticFiles(directory="images"), name="images")
-
-
 app.mount("/images", StaticFiles(directory=IMAGE_DIR), name="images")
-
 
 # 라우터 등록
 app.include_router(router)

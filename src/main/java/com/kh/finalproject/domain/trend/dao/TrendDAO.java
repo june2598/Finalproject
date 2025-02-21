@@ -2,6 +2,7 @@ package com.kh.finalproject.domain.trend.dao;
 
 import com.kh.finalproject.domain.dto.SectorsTrendRateDto;
 import com.kh.finalproject.domain.dto.StocksTrendRateDto;
+import com.kh.finalproject.domain.vo.DomesticIndicesVO;
 
 import java.util.List;
 
@@ -24,6 +25,16 @@ public interface TrendDAO {
 
   // 이슈종목 커뮤니티 정렬
   List<StocksTrendRateDto> stocksTrendByCommunity();
+
+  // 실시간 국내 지수
+  List<DomesticIndicesVO> getDomesticIndices(int marketId);
+
+  // 실시간 국내 지수 (코스피)
+  List<DomesticIndicesVO> getKospiDomesticIndices();
+
+  // 실시간 국내 지수 (코스닥)
+  List<DomesticIndicesVO> getKosdaqDomesticIndices();
+
 
   // 메인페이지에 띄울 주요 단어 다섯개
 

@@ -3,7 +3,9 @@ const pageSize = 10; // 한 페이지에 표시할 데이터 수
 
 // 페이지 로드 시 기본 데이터 로드
 document.addEventListener('DOMContentLoaded', () => {
-  loadStocksList(1, 'r.MARCAP', 3, currentPage * pageSize);
+  loadSectorList();
+  loadStocksList(1, 'r.MARCAP', 3, currentPage * pageSize, null);
+
 
   // KOSPI 클릭 이벤트
   document.getElementById('kospi').addEventListener('click', () => {
@@ -20,12 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
     selectMarket('3', 'r.MARCAP', 3, currentPage * pageSize); // KOSDAQ으로 선택
   });
 
+  // 업종 선택 이벤트
+  document.getElementById('sectorSelect').addEventListener('change', () => {
+    const secId = document.getElementById('sectorSelect').value;
+    const marketId = document.getElementById('marketId').value;
+    const risk = document.getElementById('risk').value;
+    loadStocksList(marketId, 'r.MARCAP', risk, currentPage * pageSize, secId);
+  });
+
 
   // 주식 테이블 정렬 기능
   document.querySelectorAll('#stocksTable .sortable').forEach(header => {
     header.addEventListener('click', () => {
       const orderBy = header.getAttribute('data-order');
-      loadStocksList(document.getElementById('marketId').value, orderBy, document.getElementById('risk').value, currentPage * pageSize);
+      const marketId = document.getElementById('marketId').value;
+      const risk = document.getElementById('risk').value;
+      const secId = document.getElementById('sectorSelect').value;
+      loadStocksList(marketId, orderBy, risk, currentPage * pageSize, secId);
     });
   });
 
@@ -34,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const marketId = document.getElementById('marketId').value;
     const orderBy = 'r.MARCAP'; // 기본 정렬 기준으로 설정
     const risk = document.getElementById('risk').value;
-    loadStocksList(marketId, orderBy, risk, currentPage * pageSize);
+    const secId = document.getElementById('sectorSelect').value || null; // 업종 유지
+    loadStocksList(marketId, orderBy, risk, currentPage * pageSize, secId);
   });
 });
 
@@ -58,15 +72,51 @@ function selectMarket(marketId, orderBy, risk, offset) {
   selectedMarket.classList.remove("text-gray-300");
   selectedMarket.classList.add("font-bold", "text-black");
 
+  // 시장 ID 설정
   document.getElementById('marketId').value = marketId;
+
+  // 시장을 선택할 때 업종 필터 초기화
+  document.getElementById('sectorSelect').value = '';
+
+  // 위험도 값 유지
   const riskValue = document.getElementById('risk').value;
-  loadStocksList(marketId, orderBy, riskValue, offset);
+
+  loadSectorList(); // 시장 변경 시 업종 리스트 갱신
+  // 종목 리스트 호출 (secId는 기본적으로 null)
+  loadStocksList(marketId, orderBy, riskValue, offset, '');
+
 }
 
-// 종목 리스트 호출 함수
-const loadStocksList = async (marketId, orderBy, risk, offset) => {
-  // API 호출 URL 생성
-  const url = `/api/stockList?marketId=${marketId}&orderBy=${orderBy}&risk=${risk}&offset=${offset}`;
+// 업종 리스트 불러오기 (marketId 반영)
+const loadSectorList = async () => {
+  try {
+    const marketId = document.getElementById('marketId').value; // 현재 선택된 시장 ID 가져오기
+    const response = await ajax.get(`/api/stockList/sectorList?marketId=${marketId}`); // API 호출
+    const sectorSelect = document.getElementById('sectorSelect');
+
+    // 기존 옵션 삭제 후 기본값 추가
+    sectorSelect.innerHTML = '<option value="">전체</option>';
+
+    // 받아온 업종 리스트 추가
+    response.body.forEach(sector => {
+      const option = document.createElement('option');
+      option.value = sector.secId;  // secId 사용
+      option.textContent = sector.secNm; // secNm 표시
+      sectorSelect.appendChild(option);
+
+    });
+
+  } catch (error) {
+    console.error("업종 목록을 불러오는 중 오류 발생:", error);
+  }
+};
+
+
+
+// 종목 리스트 호출 함수 (secId 추가됨)
+const loadStocksList = async (marketId, orderBy, risk, offset, secId) => {
+  const url = `/api/stockList?marketId=${marketId}&orderBy=${orderBy}&risk=${risk}&offset=${offset}`
+    + (secId ? `&secId=${secId}` : ''); // 업종 ID 추가
 
   // AJAX GET 요청
   const data = await ajax.get(url);
@@ -118,7 +168,8 @@ document.getElementById('prevBtn').addEventListener('click', () => {
       ? document.querySelector('#stocksTable .sortable.selected').getAttribute('data-order')
       : 'r.MARCAP'; // 기본 정렬 기준 설정
     const risk = document.getElementById('risk').value;
-    loadStocksList(marketId, orderBy, risk, currentPage * pageSize);
+    const secId = document.getElementById('sectorSelect').value || null; // 업종 유지
+    loadStocksList(marketId, orderBy, risk, currentPage * pageSize, secId);
   }
 });
 
@@ -132,8 +183,10 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   const risk = document.getElementById('risk').value;
   // offset 계산
   const offset = currentPage * pageSize;
+  const secId = document.getElementById('sectorSelect').value || null; // 업종 유지
   console.log(`다음 버튼 클릭: currentPage=${currentPage}, offset=${offset}`); // 로그 추가
-  loadStocksList(marketId, orderBy, risk, offset);
+  loadStocksList(marketId, orderBy, risk, offset, secId);
+
 });
 
 function goToStockDetail(stkCode) {

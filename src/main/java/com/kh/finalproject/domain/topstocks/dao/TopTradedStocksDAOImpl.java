@@ -32,7 +32,7 @@ public class TopTradedStocksDAOImpl implements TopTradedStocksDAO {
     StringBuffer sql = new StringBuffer();
 
     sql.append(" SELECT ");
-    sql.append(" m.STK_NM, ");
+    sql.append(" m.STK_NM, m.STK_CODE, ");
     sql.append("     r_today.VOLUME AS TODAY_VOLUME, ");
     sql.append(" r_yesterday.VOLUME AS YESTERDAY_VOLUME, ");
     sql.append("     (r_today.VOLUME - r_yesterday.VOLUME) AS CHANGE_VOLUME, ");

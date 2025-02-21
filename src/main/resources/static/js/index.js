@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-
 const loadRealTimePriceData = async (orderBy) => {
 
   const url = `/api/index/prices?orderBy=${orderBy}`;
@@ -25,7 +23,12 @@ const loadRealTimePriceData = async (orderBy) => {
     data.body.forEach(item => {
       const row = document.createElement('tr'); // 새로운 행 생성
       row.innerHTML = `
-                <td class="text-left p-1 w-2/3 whitespace-nowrap truncate">${item.stkNm}</td>
+                <td class="text-left p-1 w-2/3 whitespace-nowrap truncate">
+                  <a href="javascript:void(0);" onclick="goToStockDetail('${item.stkCode}')"
+                  class="text-blue-500 hover:underline cursor-pointer">
+                  ${item.stkNm}
+                  </a>
+                </td>
                 <td class="text-right py-2 px-4 w-1/6">${item.change}</td>
                 <td class="text-right py-2 px-4 w-1/6">${item.changeRatio + '%' || 'N/A'}</td>
     `;
@@ -51,11 +54,22 @@ const loadRealTimeVolumeData = async (orderBy) => {
     data.body.forEach(item => {
       const row = document.createElement('tr');
       row.innerHTML = `
-              <td class="text-left p-1 w-2/3 whitespace-nowrap truncate">${item.stkNm}</td>
+              <td class="text-left p-1 w-2/3 whitespace-nowrap truncate">
+               <a href="javascript:void(0);" onclick="goToStockDetail('${item.stkCode}')"
+                  class="text-blue-500 hover:underline cursor-pointer">
+                  ${item.stkNm}
+                </a>
+              </td>
               <td class="text-right py-2 px-4 w-1/6">${item.changeVolume}</td>
-              <td class="text-right py-2 px-4 w-1/6">${item.changeRatioVolume + '%' ||'N/A'}</td>
+              <td class="text-right py-2 px-4 w-1/6">${item.changeRatioVolume + '%' || 'N/A'}</td>
     `;
       volumeTableBody.appendChild(row);
     });
   }
 };
+
+
+
+function goToStockDetail(stkCode) {
+  window.location.href = `http://localhost:9080/stockList/stocks?stkCode=${stkCode}`;
+}

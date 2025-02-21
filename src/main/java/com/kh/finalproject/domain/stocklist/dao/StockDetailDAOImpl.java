@@ -25,11 +25,13 @@ public class StockDetailDAOImpl implements StockDetailDAO{
 
     StringBuffer sql = new StringBuffer();
 
-    // 특정 종목 뉴스 가져오기
-    sql.append(" SELECT DISTINCT n.TITLE, m.STK_NM, m.STK_CODE, n.MEDIA_NAME, n.PUBLISHED_DATE, n.NEWS_URL ");
+    // 특정 종목 뉴스 가져오기 (가장 최신 다섯개)
+    sql.append(" SELECT n.TITLE, m.STK_NM, m.STK_CODE, n.MEDIA_NAME, n.PUBLISHED_DATE, n.NEWS_URL ");
     sql.append(" FROM MKT_SEC_STK m ");
     sql.append(" JOIN NEWS n ON m.STK_ID = n.STK_ID ");
     sql.append(" WHERE n.STK_ID = :stkId ");
+    sql.append(" ORDER BY n.PUBLISHED_DATE DESC ");
+    sql.append(" FETCH FIRST 5 ROWS ONLY ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("stkId", stkId);

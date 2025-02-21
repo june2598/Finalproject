@@ -3,6 +3,7 @@ package com.kh.finalproject.domain.trend.svc;
 import com.kh.finalproject.domain.dto.SectorsTrendRateDto;
 import com.kh.finalproject.domain.dto.StocksTrendRateDto;
 import com.kh.finalproject.domain.trend.dao.TrendDAO;
+import com.kh.finalproject.domain.vo.DomesticIndicesVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,20 @@ public class TrendSVCImpl implements TrendSVC {
   @Override
   public List<StocksTrendRateDto> stocksTrendByCommunity() {
     return trendDAO.stocksTrendByCommunity();
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getDomesticIndices(int marketId) {
+    return trendDAO.getDomesticIndices(marketId);
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getKospiDomesticIndices() {
+    return trendDAO.getKospiDomesticIndices();
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getKosdaqDomesticIndices() {
+    return trendDAO.getKosdaqDomesticIndices();
   }
 }

@@ -2,6 +2,7 @@ package com.kh.finalproject.domain.trend.dao;
 
 import com.kh.finalproject.domain.dto.SectorsTrendRateDto;
 import com.kh.finalproject.domain.dto.StocksTrendRateDto;
+import com.kh.finalproject.domain.vo.DomesticIndicesVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -138,5 +139,32 @@ public class TrendDAOImpl implements TrendDAO {
   @Override
   public List<StocksTrendRateDto> stocksTrendByCommunity() {
     return getStocksTrend("COMMUNITY_INCREASE_RATE");
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getDomesticIndices(int marketId) {
+
+    StringBuffer sql = new StringBuffer();
+
+    sql.append(" SELECT INDEX_VALUE, INDEX_COMP, MARKET_ID, CHANGE_RATIO ");
+    sql.append(" FROM DOMESTIC_INDICES ");
+    sql.append(" WHERE CDATE = (SELECT MAX(CDATE) FROM DOMESTIC_INDICES) ");
+    sql.append(" AND MARKET_ID = :marketId ");
+
+
+    SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("marketId",marketId);
+    List<DomesticIndicesVO> list = template.query(sql.toString(), param, new BeanPropertyRowMapper<>(DomesticIndicesVO.class));
+    return list;
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getKospiDomesticIndices() {
+    return getDomesticIndices(1);
+  }
+
+  @Override
+  public List<DomesticIndicesVO> getKosdaqDomesticIndices() {
+    return getDomesticIndices(2);
   }
 }

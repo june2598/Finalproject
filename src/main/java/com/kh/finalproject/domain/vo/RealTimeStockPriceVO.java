@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 public class RealTimeStockPriceVO {
   private String stkNm;         // 종목명
+  private String stkCode;       // 종목코드
   private Double change;        // 전일비
   private Double changeRatio;   // 등락률
   private LocalDateTime cdate;  // 날짜

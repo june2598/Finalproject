@@ -1,6 +1,7 @@
 package com.kh.finalproject.web;
 
 
+import com.kh.finalproject.domain.dto.SectorListDto;
 import com.kh.finalproject.domain.dto.StockListDto;
 import com.kh.finalproject.domain.dto.StockNewsDto;
 import com.kh.finalproject.domain.stocklist.svc.StockDetailSVC;
@@ -26,36 +27,52 @@ public class ApiStockListController {
   private final StockListSVC stockListSVC;
   private final StockDetailSVC stockDetailSVC;
 
-  //종목 리스트 불러오기
-
+  // 종목 리스트 불러오기 (업종 선택 가능)
   @GetMapping
   public ApiResponse<List<StockListDto>> stockList(
       @RequestParam(value = "marketId", defaultValue = "1") Integer marketId,
       @RequestParam(value = "orderBy", defaultValue = "MARCAP") String orderBy,
       @RequestParam(value = "risk", defaultValue = "3") Integer risk,
-      @RequestParam(value = "offset", defaultValue = "0") Integer offset
+      @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+      @RequestParam(value = "secId", required = false) Long secId // 업종 ID 추가
   ) {
 
-    log.info("Fetching sector trend for marketId: {}, orderBy: {}, risk: {}, offset: {}", marketId, orderBy, risk, offset);
+    log.info("Fetching stock list - marketId: {}, orderBy: {}, risk: {}, offset: {}, secId: {}",
+        marketId, orderBy, risk, offset, secId);
 
-    ApiResponse<List<StockListDto>> res = null;
-    List<StockListDto> stockList = stockListSVC.getStockList(marketId, orderBy, risk, offset);
+    List<StockListDto> stockList = stockListSVC.getStockList(marketId, orderBy, risk, offset, secId);
 
-    // 데이터가 없을 경우 페이지를 초기화
+    // 데이터가 없을 경우 페이지 초기화
     if (stockList.isEmpty()) {
-      // 페이지를 초기화하기 위해 기본값으로 설정
-      int resetOffset = 0; // 페이지 초기화
-      stockList = stockListSVC.getStockList(marketId, orderBy, risk, resetOffset); // 기본값으로 데이터 요청
+      log.warn("No data found. Resetting offset to 0.");
+      stockList = stockListSVC.getStockList(marketId, orderBy, risk, 0, secId);
     }
+
     // 데이터가 여전히 없으면 예외 발생
     if (stockList.isEmpty()) {
       throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND, null);
     }
 
-    res = ApiResponse.of(ApiResponseCode.SUCCESS, stockList);
-    return res;
+    return ApiResponse.of(ApiResponseCode.SUCCESS, stockList);
+  }
+
+  @GetMapping("/sectorList")
+  public ApiResponse<List<SectorListDto>> sectorList (
+      @RequestParam(value = "marketId", defaultValue = "1") Integer marketId
+  ) {
+
+    List<SectorListDto> sectorList = stockListSVC.getSectorList(marketId);
+
+    // 업종 데이터가 없을 경우 예외 처리
+    if (sectorList.isEmpty()) {
+      throw new BusinessException(ApiResponseCode.ENTITY_NOT_FOUND, null);
+    }
+
+    return ApiResponse.of(ApiResponseCode.SUCCESS, sectorList);
 
   }
+
+
 
   // 종목별 뉴스 리스트 불러오기
   @GetMapping("/{stkCode}/news")

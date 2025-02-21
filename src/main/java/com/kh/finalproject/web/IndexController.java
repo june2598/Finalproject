@@ -2,6 +2,8 @@ package com.kh.finalproject.web;
 
 import com.kh.finalproject.domain.entity.MemberTraits;
 import com.kh.finalproject.domain.stocklist.svc.StockDetailSVC;
+import com.kh.finalproject.domain.trend.svc.TrendSVC;
+import com.kh.finalproject.domain.vo.DomesticIndicesVO;
 import com.kh.finalproject.web.form.login.LoginForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -19,9 +23,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class IndexController {
 
   private final StockDetailSVC stockDetailSVC;
+  private final TrendSVC trendSVC;
 
   @GetMapping
-  public String index() {
+  public String index(Model model) {
+
+    List<DomesticIndicesVO> kospiDomesticIndices = trendSVC.getKospiDomesticIndices();
+    List<DomesticIndicesVO> kosdaqDomesticIndices = trendSVC.getKosdaqDomesticIndices();
+
+    model.addAttribute("kospi",kospiDomesticIndices);
+    model.addAttribute("kosdaq",kosdaqDomesticIndices);
+
     return "index";
   }
 

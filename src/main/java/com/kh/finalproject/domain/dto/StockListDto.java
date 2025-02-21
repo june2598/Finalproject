@@ -10,6 +10,8 @@ import lombok.ToString;
 public class StockListDto {
   private String stkNm;           // 종목명
   private String stkCode;         // 종목코드
+  private Long secId;             // 업종ID
+  private String secNm;           // 업종명
   private Long price;             // 가격
   private Long change;            // 전일비
   private double changeRatio;     // 등락률

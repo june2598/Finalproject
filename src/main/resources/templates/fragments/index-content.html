@@ -1,8 +1,28 @@
-
 <th:block th:fragment="index-content">
   <div class="w-full h-full min-h-[65vh] flex flex-col items-center justify-between">
-    <div class="bg-green-300 w-full flex-4 flex justify-center items-center">
-      실시간 국내 지수
+    <div id="domestic-indices" class="bg-white w-full flex-4 flex justify-center items-center">
+      <div id="kospi-indice" class="flex-1 flex flex-col justify-center items-center">
+        <div class="flex flex-col items-center">
+          <h2 id="kospi-header" class="font-bold text-xl py-2">코스피</h2>
+          <p th:text="${kospi[0].indexValue}" class="font-extrabold text-5xl py-2"></p>
+          <div id="kospi-risefall" th:class="${'py-2 ' + (kospi[0].indexComp > 0 ? 'text-blue-500' : (kospi[0].indexComp < 0 ? 'text-red-500' : ''))}">
+            <span id="kospi-arrow" th:text="${kospi[0].indexComp > 0 ? '▲' : (kospi[0].indexComp < 0 ? '▼' : '')}"></span>
+            <span th:text="${kospi[0].indexComp}" class="pr-2">전일비</span>
+            <span th:text="${kospi[0].changeRatio} + '%'">등락률</span>
+          </div>
+        </div>
+      </div>
+      <div id="kosdaq-indice" class="flex-1 flex flex-col justify-center items-center">
+        <div class="flex flex-col items-center">
+          <h2 id="kosdaq-header" class="font-bold text-xl py-2">코스닥</h2>
+          <p th:text="${kosdaq[0].indexValue}" class="font-extrabold text-5xl py-2"></p>
+          <div id="kosdaq-risefall" th:class="${'py-2 ' + (kosdaq[0].indexComp > 0 ? 'text-blue-500' : (kosdaq[0].indexComp < 0 ? 'text-red-500' : ''))}">
+            <span id="kosdaq-arrow" th:text="${kosdaq[0].indexComp > 0 ? '▲' : (kosdaq[0].indexComp < 0 ? '▼' : '')}"></span>
+            <span th:text="${kosdaq[0].indexComp}" class="pr-2">전일비</span>
+            <span th:text="${kosdaq[0].changeRatio} + '%'">등락률</span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="bg-gray-500 text-white flex-1 w-full flex justify-center items-center">
       주요 이슈
@@ -16,35 +36,35 @@
       <div class="w-full flex gap-0">
         <table id="priceTable" class="mt-4 w-full h-full flex-1 table-fixed">
           <thead>
-          <tr class="border-y-2 min-h-[10vh] border-black">
-            <th class="text-sm text-left p-2">종목명</th>
-            <th class="text-sm text-right px-3 py-2">
-              전일비 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
-            </th>
-            <th class="text-sm text-right px-3 py-2">
-              등락률 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
-            </th>
-          </tr>
+            <tr class="border-y-2 min-h-[10vh] border-black">
+              <th class="text-sm text-left p-2">종목명</th>
+              <th class="text-sm text-right px-3 py-2">
+                전일비 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+              </th>
+              <th class="text-sm text-right px-3 py-2">
+                등락률 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
+              </th>
+            </tr>
           </thead>
           <tbody>
-          <!-- 주가 기준 데이터 -->
+            <!-- 주가 기준 데이터 -->
           </tbody>
         </table>
         <div class="w-px bg-black h-full m-0"></div>
         <table id="volumeTable" class="mt-4 w-full h-full flex-1 table-fixed">
           <thead>
-          <tr class="border-y-2 min-h-[10vh] border-black">
-            <th class="text-sm text-left p-2">종목명</th>
-            <th class="text-sm text-right px-3 py-2">
-              전일비 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
-            </th>
-            <th class="text-sm text-right px-3 py-2">
-              등락률 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
-            </th>
-          </tr>
+            <tr class="border-y-2 min-h-[10vh] border-black">
+              <th class="text-sm text-left p-2">종목명</th>
+              <th class="text-sm text-right px-3 py-2">
+                전일비 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+              </th>
+              <th class="text-sm text-right px-3 py-2">
+                등락률 <span class="text-xs arrow sortable cursor-pointer" data-order="COMMUNITY_INCREASE_RATE">▼</span>
+              </th>
+            </tr>
           </thead>
           <tbody>
-          <!-- 거래량 기준 데이터 -->
+            <!-- 거래량 기준 데이터 -->
           </tbody>
         </table>
       </div>

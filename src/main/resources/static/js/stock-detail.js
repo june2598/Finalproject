@@ -61,7 +61,12 @@ const loadStockNews = async (stkCode) => {
     data.body.forEach(item => {
       const row = document.createElement('tr'); // 새로운 행 생성
       row.innerHTML = `
-                <td>${item.title}</td> <!-- 기사제목 -->
+                <td>
+                <a href="javascript:void(0);" onclick="window.open('${item.newsUrl}', '_blank');"
+                  class="hover:underline cursor-pointer">
+                ${item.title}
+                </a>
+                </td> <!-- 기사제목 -->
                 <td class="px-2 text-end">${item.mediaName}</td> <!-- 제공 언론사 -->
                 <td class="px-2 text-end">${item.publishedDate}</td> <!-- 기사 제공 날짜 -->
             `;

@@ -30,7 +30,7 @@ public class TopPricesStocksDAOImpl implements TopPricesStocksDAO {
 
     StringBuffer sql = new StringBuffer();
     sql.append(" SELECT ");
-    sql.append(" m.STK_NM, ");
+    sql.append(" m.STK_NM, m.STK_CODE, ");
     sql.append("     r_today.PRICE AS TODAY_PRICE, ");
     sql.append(" r_yesterday.PRICE AS YESTERDAY_PRICE, ");
     sql.append("     (r_today.PRICE - r_yesterday.PRICE) AS CHANGE, ");

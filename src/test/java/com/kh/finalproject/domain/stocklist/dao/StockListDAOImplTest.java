@@ -23,7 +23,8 @@ class StockListDAOImplTest {
     String orderBy = "r.MARCAP";  // 정렬기준
     int risk = 3;     // 위험도 범위 설정
     int offset = 10;   // 오프셋
-    List<StockListDto> stockList = stockListDAO.getStockList(marketId, orderBy, risk, offset);
+    long secId = 1;
+    List<StockListDto> stockList = stockListDAO.getStockList(marketId, orderBy, risk, offset, secId);
     for (StockListDto stocks : stockList) {
       log.info("stocks={}", stocks);
     }
