@@ -1,15 +1,61 @@
-const pwError = document.getElementById('pwError');
-const telError = document.getElementById('telError');
-const emailError = document.getElementById('emailError');
 
+const pwInput = document.getElementById("pw");
+const pwError = document.getElementById('pwMessage');
+const telInput = document.getElementById("tel");
+const telError = document.getElementById('telMessage');
+const emailError = document.getElementById('emailMessage');
 const modifyBtn = document.getElementById('request-modify');
-
 let isVerified = false; // 이메일 인증 여부
 
 document.getElementById("email").addEventListener("input", function () {
   isVerified = false; // 이메일 변경 시 인증 상태 초기화
   modifyBtn.setAttribute("disabled", true); // 수정 완료 버튼 다시 비활성화
 });
+
+// 비밀번호 입력 시 실시간 검사
+pwInput.addEventListener("input", function () {
+  const pw = pwInput.value;
+
+  // 비밀번호 정규식 : 8~15자리, 특수문자, 대문자, 숫자를 반드시포함
+  const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}:<>?])[A-Za-z\d!@#$%^&*()_+{}:<>?]{8,15}$/;
+
+  if (!pw) {
+    pwMessage.innerText = "";
+  } else if (!pwRegex.test(pw)) {
+    pwMessage.innerText = "비밀번호는 8~15자이며, 대소문자, 숫자, 특수문자를 포함해야 합니다.";
+    pwMessage.classList.add("text-red-500");
+    pwMessage.classList.remove("text-green-500");
+  } else {
+    pwMessage.innerText = "사용 가능한 비밀번호입니다.";
+    pwMessage.classList.add("text-green-500");
+    pwMessage.classList.remove("text-red-500");
+  }
+});
+
+// 전화번호 입력 시 실시간 검사 + 하이픈 입력 방지
+telInput.addEventListener("input", function () {
+  let tel = this.value.replace(/\D/g, ""); // 숫자 이외의 문자 제거
+
+  // 최대 11자리까지만 입력 가능하도록 제한
+  if (tel.length > 11) {
+    tel = tel.slice(0, 11);
+  }
+
+  this.value = tel; // 입력 필드 업데이트
+
+  if (!tel) {
+    telMessage.innerText = "";
+  } else if (tel.length < 10 || tel.length > 11) {
+    telMessage.innerText = "유효한 전화번호를 입력하세요.";
+    telMessage.classList.add("text-red-500");
+    telMessage.classList.remove("text-green-500");
+  } else {
+    telMessage.innerText = "올바른 전화번호 형식입니다.";
+    telMessage.classList.add("text-green-500");
+    telMessage.classList.remove("text-red-500");
+  }
+});
+
 
 // 이메일 인증 코드 전송 기능
 document.getElementById('sendVerificationEmail').addEventListener('click', async function () {
@@ -110,14 +156,14 @@ function validateForm(pw, tel, email) {
   let isValid = true;  // 모든 검사를 통과하면 true 유지
 
   // 초기화: 오류 메시지 숨기기
-  pwError.classList.add('hidden');
-  telError.classList.add('hidden');
-  emailError.classList.add('hidden');
+  pwMessage.classList.add('hidden');
+  telMessage.classList.add('hidden');
+  emailMessage.classList.add('hidden');
 
   // 비밀번호 길이 검증
   if (pw.length < 8 || pw.length > 15) {
-    pwError.classList.remove('hidden');
-    pwError.innerText = '비밀번호는 8자리 이상 15자리 이하여야 합니다.';
+    pwMessage.classList.remove('hidden');
+    pwMessage.innerText = '비밀번호는 8자리 이상 15자리 이하여야 합니다.';
     isValid = false;
   }
 
@@ -125,8 +171,8 @@ function validateForm(pw, tel, email) {
   const pwRegx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}:<>?]).*$/;
 
   if (!pwRegx.test(pw)) {
-    pwError.classList.remove('hidden');
-    pwError.innerText = ' 비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다.'
+    pwMessage.classList.remove('hidden');
+    pwMessage.innerText = ' 비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다.'
     isValid = false;
   }
 
@@ -134,8 +180,8 @@ function validateForm(pw, tel, email) {
   const telRegx = /^\d{10,11}$/;
   if (!telRegx.test(tel)) {
 
-    telError.classList.remove('hidden');
-    telError.innerText = '휴대폰번호를 제대로 입력해주세요.';
+    telMessage.classList.remove('hidden');
+    telMessage.innerText = '휴대폰번호를 제대로 입력해주세요.';
     isValid = false;
   }
 
@@ -144,8 +190,8 @@ function validateForm(pw, tel, email) {
 
   if (!emailRegx.test(email)) {
 
-    emailError.classList.remove('hidden');
-    emailError.innerText = '올바른 이메일 형식을 입력해주세요.';
+    emailMessage.classList.remove('hidden');
+    emailMessage.innerText = '올바른 이메일 형식을 입력해주세요.';
     isValid = false;
   }
 

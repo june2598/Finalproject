@@ -13,14 +13,14 @@
         <div id="pw-input" class="flex flex-col">
           <label for="pw" class="my-2 text-xs font-bold">비밀번호</label>
           <input type="password" th:field="*{pw}" id="pw" name="pw" class="border p-2 h-10 w-80" required>
-          <div id="pwError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden">
+          <div id="pwMessage" class="mt-4 font-bold text-xl flex justify-center hidden">
           </div>
         </div>
         <!-- 전화 번호 영역 -->
         <div id="tel-input" class="flex flex-col">
           <label for="tel" class="my-2 text-xs font-bold">전화번호</label>
           <input type="text" th:field="*{tel}" id="tel" name="tel" class="border p-2 h-10 w-80" required>
-          <div id="telError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden">
+          <div id="telMessage" class="mt-4 font-bold text-xl flex justify-center hidden">
           </div>
         </div>
         <!-- 이메일 영역 -->
@@ -45,7 +45,7 @@
             </button>
           </div>
         </div>
-        <div id="emailError" class="mt-4 font-bold text-red-500 text-xl flex justify-center hidden"></div>
+        <div id="emailMessage" class="mt-4 font-bold text-xl flex justify-center hidden"></div>
         <div id="emailSuccessMessage" class="hidden font-bold text-green-500 text-sm mt-2"></div>
       </div>
 
