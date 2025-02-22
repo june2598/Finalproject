@@ -12,22 +12,25 @@
             중복 확인
           </button>
         </div>
-        <div id="message" class="p-2 text-sm text-red-500"></div>
+        <div id="idMessage" class="text-sm p-2"></div>
       </div>
 
       <div class="flex flex-col w-full">
         <label for="pw" class="my-2 text-xs font-bold">비밀번호*</label>
         <input type="password" id="pw" name="pw" class="border p-2 h-10 w-80" required>
+        <div id="pwMessage" class="text-sm p-2"></div>
       </div>
 
       <div class="flex flex-col w-full">
         <label for="pwConfirm" class="my-2 text-xs font-bold">비밀번호 확인*</label>
         <input type="password" id="pwConfirm" name="pwConfirm" class="border p-2 h-10 w-80" required>
+        <div id="pwConfirmMessage" class="text-sm p-2"></div> <!-- 비밀번호 확인 메시지 -->
       </div>
 
       <div class="flex flex-col w-full">
         <label for="tel" class="my-2 text-xs font-bold">전화번호*</label>
         <input type="text" id="tel" name="tel" class="border p-2 h-10 w-80" required>
+        <div id="telMessage" class="text-sm p-2"></div>
       </div>
       <div class="flex flex-col w-full">
         <label for="email" class="my-2 text-xs font-bold">이메일*</label>

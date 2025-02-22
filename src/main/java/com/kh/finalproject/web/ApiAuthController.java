@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -80,11 +82,27 @@ public class ApiAuthController {
       return ResponseEntity.badRequest().body(response); // 400 Bad Request 응답
     }
 
+    // 이메일 유효성 검사
+
+    if (!memberSVC.isValidTel(joinForm.getTel())) {
+      response.put("success", false);
+      response.put("message", "유효한 전화번호를 입력하세요.");
+      return ResponseEntity.badRequest().body(response);
+    }
+
     // 비밀번호 확인
     if (!joinForm.getPw().equals(joinForm.getPwConfirm())) {
       response.put("success", false);
       response.put("message", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
       return ResponseEntity.badRequest().body(response); // 400 Bad Request 응답
+    }
+
+    // 이메일 중복 검사
+    Optional<String> existingMemberId = memberSVC.findMemberIdByEmail(joinForm.getEmail());
+    if (existingMemberId.isPresent()) {
+      response.put("success", false);
+      response.put("message", "이미 사용 중인 이메일입니다.");
+      return ResponseEntity.badRequest().body(response);
     }
 
 
@@ -106,13 +124,40 @@ public class ApiAuthController {
     }
   }
 
-  // 인증 이메일 전송 요청
+  // 인증 이메일 전송 요청 + 유효성체크
   @PostMapping("/send-verification-email")
   public ResponseEntity<Map<String, String>> sendAuthenticationEmail(@RequestBody EmailAuthDto emailAuthDto) {
-    emailAuthSVC.sendVerificationEmail(emailAuthDto.getEmail());
+
     Map<String, String> response = new HashMap<>();
-    response.put("message", "이메일이 전송되었습니다.");
-    return ResponseEntity.ok(response);
+    String email = emailAuthDto.getEmail();
+
+    // 서버영역(백엔드) 이메일 유효성 검사 (null 체크 + 정규식 검사)
+    if (email == null || email.isBlank() || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+      response.put("success", "false");
+      response.put("message", "올바른 이메일 형식을 입력해 주세요.");
+      return ResponseEntity.badRequest().body(response);
+    }
+
+    // 이메일 중복 검사
+    Optional<String> existingMemberId = memberSVC.findMemberIdByEmail(email);
+    if (existingMemberId.isPresent()) {
+      response.put("success", "false");
+      response.put("message", "이미 사용 중인 이메일입니다.");
+      return ResponseEntity.badRequest().body(response);
+    }
+
+    try {
+      // 이메일 인증 코드 전송
+      emailAuthSVC.sendVerificationEmail(email);
+      response.put("success", "true");
+      response.put("message", "이메일 인증 코드가 전송되었습니다.");
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      log.error("이메일 전송 중 오류 발생: {}", e.getMessage());
+      response.put("success", "false");
+      response.put("message", "이메일 전송 중 오류가 발생했습니다.");
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
   }
 
   // 코드 인증

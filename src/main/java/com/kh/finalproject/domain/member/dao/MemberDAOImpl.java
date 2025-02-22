@@ -29,15 +29,15 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public Member insertMember(Member member) {
 
-    log.info("🔹 회원가입 시 입력된 비밀번호 (평문): '{}'", member.getPw());
+    log.info("회원가입 시 입력된 비밀번호 (평문): '{}'", member.getPw());
 
     // 📌 중복 해싱 방지: 이미 해싱된 비밀번호인지 확인
     if (!member.getPw().startsWith("$2a$10$")) {
       String hashedPassword = passwordEncoder.encode(member.getPw());
-      log.info("🔹 회원가입 시 해싱된 비밀번호: '{}'", hashedPassword);
+      log.info("회원가입 시 해싱된 비밀번호: '{}'", hashedPassword);
       member.setPw(hashedPassword);
     } else {
-      log.warn("⚠ 이미 해싱된 비밀번호가 전달됨 → 중복 해싱 방지");
+      log.warn("이미 해싱된 비밀번호가 전달됨 → 중복 해싱 방지");
     }
 
 

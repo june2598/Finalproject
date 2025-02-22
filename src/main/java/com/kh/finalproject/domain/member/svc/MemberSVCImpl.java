@@ -76,6 +76,11 @@ public class MemberSVCImpl implements MemberSVC{
   }
 
   @Override
+  public boolean isValidTel(String tel) {
+    return tel.matches("^\\d{10,11}$");
+  }
+
+  @Override
   public Optional<String> findMemberIdByEmail(String email) {
     return memberDAO.findMemberIdByEmail(email);
   }

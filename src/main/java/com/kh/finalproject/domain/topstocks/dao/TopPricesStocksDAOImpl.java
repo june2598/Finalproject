@@ -29,21 +29,28 @@ public class TopPricesStocksDAOImpl implements TopPricesStocksDAO {
     }
 
     StringBuffer sql = new StringBuffer();
+    sql.append(" WITH RECENT_DATES AS ( ");
+    sql.append("   SELECT DISTINCT TRUNC(CDATE) AS TRADE_DATE ");
+    sql.append("   FROM RT_STK ");
+    sql.append("   ORDER BY TRADE_DATE DESC ");
+    sql.append("   FETCH FIRST 2 ROWS ONLY ");
+    sql.append(" ) ");
     sql.append(" SELECT ");
-    sql.append(" m.STK_NM, m.STK_CODE, ");
-    sql.append("     r_today.PRICE AS TODAY_PRICE, ");
-    sql.append(" r_yesterday.PRICE AS YESTERDAY_PRICE, ");
-    sql.append("     (r_today.PRICE - r_yesterday.PRICE) AS CHANGE, ");
-    sql.append(" ROUND((r_today.PRICE - r_yesterday.PRICE) / r_yesterday.PRICE * 100, 2) AS CHANGE_RATIO ");
+    sql.append("   m.STK_NM, m.STK_CODE, ");
+    sql.append("   r_today.PRICE AS TODAY_PRICE, ");
+    sql.append("   r_yesterday.PRICE AS YESTERDAY_PRICE, ");
+    sql.append("   (r_today.PRICE - r_yesterday.PRICE) AS CHANGE, ");
+    sql.append("   ROUND((r_today.PRICE - r_yesterday.PRICE) / r_yesterday.PRICE * 100, 2) AS CHANGE_RATIO ");
     sql.append(" FROM MKT_SEC_STK m ");
     sql.append(" JOIN RT_STK r_today ON m.STK_ID = r_today.STK_ID ");
     sql.append(" JOIN RT_STK r_yesterday ON m.STK_ID = r_yesterday.STK_ID ");
     sql.append(" WHERE ");
-    sql.append(" TO_CHAR(r_today.CDATE, 'YY/MM/DD') = TO_CHAR(SYSDATE, 'YY/MM/DD') ");
-    sql.append(" AND TO_CHAR(r_yesterday.CDATE, 'YY/MM/DD') = TO_CHAR(SYSDATE - 1, 'YY/MM/DD') ");
+    sql.append("   TRUNC(r_today.CDATE) = (SELECT MAX(TRADE_DATE) FROM RECENT_DATES) ");
+    sql.append("   AND TRUNC(r_yesterday.CDATE) = (SELECT MIN(TRADE_DATE) FROM RECENT_DATES) ");
     sql.append(" ORDER BY ");
     sql.append(orderBy + " DESC NULLS LAST ");
     sql.append(" FETCH FIRST 5 ROWS ONLY ");
+
 
     SqlParameterSource param = new MapSqlParameterSource();
 

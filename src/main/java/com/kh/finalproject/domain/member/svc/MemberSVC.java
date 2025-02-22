@@ -17,6 +17,9 @@ public interface MemberSVC {
   // 비밀번호 유효성 검증
   boolean isValidPassword(String password);
 
+  // 전화번호 유효성 검증
+  boolean isValidTel(String tel);
+
   //회원 조회
   Optional<Member> findByMemberSeq(Long memberSeq);
   Optional<Member> findByMemberId(String memberId);
