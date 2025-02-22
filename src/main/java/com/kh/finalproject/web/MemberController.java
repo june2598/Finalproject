@@ -90,10 +90,10 @@ public class MemberController {
     LoginMember loginOkMember = (LoginMember) session.getAttribute("loginOkMember");
 
     String email = loginOkMember.getEmail();
+    log.info("loginOkEmail={}", email);
     model.addAttribute("email", email);
-
+    log.info("modelEmail={}", email);
     return "member/memberInfoModifyAuth";
-
 
   }
 
@@ -107,6 +107,9 @@ public class MemberController {
     }
 
     model.addAttribute("memberInfoDto", memberInfoDto);
+    log.info("memberInfoDto={}", memberInfoDto);
+    log.info("email={}", memberInfoDto.getEmail());
+
     return "member/memberInfoModify";
   }
 
@@ -148,10 +151,5 @@ public class MemberController {
 
     return memberInfoDto;
   }
-
-
-
-
-
 
 }

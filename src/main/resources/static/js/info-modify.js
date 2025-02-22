@@ -1,9 +1,10 @@
-
 const pwInput = document.getElementById("pw");
-const pwError = document.getElementById('pwMessage');
+const pwMessage = document.getElementById('pwMessage');
 const telInput = document.getElementById("tel");
-const telError = document.getElementById('telMessage');
-const emailError = document.getElementById('emailMessage');
+const telMessage = document.getElementById('telMessage');
+const emailMessage = document.getElementById('emailMessage');
+const emailInput = document.getElementById('email');
+const sendEmailBtn = document.getElementById('sendVerificationEmail');
 const modifyBtn = document.getElementById('request-modify');
 let isVerified = false; // 이메일 인증 여부
 
@@ -56,6 +57,40 @@ telInput.addEventListener("input", function () {
   }
 });
 
+// 이메일 입력시 실시간검사
+emailInput.addEventListener("input", function () {
+  const email = emailInput.value;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // 메시지 숨김 처리 (입력값이 없을 때)
+  emailMessage.classList.toggle("hidden", email.length === 0);
+
+  if (!emailRegex.test(email)) {
+    emailMessage.innerText = "올바른 이메일 형식을 입력해 주세요.";
+    emailMessage.classList.add("text-red-500");
+    emailMessage.classList.remove("text-green-500");
+
+    // 버튼 비활성화 및 스타일 변경
+    sendEmailBtn.classList.replace('bg-blue-500', 'bg-gray-300');
+    sendEmailBtn.classList.replace('text-white', 'text-black');
+    sendEmailBtn.classList.remove('hover:bg-blue-600', 'cursor-pointer');
+    sendEmailBtn.setAttribute('disabled', true);
+  } else {
+    emailMessage.innerText = "사용 가능한 이메일 입니다.";
+    emailMessage.classList.add("text-green-500");
+    emailMessage.classList.remove("text-red-500");
+
+    // 버튼 활성화 및 스타일 변경
+    sendEmailBtn.classList.replace('bg-gray-300', 'bg-blue-500');
+    sendEmailBtn.classList.replace('text-black', 'text-white');
+    sendEmailBtn.classList.add('hover:bg-blue-600', 'cursor-pointer');
+    sendEmailBtn.removeAttribute('disabled');
+  }
+});
+
+
+
 
 // 이메일 인증 코드 전송 기능
 document.getElementById('sendVerificationEmail').addEventListener('click', async function () {
@@ -90,7 +125,7 @@ document.getElementById('emailValid').addEventListener('click', async function (
       isVerified = true; // 인증 성공
       alert('인증이 완료되었습니다. 수정완료 버튼을 활성화합니다.');
       modifyBtn.classList.remove('bg-gray-500', 'text-black');  // 수정 완료 버튼 회색, 글자 색깔 삭제
-      modifyBtn.classList.add('bg-blue-500','text-white');     // 수정 완료 버튼 파란색으로, 글씨 흰색으로 변경
+      modifyBtn.classList.add('bg-blue-500', 'text-white');     // 수정 완료 버튼 파란색으로, 글씨 흰색으로 변경
       modifyBtn.removeAttribute('disabled'); // 수정 완료 버튼 활성화
       document.getElementById('email').setAttribute('disabled', true); // 이메일 인증 완료되면 이메일 수정 더 못함
       document.getElementById('email').classList.add('bg-gray-500');  // 이메일 수정하고 이메일 인증 완료되면 다시 수정할 수 없음
@@ -107,8 +142,6 @@ document.getElementById('emailValid').addEventListener('click', async function (
     alert('인증 중 오류가 발생했습니다.');
   }
 });
-
-
 
 
 
@@ -197,10 +230,3 @@ function validateForm(pw, tel, email) {
 
   return isValid;
 }
-
-
-
-
-
-
-
