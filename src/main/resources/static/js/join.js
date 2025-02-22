@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      const response = await ajax.post("/api/auth/send-verification-email", { email });
+      const response = await ajax.post("/api/auth/send-verification-email/join", { email });
       alert(response.message);
     } catch (error) {
       console.error("이메일 인증 요청 중 오류 발생:", error);

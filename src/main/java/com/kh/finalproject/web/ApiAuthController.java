@@ -124,8 +124,21 @@ public class ApiAuthController {
     }
   }
 
-  // 인증 이메일 전송 요청 + 유효성체크
+  // 인증 이메일 전송 요청 (회원 정보 수정)
   @PostMapping("/send-verification-email")
+  public ResponseEntity<Map<String, String>> sendAuthenticationEmailFromMemberInfo(
+      @RequestBody EmailAuthDto emailAuthDto) {
+
+    emailAuthSVC.sendVerificationEmail(emailAuthDto.getEmail());
+    Map<String, String> response = new HashMap<>();
+    response.put("message", "이메일이 전송되었습니다.");
+    return ResponseEntity.ok(response);
+
+  }
+
+
+  // 인증 이메일 전송 요청 + 유효성체크
+  @PostMapping("/send-verification-email/join")
   public ResponseEntity<Map<String, String>> sendAuthenticationEmail(@RequestBody EmailAuthDto emailAuthDto) {
 
     Map<String, String> response = new HashMap<>();
