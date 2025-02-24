@@ -107,6 +107,7 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
     sql.append(" AND recRisk <= :memberRisk           ");
     sql.append(" AND recRtn  >= :expRtn ");
     sql.append(" ORDER BY recRtn DESC NULLS LAST ");
+    sql.append(" FETCH FIRST 10 ROWS ONLY ");
 
     int memberRisk = memberTraits.getMemberRisk();
     double expRtn = memberTraits.getExpRtn();
@@ -208,6 +209,7 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
     sql.append(" WHERE recRisk <= :memberRisk           ");
     sql.append(" AND recRtn  >= :expRtn ");
     sql.append(" ORDER BY recRtn DESC NULLS LAST ");
+    sql.append(" FETCH FIRST 20 ROWS ONLY ");
 
     int memberRisk = memberTraits.getMemberRisk();
     double expRtn = memberTraits.getExpRtn();
