@@ -20,6 +20,4 @@ public class RecStk {
   private int recRisk;              //  REC_RISK	NUMBER(1,0)
   private LocalDateTime cdate;      //  CDATE	TIMESTAMP(6)
   private LocalDateTime udate;      //  UDATE	TIMESTAMP(6)
-
-
 }

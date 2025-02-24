@@ -32,39 +32,85 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
   }
 
   @Override
-  public List<RecStk> listByTraitSector(HttpServletRequest request) {
+  public List<RecStk> listByTraitSector(HttpServletRequest request, String inputDate) {
 
     // 성향 정보 불러오기
     MemberTraits memberTraits = getMemberTraits(request);
 
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT DISTINCT ");
-    sql.append("S.REC_STK_ID, ");
-    sql.append("    C.SEC_NM, ");
-    sql.append("    C.STK_NM, ");
-    sql.append("    S.REC_RTN, ");
-    sql.append("    S.REC_VOL, ");
-    sql.append("    S.REC_RISK ");
-    sql.append("FROM ");
-    sql.append("MKT_SEC_STK C ");
-    sql.append("    JOIN ");
-    sql.append("REC_STK S ON C.STK_ID = S.STK_ID ");
-    sql.append("WHERE ");
-    sql.append("S.REC_RISK <= :memberRisk ");
-    sql.append("AND C.SEC_ID IN (:intSec) ");
-    sql.append("AND S.REC_RTN >= :expRtn ");
-    sql.append("GROUP BY ");
-    sql.append("S.REC_STK_ID, ");
-    sql.append("    S.STK_ID, ");
-    sql.append("    C.SEC_NM, ");
-    sql.append("    C.STK_NM, ");
-    sql.append("    S.REC_RTN, ");
-    sql.append("    S.REC_VOL, ");
-    sql.append("    S.REC_RISK ");
-    sql.append("ORDER BY S.REC_RTN DESC ");
+
+    sql.append(" WITH STOCK_PRICES AS ( ");
+    sql.append("     SELECT ");
+    sql.append("     STK_ID, ");
+    sql.append("     MAX(CASE WHEN TRADE_DATE = (SELECT MAX(TRADE_DATE) ");
+    sql.append("         FROM REC_STK ");
+    sql.append("         WHERE TRADE_DATE <= TRUNC(SYSDATE)) ");
+    sql.append("     THEN REC_PRICE END) AS TODAY_PRICE, ");
+    sql.append("  ");
+    sql.append(" MAX(CASE WHEN TRADE_DATE = (SELECT MIN(TRADE_DATE) ");
+    sql.append("     FROM REC_STK ");
+    sql.append("     WHERE TRADE_DATE >= TO_DATE(:inputDate, 'YYYY-MM-DD')) ");
+    sql.append(" THEN REC_PRICE END) AS START_PRICE ");
+    sql.append(" FROM REC_STK ");
+    sql.append(" WHERE TRADE_DATE BETWEEN TO_DATE(:inputDate, 'YYYY-MM-DD') AND TRUNC(SYSDATE) ");
+    sql.append("     GROUP BY STK_ID ");
+    sql.append(" ), ");
+    sql.append(" DAILY_RETURNS AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" STK_ID, ");
+    sql.append("     TRADE_DATE, ");
+    sql.append("     ((REC_PRICE - LAG(REC_PRICE) OVER (PARTITION BY STK_ID ORDER BY TRADE_DATE)) ");
+    sql.append("      / LAG(REC_PRICE) OVER (PARTITION BY STK_ID ORDER BY TRADE_DATE)) * 100 AS DAILY_RETURN ");
+    sql.append(" FROM REC_STK ");
+    sql.append(" WHERE TRADE_DATE BETWEEN TO_DATE(:inputDate, 'YYYY-MM-DD') AND TRUNC(SYSDATE) ");
+    sql.append(" ), ");
+    sql.append(" STOCK_RET AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" P.STK_ID, ");
+    sql.append("     ROUND(((P.TODAY_PRICE - P.START_PRICE) / P.START_PRICE) * 100, 2) AS recRtn, ");
+    sql.append(" ROUND(STDDEV(D.DAILY_RETURN), 2) AS recVol ");
+    sql.append(" FROM STOCK_PRICES P ");
+    sql.append(" JOIN DAILY_RETURNS D ON P.STK_ID = D.STK_ID ");
+    sql.append(" GROUP BY P.STK_ID, P.TODAY_PRICE, P.START_PRICE ");
+    sql.append(" ), ");
+    sql.append(" VOL_QUARTILES AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" MARKET_ID, ");
+    sql.append("     ROUND(PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY recVol), 2) AS Q1, ");
+    sql.append(" ROUND(PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY recVol), 2) AS Q3 ");
+    sql.append(" FROM STOCK_RET R ");
+    sql.append(" JOIN MKT_SEC_STK S ON R.STK_ID = S.STK_ID ");
+    sql.append(" GROUP BY MARKET_ID ");
+    sql.append(" ), ");
+    sql.append(" STOCK_RISK AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" R.STK_ID AS stkId, ");
+    sql.append("     S.MARKET_ID AS marketId, ");
+    sql.append("     S.SEC_ID AS secId, ");
+    sql.append("     S.SEC_NM AS secNm, ");
+    sql.append("     S.STK_NM AS stkNm, ");
+    sql.append("     R.recRtn, ");
+    sql.append("     R.recVol, ");
+    sql.append("     CASE ");
+    sql.append(" WHEN R.recVol <= V.Q1 THEN 1 ");
+    sql.append(" WHEN R.recVol <= V.Q3 THEN 2 ");
+    sql.append(" ELSE 3 ");
+    sql.append(" END AS recRisk ");
+    sql.append(" FROM STOCK_RET R ");
+    sql.append(" JOIN MKT_SEC_STK S ON R.STK_ID = S.STK_ID ");
+    sql.append(" JOIN VOL_QUARTILES V ON S.MARKET_ID = V.MARKET_ID ");
+    sql.append(" ) ");
+    sql.append("     SELECT ");
+    sql.append(" stkId, marketId, secId, secNm, stkNm, recRtn, recVol, recRisk ");
+    sql.append(" FROM STOCK_RISK ");
+    sql.append(" WHERE secId IN (:intSec)   ");
+    sql.append(" AND recRisk <= :memberRisk           ");
+    sql.append(" AND recRtn  >= :expRtn ");
+    sql.append(" ORDER BY recRtn DESC NULLS LAST ");
 
     int memberRisk = memberTraits.getMemberRisk();
     double expRtn = memberTraits.getExpRtn();
+
     // intSec를 문자열로 받고, 이를 Integer 리스트로 변환
     String intSecString = String.join(",", memberTraits.getIntSec()); // 예: "31,59"
     List<Integer> intSec = Arrays.stream(intSecString.split(","))
@@ -72,6 +118,7 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
         .collect(Collectors.toList());
 
     SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("inputDate",inputDate)
         .addValue("memberRisk",memberRisk)
         .addValue("expRtn",expRtn)
         .addValue("intSec",intSec);
@@ -88,40 +135,85 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
   // 관심업종없을떄 추천
 
   @Override
-  public List<RecStk> listWithoutTraitSector(HttpServletRequest request) {
+  public List<RecStk> listWithoutTraitSector(HttpServletRequest request, String inputDate) {
 
     // 성향 정보 불러오기
     MemberTraits memberTraits = getMemberTraits(request);
 
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT DISTINCT ");
-    sql.append("S.REC_STK_ID, ");
-    sql.append("    C.SEC_NM, ");
-    sql.append("    C.STK_NM, ");
-    sql.append("    S.REC_RTN, ");
-    sql.append("    S.REC_VOL, ");
-    sql.append("    S.REC_RISK ");
-    sql.append("FROM ");
-    sql.append("MKT_SEC_STK C ");
-    sql.append("    JOIN ");
-    sql.append("REC_STK S ON C.STK_ID = S.STK_ID ");
-    sql.append("WHERE ");
-    sql.append("S.REC_RISK <= :memberRisk ");
-    sql.append("AND S.REC_RTN >= :expRtn ");
-    sql.append("GROUP BY ");
-    sql.append("S.REC_STK_ID, ");
-    sql.append("    S.STK_ID, ");
-    sql.append("    C.SEC_NM, ");
-    sql.append("    C.STK_NM, ");
-    sql.append("    S.REC_RTN, ");
-    sql.append("    S.REC_VOL, ");
-    sql.append("    S.REC_RISK ");
-    sql.append("ORDER BY S.REC_RTN DESC ");
+    sql.append(" WITH STOCK_PRICES AS ( ");
+    sql.append("     SELECT ");
+    sql.append("     STK_ID, ");
+    sql.append("     MAX(CASE WHEN TRADE_DATE = (SELECT MAX(TRADE_DATE) ");
+    sql.append("         FROM REC_STK ");
+    sql.append("         WHERE TRADE_DATE <= TRUNC(SYSDATE)) ");
+    sql.append("     THEN REC_PRICE END) AS TODAY_PRICE, ");
+    sql.append("  ");
+    sql.append(" MAX(CASE WHEN TRADE_DATE = (SELECT MIN(TRADE_DATE) ");
+    sql.append("     FROM REC_STK ");
+    sql.append("     WHERE TRADE_DATE >= TO_DATE(:inputDate, 'YYYY-MM-DD')) ");
+    sql.append(" THEN REC_PRICE END) AS START_PRICE ");
+    sql.append(" FROM REC_STK ");
+    sql.append(" WHERE TRADE_DATE BETWEEN TO_DATE(:inputDate, 'YYYY-MM-DD') AND TRUNC(SYSDATE) ");
+    sql.append("     GROUP BY STK_ID ");
+    sql.append(" ), ");
+    sql.append(" DAILY_RETURNS AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" STK_ID, ");
+    sql.append("     TRADE_DATE, ");
+    sql.append("     ((REC_PRICE - LAG(REC_PRICE) OVER (PARTITION BY STK_ID ORDER BY TRADE_DATE)) ");
+    sql.append("      / LAG(REC_PRICE) OVER (PARTITION BY STK_ID ORDER BY TRADE_DATE)) * 100 AS DAILY_RETURN ");
+    sql.append(" FROM REC_STK ");
+    sql.append(" WHERE TRADE_DATE BETWEEN TO_DATE(:inputDate, 'YYYY-MM-DD') AND TRUNC(SYSDATE) ");
+    sql.append(" ), ");
+    sql.append(" STOCK_RET AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" P.STK_ID, ");
+    sql.append("     ROUND(((P.TODAY_PRICE - P.START_PRICE) / P.START_PRICE) * 100, 2) AS recRtn, ");
+    sql.append(" ROUND(STDDEV(D.DAILY_RETURN), 2) AS recVol ");
+    sql.append(" FROM STOCK_PRICES P ");
+    sql.append(" JOIN DAILY_RETURNS D ON P.STK_ID = D.STK_ID ");
+    sql.append(" GROUP BY P.STK_ID, P.TODAY_PRICE, P.START_PRICE ");
+    sql.append(" ), ");
+    sql.append(" VOL_QUARTILES AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" MARKET_ID, ");
+    sql.append("     ROUND(PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY recVol), 2) AS Q1, ");
+    sql.append(" ROUND(PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY recVol), 2) AS Q3 ");
+    sql.append(" FROM STOCK_RET R ");
+    sql.append(" JOIN MKT_SEC_STK S ON R.STK_ID = S.STK_ID ");
+    sql.append(" GROUP BY MARKET_ID ");
+    sql.append(" ), ");
+    sql.append(" STOCK_RISK AS ( ");
+    sql.append("     SELECT ");
+    sql.append(" R.STK_ID AS stkId, ");
+    sql.append("     S.MARKET_ID AS marketId, ");
+    sql.append("     S.SEC_ID AS secId, ");
+    sql.append("     S.SEC_NM AS secNm, ");
+    sql.append("     S.STK_NM AS stkNm, ");
+    sql.append("     R.recRtn, ");
+    sql.append("     R.recVol, ");
+    sql.append("     CASE ");
+    sql.append(" WHEN R.recVol <= V.Q1 THEN 1 ");
+    sql.append(" WHEN R.recVol <= V.Q3 THEN 2 ");
+    sql.append(" ELSE 3 ");
+    sql.append(" END AS recRisk ");
+    sql.append(" FROM STOCK_RET R ");
+    sql.append(" JOIN MKT_SEC_STK S ON R.STK_ID = S.STK_ID ");
+    sql.append(" JOIN VOL_QUARTILES V ON S.MARKET_ID = V.MARKET_ID ");
+    sql.append(" ) ");
+    sql.append("     SELECT ");
+    sql.append(" stkId, marketId, secId, secNm, stkNm, recRtn, recVol, recRisk ");
+    sql.append(" FROM STOCK_RISK ");
+    sql.append(" WHERE recRisk <= :memberRisk           ");
+    sql.append(" AND recRtn  >= :expRtn ");
+    sql.append(" ORDER BY recRtn DESC NULLS LAST ");
 
     int memberRisk = memberTraits.getMemberRisk();
     double expRtn = memberTraits.getExpRtn();
 
     SqlParameterSource param = new MapSqlParameterSource()
+        .addValue("inputDate",inputDate)
         .addValue("memberRisk",memberRisk)
         .addValue("expRtn",expRtn);
 
@@ -130,7 +222,6 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
 
     List<RecStk> list = template.query(sql.toString(), param, new BeanPropertyRowMapper<>(RecStk.class));
     return list;
-
 
   }
 

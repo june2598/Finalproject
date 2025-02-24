@@ -18,13 +18,13 @@ public class StockRecommendationSVCImpl implements StockRecommendationSVC {
   private final StockRecommendationDAO stockRecommendationDAO;
 
   @Override
-  public List<RecStk> listByTraitSector(HttpServletRequest request) {
-    return stockRecommendationDAO.listByTraitSector(request);
+  public List<RecStk> listByTraitSector(HttpServletRequest request, String inputDate) {
+    return stockRecommendationDAO.listByTraitSector(request, inputDate);
   }
 
   @Override
-  public List<RecStk> listWithoutTraitSector(HttpServletRequest request) {
-    return stockRecommendationDAO.listWithoutTraitSector(request);
+  public List<RecStk> listWithoutTraitSector(HttpServletRequest request, String inputDate) {
+    return stockRecommendationDAO.listWithoutTraitSector(request, inputDate);
   }
 
   @Override

@@ -30,8 +30,8 @@
           </div>
         </div>
         <div id="input-period" class="flex">
-          <label for="dateInput" class="px-2 my-4 text-xl">지표 산출 기간 입력 :</label>
-          <input type="date" id="dateInput" name="dateInput" required
+          <label for="inputDate" class="px-2 my-4 text-xl">지표 산출 기간 입력 :</label>
+          <input type="date" id="inputDate" name="inputDate" required
                  class="p-2 m-4 border-2 rounded border-black w-100"
                  max="${#dates.format(#dates.addDays(new java.util.Date(), -1), 'yyyy-MM-dd')}">
         </div>

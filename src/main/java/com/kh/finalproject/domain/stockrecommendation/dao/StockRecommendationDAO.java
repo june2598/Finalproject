@@ -9,10 +9,10 @@ import java.util.List;
 public interface StockRecommendationDAO {
 
   // 추천 종목 목록(관심 업종이 있을때)
-  List<RecStk> listByTraitSector(HttpServletRequest request);
+  List<RecStk> listByTraitSector(HttpServletRequest request, String inputDate);
 
   // 추천 종목 목록(관심 업종이 없을때)
-  List<RecStk> listWithoutTraitSector(HttpServletRequest request);
+  List<RecStk> listWithoutTraitSector(HttpServletRequest request, String inputDate);
 
   // 성향에 저장된 업종 ID로 업종명 찾기
   String findIntSecNmByIntSecId(HttpServletRequest request);

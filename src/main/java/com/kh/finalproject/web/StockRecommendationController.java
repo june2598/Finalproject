@@ -85,9 +85,21 @@ public class StockRecommendationController {
 
     // 관심 업종이 있는지 체크
     if (memberTraits.getIntSec() != null && !memberTraits.getIntSec().isEmpty()) {
-      recommendedStocks = stockRecommendationSVC.listByTraitSector(request);
+      recommendedStocks = stockRecommendationSVC.listByTraitSector(request, inputDate);
     } else {
-      recommendedStocks = stockRecommendationSVC.listWithoutTraitSector(request);
+      recommendedStocks = stockRecommendationSVC.listWithoutTraitSector(request, inputDate);
+    }
+
+    if (recommendedStocks == null || recommendedStocks.isEmpty()) {
+      log.warn("추천 종목이 없습니다. SQL을 확인하세요.");
+      model.addAttribute("error", "추천할 종목이 없습니다.");
+    } else {
+      log.info("추천 종목 {}개 반환됨", recommendedStocks.size());
+    }
+
+    for (RecStk stock : recommendedStocks) {
+      log.info("추천 종목: secNm={}, stkNm={}, recRtn={}, recVol={}, recRisk={}",
+          stock.getSecNm(), stock.getStkNm(), stock.getRecRtn(), stock.getRecVol(), stock.getRecRisk());
     }
 
     // 현재 날짜를 구하고 포맷팅

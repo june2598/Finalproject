@@ -36,11 +36,12 @@ class StockRecommendationDAOImplTest {
     memberTraits.setMemberRisk(3);
     memberTraits.setExpRtn(7.1);
     memberTraits.setIntSec(Arrays.asList("31", "59", "118")); // String 리스트로 설정
+    String inputDate = "2024-12-24";
 
     when(request.getSession()).thenReturn(session);
     when(session.getAttribute("MEMBER_TRAITS")).thenReturn(memberTraits);
     // 메서드 호출
-    List<RecStk> list = stockRecommendationDAO.listByTraitSector(request);
+    List<RecStk> list = stockRecommendationDAO.listByTraitSector(request, inputDate);
 
     // 결과 로그
     log.info("Number of records returned: {}", list.size());
@@ -48,8 +49,6 @@ class StockRecommendationDAOImplTest {
       log.info("First record: {}", list.get(0));
     }
     Assertions.assertThat(memberTraits.getMemberRisk()).isEqualTo(3);
-
-
 
 
   }
@@ -61,6 +60,7 @@ class StockRecommendationDAOImplTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpSession session = Mockito.mock(HttpSession.class);
     MemberTraitsDto memberTraits = new MemberTraitsDto();
+    String inputDate = "2024-12-24";
 
     // 세션에 MEMBER_TRAITS 설정
     memberTraits.setMemberRisk(3);
@@ -70,7 +70,7 @@ class StockRecommendationDAOImplTest {
     when(session.getAttribute("MEMBER_TRAITS")).thenReturn(memberTraits);
 
     // 메서드 호출 (올바른 메서드 호출)
-    List<RecStk> list = stockRecommendationDAO.listWithoutTraitSector(request);
+    List<RecStk> list = stockRecommendationDAO.listWithoutTraitSector(request, inputDate);
 
     // 결과 로그
     log.info("Number of records returned: {}", list.size());

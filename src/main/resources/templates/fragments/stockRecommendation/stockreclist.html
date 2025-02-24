@@ -11,6 +11,14 @@
         <p class="px-4 pb-2 text-base">입력한 기간: <span th:text="${period} + '일'" class="text-base text-bold"></span></p>
       </div>
     </div>
+     <p th:text="'추천 종목 개수: ' + ${#lists.size(recommendedStocks)}"></p>
+     <div th:if="${#lists.isEmpty(recommendedStocks)}">
+       <p style="color: red;">추천할 종목이 없습니다.</p>
+     </div>
+
+     <div th:if="${error}">
+       <p style="color: red;" th:text="${error}"></p>
+     </div>
     <!-- 추천 종목 테이블 -->
     <table id="recStockTable" class="flex-1 w-full">
       <thead>
