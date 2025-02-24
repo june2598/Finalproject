@@ -116,22 +116,25 @@ const loadStocksTrend = async (orderBy) => {
   }
 };
 
-// 워드 클라우드 샘플 테스트
-const loadWordCloud = async () => {
-  try {
-    const url = `http://127.0.0.1:8000/api/wordcloud`;
+// 현재 워드 클라우드는 정적 파일을 서빙받고 있기 때문에 api 요청이 필요가 없습니다.
+// 추후에 지연시간 등을 개선하여 api요청으로 워드클라우드를 실시간으로 그리고 요청 하게 되면 이부분을 다시 사용합니다.
 
-    const res = await fetch(url);
+// // 워드 클라우드
+// const loadWordCloud = async () => {
+//   try {
+//     const url = `http://127.0.0.1:8000/api/wordcloud`;
 
-    if (!res.ok) {
-      throw new Error(`응답 오류: ${res.status}`);
-    }
+//     const res = await fetch(url);
 
-    // ✅ 이미지 URL을 직접 `<img>` 태그에 설정
-    document.getElementById("wordcloud").src = url;
+//     if (!res.ok) {
+//       throw new Error(`응답 오류: ${res.status}`);
+//     }
 
-  } catch (error) {
-    console.error("워드 클라우드 로드 중 오류 발생:", error);
-  }
+//     // ✅ 이미지 URL을 직접 `<img>` 태그에 설정
+//     document.getElementById("wordcloud").src = url;
+
+//   } catch (error) {
+//     console.error("워드 클라우드 로드 중 오류 발생:", error);
+//   }
  
-}
+// }
