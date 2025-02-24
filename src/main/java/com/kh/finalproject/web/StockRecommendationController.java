@@ -47,18 +47,18 @@ public class StockRecommendationController {
   }
 
   @PostMapping("recstk")
-  public String nextPage(@RequestParam("dateInput") String dateInput,
+  public String nextPage(@RequestParam("inputDate") String inputDate,
                          HttpSession session) {
 
     // 현재 날짜 구하기
     LocalDate today = LocalDate.now();
-    LocalDate selectedDate = LocalDate.parse(dateInput); // 입력 받은 날짜를 LocalDate로 변환
+    LocalDate selectedDate = LocalDate.parse(inputDate); // 입력 받은 날짜를 LocalDate로 변환
 
     // 날짜 차이 계산
     long period = java.time.temporal.ChronoUnit.DAYS.between(selectedDate, today); // 오늘과 입력된 날짜 간의 차이
 
     // 입력 받은 기간을 세션에 저장
-    session.setAttribute("dateInput", dateInput);
+    session.setAttribute("inputDate", inputDate);
     session.setAttribute("period",period);
 
     return "redirect:/recstk/list";
@@ -69,7 +69,7 @@ public class StockRecommendationController {
   public String recommendList(Model model, HttpServletRequest request, HttpSession session) {
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
-    String dateInput = (String) session.getAttribute("dateInput");
+    String inputDate = (String) session.getAttribute("inputDate");
     Long period = (Long) session.getAttribute("period");
 
     // 세션에서 로그인멤버의 id 가져오기
@@ -94,7 +94,7 @@ public class StockRecommendationController {
     LocalDate today = LocalDate.now();
     String formattedToday = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    model.addAttribute("dateInput", dateInput);
+    model.addAttribute("inputDate", inputDate);
     model.addAttribute("period",period);
     model.addAttribute("today", formattedToday);
     model.addAttribute("memberId",memberId);

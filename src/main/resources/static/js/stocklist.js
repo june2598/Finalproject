@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectMarket('2', 'r.MARCAP', 3, currentPage * pageSize); // KOSDAQ으로 선택
   });
 
-  // KOSDAQ 클릭 이벤트
+  // ETF 클릭 이벤트
   document.getElementById('etf').addEventListener('click', () => {
     selectMarket('3', 'r.MARCAP', 3, currentPage * pageSize); // KOSDAQ으로 선택
   });

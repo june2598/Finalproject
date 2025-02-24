@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-# from app.api.routes import router
+from app.api.routes import router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -19,15 +19,12 @@ app.add_middleware(
 IMAGE_DIR = os.path.join("images", "wordcloud")
 
 # /images 경로로 기본 images 폴더 제공 (정적 파일 서빙)
-
 # 종목 상세 지표 차트 경로
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
-# 워드 클라우드 경로
-app.mount("/images", StaticFiles(directory=IMAGE_DIR), name="images")
 
 # 라우터 등록
-# app.include_router(router)
+app.include_router(router)
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

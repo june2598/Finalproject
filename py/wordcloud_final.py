@@ -26,10 +26,6 @@ db_service = "xe"
 DB_URL = f"oracle+cx_oracle://{db_user}:{db_password}@{db_host}:{db_port}/?service_name={db_service}"
 
 
-
-
-
-
 engine = create_engine(DB_URL)
 
 # DB에서 뉴스와 커뮤니티 토큰 데이터 가져오기
