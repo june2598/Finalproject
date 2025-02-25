@@ -27,9 +27,9 @@ def get_wordcloud_image():
     try:
         # 🔹 DB에서 뉴스와 커뮤니티 토큰 데이터 가져오기
         query = """
-            SELECT NEWS_TOKEN FROM NEWS
+            SELECT TO_CHAR(NEWS_TOKEN) AS NEWS_TOKEN FROM NEWS
             UNION ALL
-            SELECT CONTENT_TOKEN FROM COMMUNITY
+            SELECT TO_CHAR(CONTENT_TOKEN) AS CONTENT_TOKEN FROM COMMUNITY
         """
         df = pd.read_sql(query, con=engine)
 
