@@ -13,6 +13,7 @@ public class RecStk {
 
   private Long recStkId;            //  REC_STK_ID	NUMBER(10,0)
 //  private Long stkId;               //  STK_ID	NUMBER(10,0)
+  private String stkCode;
   private String secNm;             //  SEC_NM
   private String stkNm;             //  STK_NM
   private double recRtn;            //  REC_RTN	NUMBER(5,2)

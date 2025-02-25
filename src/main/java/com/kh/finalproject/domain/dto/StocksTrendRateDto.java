@@ -10,6 +10,7 @@ import lombok.ToString;
 
 public class StocksTrendRateDto {
   private String stkNm;
-  private double newsIncreaseRate;
-  private double communityIncreaseRate;
+  private String stkCode;
+  private Double newsIncreaseRate;
+  private Double communityIncreaseRate;
 }

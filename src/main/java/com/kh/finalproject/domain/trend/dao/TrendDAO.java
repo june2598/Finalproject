@@ -36,10 +36,4 @@ public interface TrendDAO {
   List<DomesticIndicesVO> getKosdaqDomesticIndices();
 
 
-  // 메인페이지에 띄울 주요 단어 다섯개
-
-
-
-
-
 }

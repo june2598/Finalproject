@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class SectorsTrendRateDto {
   private String secNm;
-  private double newsIncreaseRate;
-  private double communityIncreaseRate;
+  private Double newsIncreaseRate;
+  private Double communityIncreaseRate;
 }

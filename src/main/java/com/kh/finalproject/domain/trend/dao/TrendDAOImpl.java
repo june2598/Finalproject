@@ -82,7 +82,7 @@ public class TrendDAOImpl implements TrendDAO {
     sql.append(" SEC_NM ");
     sql.append(" ) sector_counts ");
     sql.append(" ORDER BY ");
-    sql.append(orderBy + " DESC ");
+    sql.append(orderBy + " DESC NULLS LAST ");
     sql.append(" FETCH FIRST 5 ROWS ONLY ");
 
     SqlParameterSource param = new MapSqlParameterSource()
@@ -97,7 +97,8 @@ public class TrendDAOImpl implements TrendDAO {
     StringBuffer sql = new StringBuffer();
 
     sql.append("    SELECT ");
-    sql.append(" stk_nm,");
+    sql.append(" stk_nm, ");
+    sql.append(" stk_code, ");
     sql.append(" ROUND( ");
     sql.append("     CASE ");
     sql.append("     WHEN (SELECT COUNT(*) FROM NEWS WHERE TRUNC(PUBLISHED_DATE) = TRUNC(SYSDATE - 1) AND STK_ID = C.STK_ID) = 0 THEN NULL ");
@@ -116,18 +117,19 @@ public class TrendDAOImpl implements TrendDAO {
     sql.append(" END, 2) AS COMMUNITY_INCREASE_RATE ");
     sql.append(" FROM ");
     sql.append("     ( ");
-    sql.append("         SELECT stk_id, stk_nm, sec_nm ");
+    sql.append("         SELECT stk_id, stk_code, stk_nm, sec_nm ");
     sql.append("         FROM mkt_sec_stk ");
     sql.append("         WHERE STK_ID IN (SELECT DISTINCT STK_ID FROM NEWS) ");
     sql.append("     ) C ");
     sql.append(" GROUP BY ");
-    sql.append(" STK_ID, stk_nm ");
+    sql.append(" STK_ID, stk_code, stk_nm ");
     sql.append(" ORDER BY ");
-    sql.append(orderBy + " DESC ");
+    sql.append(orderBy + " DESC NULLS LAST ");
     sql.append(" FETCH FIRST 10 ROWS ONLY ");
 
     SqlParameterSource param = new MapSqlParameterSource();
     List<StocksTrendRateDto> list = template.query(sql.toString(), param, new BeanPropertyRowMapper<>(StocksTrendRateDto.class));
+    log.info("실시간 업종 리스트 ={}", list);
     return list;
   }
 

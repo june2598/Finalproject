@@ -34,7 +34,12 @@
         <tr th:each="stock : ${recommendedStocks}">
           <!--    <td th:text="${stock.recStkId}"></td>-->
           <td th:text="${stock.secNm}"></td>
-          <td th:text="${stock.stkNm}"></td>
+          <td>
+            <a th:href="@{'http://localhost:9080/stockList/stocks?stkCode=' + ${stock.stkCode}}"
+               class="text-blue-500 hover:underline cursor-pointer">
+              <span th:text="${stock.stkNm}"></span>
+            </a>
+          </td>
           <td th:text="${stock.recRtn} + '%'"></td>
           <td th:text="${stock.recVol} + '%'"></td>
           <td th:text="${stock.recRisk}"></td>

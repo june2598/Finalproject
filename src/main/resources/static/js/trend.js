@@ -107,7 +107,12 @@ const loadStocksTrend = async (orderBy) => {
     data.body.forEach(item => {
       const row = document.createElement('tr'); // 새로운 행 생성
       row.innerHTML = `
-                <td>${item.stkNm}</td> <!-- 주식명 -->
+                <td>
+                  <a href="javascript:void(0);" onclick="goToStockDetail('${item.stkCode}')"
+                    class="text-blue-500 hover:underline cursor-pointer">
+                  ${item.stkNm}
+                  </a>
+                </td> <!-- 주식명 -->
                 <td>${item.newsIncreaseRate + '%' || 'N/A'}</td> <!-- 뉴스 증가율 -->
                 <td>${item.communityIncreaseRate + '%' || 'N/A'}</td> <!-- 커뮤니티 증가율 -->
             `;
@@ -140,5 +145,9 @@ const loadWordCloud = async () => {
   } catch (error) {
     console.error("워드 클라우드 로딩 오류:", error);
   }
- 
+
 };
+
+function goToStockDetail(stkCode) {
+  window.location.href = `http://localhost:9080/stockList/stocks?stkCode=${stkCode}`;
+}

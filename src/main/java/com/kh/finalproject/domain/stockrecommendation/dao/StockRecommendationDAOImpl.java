@@ -89,6 +89,7 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
     sql.append("     S.SEC_ID AS secId, ");
     sql.append("     S.SEC_NM AS secNm, ");
     sql.append("     S.STK_NM AS stkNm, ");
+    sql.append("     S.STK_CODE AS stkCode, ");
     sql.append("     R.recRtn, ");
     sql.append("     R.recVol, ");
     sql.append("     CASE ");
@@ -101,13 +102,15 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
     sql.append(" JOIN VOL_QUARTILES V ON S.MARKET_ID = V.MARKET_ID ");
     sql.append(" ) ");
     sql.append("     SELECT ");
-    sql.append(" stkId, marketId, secId, secNm, stkNm, recRtn, recVol, recRisk ");
+    sql.append(" stkId, marketId, stkCode, secId, secNm, stkNm, recRtn, recVol, recRisk ");
     sql.append(" FROM STOCK_RISK ");
     sql.append(" WHERE secId IN (:intSec)   ");
     sql.append(" AND recRisk <= :memberRisk           ");
     sql.append(" AND recRtn  >= :expRtn ");
     sql.append(" ORDER BY recRtn DESC NULLS LAST ");
     sql.append(" FETCH FIRST 10 ROWS ONLY ");
+
+
 
     int memberRisk = memberTraits.getMemberRisk();
     double expRtn = memberTraits.getExpRtn();
@@ -130,6 +133,8 @@ public class StockRecommendationDAOImpl implements StockRecommendationDAO {
 
 
     List<RecStk> list = template.query(sql.toString(), param, new BeanPropertyRowMapper<>(RecStk.class));
+
+    log.info("추천 리스트 : {}", list);
     return list;
   }
 

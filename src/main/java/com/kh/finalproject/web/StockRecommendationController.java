@@ -98,8 +98,8 @@ public class StockRecommendationController {
     }
 
     for (RecStk stock : recommendedStocks) {
-      log.info("추천 종목: secNm={}, stkNm={}, recRtn={}, recVol={}, recRisk={}",
-          stock.getSecNm(), stock.getStkNm(), stock.getRecRtn(), stock.getRecVol(), stock.getRecRisk());
+      log.info("추천 종목: secNm={}, stkCode={}, stkNm={}, recRtn={}, recVol={}, recRisk={}",
+          stock.getSecNm(), stock.getStkCode(), stock.getStkNm(), stock.getRecRtn(), stock.getRecVol(), stock.getRecRisk());
     }
 
     // 현재 날짜를 구하고 포맷팅
