@@ -1,10 +1,11 @@
-import pandas as pd
-from wordcloud import WordCloud
-from collections import Counter
-from konlpy.tag import Okt
-from sqlalchemy import create_engine
+# services 계층 : 데이터 가공 및 비즈니스 로직
+
 import io
 import base64
+from collections import Counter
+from wordcloud import WordCloud
+from konlpy.tag import Okt
+from app.repositories.wordcloud_repository import fetch_tokens_from_db
 
 # 불용어 리스트
 stopwords = ['투자', '주가', '주식', '가능성', '거래', '보고', '수익', '오늘', '사람', '시장',
@@ -14,33 +15,15 @@ stopwords = ['투자', '주가', '주식', '가능성', '거래', '보고', '수
 # Okt 형태소 분석기
 okt = Okt()
 
-# Oracle DB 연결 설정
-db_user = "c##PROJECT"
-db_password = "k5002"
-db_host = "localhost"
-db_port = "1521"
-db_service = "xe"
+# 명사 추출 함수
+def extract_nouns(text):
+    nouns = okt.nouns(text)  # 명사 추출
+    return ' '.join(nouns)  # 공백으로 연결하여 반환
 
-engine = create_engine(f"oracle+cx_oracle://{db_user}:{db_password}@{db_host}:{db_port}/?service_name={db_service}")
-
-def get_wordcloud_image():
+def generate_wordcloud():
     try:
-        # 🔹 DB에서 뉴스와 커뮤니티 토큰 데이터 가져오기
-        query = """
-            SELECT TO_CHAR(NEWS_TOKEN) AS NEWS_TOKEN FROM NEWS
-            UNION ALL
-            SELECT TO_CHAR(CONTENT_TOKEN) AS CONTENT_TOKEN FROM COMMUNITY
-        """
-        df = pd.read_sql(query, con=engine)
-
-        # 결측값 제거 후 텍스트 데이터 결합
-        df = df.dropna()
+        df = fetch_tokens_from_db()
         text_data = ' '.join(df.iloc[:, 0])
-
-        # 명사 추출 함수
-        def extract_nouns(text):
-            nouns = okt.nouns(text)  # 명사 추출
-            return ' '.join(nouns)  # 공백으로 연결하여 반환
 
         # 명사 추출 및 불용어 제거
         text_data = extract_nouns(text_data)

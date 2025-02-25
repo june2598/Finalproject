@@ -5,8 +5,10 @@ import com.kh.finalproject.domain.stocklist.svc.StockDetailSVC;
 import com.kh.finalproject.domain.trend.svc.TrendSVC;
 import com.kh.finalproject.domain.vo.DomesticIndicesVO;
 import com.kh.finalproject.web.form.login.LoginForm;
+import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,4 +102,22 @@ public class IndexController {
 
     return "stockList/stockDetail";
   }
+
+  // 관리자 영역
+  @GetMapping("/admin")
+  public String adminPage(HttpSession session) {
+
+    LoginMember loginMember = (LoginMember) session.getAttribute("loginOkMember");
+
+    String role = loginMember.getMemberClsfc();
+    log.info("현재 로그인된 계정의 권한: {}", role);
+
+    if(!"관리자".equals(role)) {
+      return "redirect:/index";
+    }
+
+    log.info("관리자 계정입니다. ID= {}", loginMember.getMemberId());
+    return "admin/admin";
+  }
+
 }

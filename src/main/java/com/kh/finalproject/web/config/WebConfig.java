@@ -19,6 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
         .order(1)
         .addPathPatterns(
             "/pw-auth",     // 회원정보 조회
+            "/admin",       // 관리자 페이지
             "/propensity-test/**"   // 투자 성향 검사 전체
             );
 

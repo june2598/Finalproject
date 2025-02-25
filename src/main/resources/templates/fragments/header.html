@@ -12,6 +12,10 @@
         </ul>
         <div class="loginOK" th:if="${!session.isEmpty()}">
           <div class="userinfo" th:if="${session.loginOkMember != null}">
+            <a th:if="${session.loginOkMember != null and session.loginOkMember.memberClsfc == '관리자'}"
+                  th:text="${session.loginOkMember.memberClsfc}" class="text-red-500 font-bold hover:underline cursor-hover"
+                th:href="@{/admin}">
+            </a>
             <span th:text="${session.loginOkMember.memberId} + '님 반갑습니다.'"></span>
             <span><a th:href="@{/logout}">로그아웃</a></span>
           </div>
