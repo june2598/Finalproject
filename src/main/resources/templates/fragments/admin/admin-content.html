@@ -1,37 +1,66 @@
 <th:block th:fragment="admin-content">
   <div id="admin-container" class="w-full h-full min-h-[65vh] bg-white flex flex-col justify-center items-center">
-    <form action="" method="POST" class="flex flex-col">
-      <div id="stock-update-container" class="flex space-x-4">
-        <button id="kospi-stock-update" type="button" class="bg-blue-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-          코스피 종목 업데이트
-        </button>
-        <button id="kosdaq-stock-update" type="button" class="bg-blue-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-          코스닥 종목 업데이트
-        </button>
-        <button id="etf-stock-update" type="button" class=" bg-blue-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
-          ETF 종목 업데이트
-        </button>
+    <form action="" method="POST" class="w-full flex flex-col space-y-4">
+      <div id="stock-update-container" class="flex justify-around space-x-4">
+        <div id="kospi-stock-update-wrap" class="flex flex-col items-center">
+          <button id="kospi-stock-update" type="button"
+            class="bg-blue-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            코스피 종목 업데이트
+          </button>
+          <p id="kospi-stock-update-timestamp"></p>
+        </div>
+        <div id="kosdaq-stock-update-wrap" class="flex flex-col items-center">
+          <button id="kosdaq-stock-update" type="button"
+            class="bg-blue-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            코스닥 종목 업데이트
+          </button>
+          <p id="kosdaq-stock-update-timestamp"></p>
+        </div>
+        <div id="etf-stock-update-wrap" class="flex flex-col items-center">
+          <button id="etf-stock-update" type="button"
+            class=" bg-blue-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">
+            ETF 종목 업데이트
+          </button>
+          <p id="etf-stock-update-timestamp"></p>
+        </div>
       </div>
-      <div id="rt-stk-update-container" class="flex space-x-4">
-        <button id="kospi-rt-stk-update" type="button" class="bg-green-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
-          코스피 RT_STK 업데이트
-        </button>
-        <button id="kosdaq-rt-stk-update" type="button" class="bg-green-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
-          코스닥 RT_STK 업데이트
-        </button>
-        <button id="etf-rt-stk-update" type="button" class="bg-green-500 text-white text-center p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
-          ETF RT_STK 업데이트
-        </button>
+      <div id="rt-stk-update-container" class="flex justify-around space-x-4">
+        <div id="kospi-rt-stk-update-wrap" class="flex flex-col items-center">
+          <button id="kospi-rt-stk-update" type="button"
+            class="bg-green-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
+            코스피 RT_STK 업데이트
+          </button>
+          <p id="kospi-rt-stk-update-timestamp"></p>
+        </div>
+        <div id="kosdaq-rt-stk-update-wrap" class="flex flex-col items-center">
+          <button id="kosdaq-rt-stk-update" type="button"
+            class="bg-green-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
+            코스닥 RT_STK 업데이트
+          </button>
+          <p id="kosdaq-rt-stk-update-timestamp"></p>
+        </div>
+        <div id="etf-rt-stk-update-wrap" class="flex flex-col items-center">
+          <button id="etf-rt-stk-update" type="button"
+            class="bg-green-500 text-white text-center p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-green-600 cursor-pointer">
+            ETF RT_STK 업데이트
+          </button>
+          <p id="etf-rt-stk-update-timestamp"></p>
+        </div>
       </div>
-      <div id="domestic-indices">
-        <button id="domestic-indices-update" type="button" class="bg-red-500 text-white p-2 rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-red-600 cursor-pointer">
+      <div id="domestic-indices" class="flex flex-col items-center"> 
+        <button id="domestic-indices-update" type="button"
+          class="bg-red-500 text-white p-2 rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-red-600 cursor-pointer">
           국내 시장 지수 업데이트
         </button>
+        <p id="domestic-indices-update-timestamp"></p>
       </div>
-      <div id="rec-stk">
-        <button id="update-rec-stk" class="p-2 bg-violet-500 text-white rounded w-45 inline-block transition duration-300 ease-in-out hover:bg-violet-600 cursor-pointer">
-           REC_STK (종목 추천 테이블) 업데이트
-      </button>
+      <div id="rec-stk" class="flex flex-col items-center">
+        <button id="update-rec-stk"
+          class="p-2 bg-violet-500 text-white rounded w-50 inline-block transition duration-300 ease-in-out hover:bg-violet-600 cursor-pointer">
+          REC_STK (종목 추천 테이블) 업데이트
+        </button>
+        <p id="update-rec-stk-timestamp">
+        </p>
       </div>
     </form>
   </div>
