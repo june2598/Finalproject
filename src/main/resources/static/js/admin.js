@@ -9,6 +9,10 @@ const etfRtStkupdateBtn = document.getElementById('etf-rt-stk-update');
 const recStkUpdateBtn = document.getElementById("update-rec-stk");
 const domesticIndicesUpdateBtn = document.getElementById('domestic-indices-update');
 
+const traitStkUpdateBtn = document.getElementById('trait-stk-update');
+const traitSecUpdateBtn = document.getElementById('trait-sec-update');
+const traitRecSecUpdateBtn = document.getElementById('trait-rec-sec-update');
+
 // 서버에서 저장된 마지막 업데이트 시간을 불러오기
 async function loadTimestamps() {
   const buttons = [
@@ -19,7 +23,10 @@ async function loadTimestamps() {
     'kosdaq-rt-stk-update',
     'etf-rt-stk-update',
     'domestic-indices-update',
-    'update-rec-stk'
+    'update-rec-stk',
+    'trait-stk-update',
+    'trait-sec-update',
+    'trait-rec-sec-update'
   ];
 
   try {
@@ -151,6 +158,8 @@ recStkUpdateBtn.addEventListener('click', async (event) => {
   recStkUpdateBtn.textContent = 'REC_STK (종목 추천 테이블) 업데이트';
 });
 
+// 국내 시장지수 (DOMESTIC_INDICES) 테이블 업데이트 영역
+
 domesticIndicesUpdateBtn.addEventListener('click', async (event) => {
   event.preventDefault();
   const buttonId = 'domestic-indices-update';
@@ -173,6 +182,81 @@ domesticIndicesUpdateBtn.addEventListener('click', async (event) => {
   }
   domesticIndicesUpdateBtn.disabled = false;
   domesticIndicesUpdateBtn.textContent = '국내 시장 지수 업데이트';
+});
+
+
+// TRAIT 업데이트 영역
+
+traitStkUpdateBtn.addEventListener('click', async (event) => {
+  event.preventDefault();
+  const buttonId = 'trait-stk-update';
+
+  traitStkUpdateBtn.disabled = true;
+  traitStkUpdateBtn.textContent = 'TRAIT_STK 테이블 업데이트중...';
+
+  try {
+    const response = await ajax.post(`http://localhost:8000/api/update-trait-stk`, {});
+
+    if (response && response.success) {
+      alert('TRAIT_STK 테이블이 업데이트 되었습니다.');
+      updateTimestamp(buttonId);
+    } else {
+      alert(response?.message || 'TRAIT_STK 테이블 업데이트 중 오류가 발생했습니다.');
+    }
+  } catch (error) {
+    console.error('TRAIT_STK 테이블 업데이트 중 오류', error);
+    alert('TRAIT_STK 테이블 업데이트중 오류발생(catch)');
+  }
+  traitStkUpdateBtn.disabled = false;
+  traitStkUpdateBtn.textContent = 'TRAIT-STK 업데이트';
+});
+
+traitSecUpdateBtn.addEventListener('click', async (event) => {
+  event.preventDefault();
+  const buttonId = 'trait-sec-update';
+
+  traitSecUpdateBtn.disabled = true;
+  traitSecUpdateBtn.textContent = 'TRAIT_SEC 테이블 업데이트중...';
+
+  try {
+    const response = await ajax.post(`http://localhost:8000/api/update-trait-sec`, {});
+
+    if (response && response.success) {
+      alert('TRAIT_SEC 테이블이 업데이트 되었습니다.');
+      updateTimestamp(buttonId);
+    } else {
+      alert(response?.message || 'TRAIT_SEC 테이블 업데이트 중 오류가 발생했습니다.');
+    }
+  } catch (error) {
+    console.error('TRAIT_SEC 테이블 업데이트 중 오류', error);
+    alert('TRAIT_SEC 테이블 업데이트중 오류발생(catch)');
+  }
+  traitSecUpdateBtn.disabled = false;
+  traitSecUpdateBtn.textContent = 'TRAIT-SEC 업데이트';
+});
+
+traitRecSecUpdateBtn.addEventListener('click', async (event) => {
+  event.preventDefault();
+  const buttonId = 'trait-rec-sec-update';
+
+  traitRecSecUpdateBtn.disabled = true;
+  traitRecSecUpdateBtn.textContent = 'TRAIT_REC_SEC 테이블 업데이트중 ...';
+
+  try {
+    const response = await ajax.post(`http://localhost:8000/api/update-trait-rec-sec`, {});
+
+    if (response && response.success) {
+      alert('TRAIT_REC_SEC 테이블이 업데이트 되었습니다.');
+      updateTimestamp(buttonId);
+    } else {
+      alert(response?.message || 'TRAIT_REC_SEC 테이블 업데이트 중 오류가 발생했습니다.');
+    }
+  } catch (error) {
+    console.error('TRAIT_REC_SEC 테이블 업데이트 중 오류', error);
+    alert('TRAIT_REC_SEC 테이블 업데이트중 오류발생(catch)');
+  }
+  traitRecSecUpdateBtn.disabled = false;
+  traitRecSecUpdateBtn.textContent = 'TRAIT-REC-SEC 업데이트';
 });
 
 

@@ -6,6 +6,10 @@ from app.api.endpoints.real_time_stock_update_endpoint import router as real_tim
 from app.api.endpoints.domestic_indices_endpoint import router as domestic_indices_router, update_indices
 from app.api.endpoints.rec_stk_update_endpoint import router as rec_stk_router, update_rec_stk
 from app.api.endpoints.timestamps import router as timestamp_router, get_update_timestamps, save_update_timestamp
+from app.api.endpoints.trait_stk_update_endpoint import router as trait_stk_router, update_trait_stk
+from app.api.endpoints.trait_sec_endpoint import router as trait_rec_router, update_trait_sec, update_trait_rec_sec
+
+
 
 router = APIRouter()
 
@@ -16,6 +20,11 @@ router.include_router(real_time_stock_router, prefix="/api", tags=["RtStk"])
 router.include_router(domestic_indices_router, prefix="/api", tags=["DomesticIndices"])
 router.include_router(rec_stk_router, prefix="/api", tags=["RecStk"])
 router.include_router(timestamp_router, prefix="/api", tags=["TimeStamp"])
+router.include_router(trait_stk_router, prefix="/api", tags=["TraitStkUpdate"])
+router.include_router(trait_rec_router, prefix="/api", tags=["TraitRecUpdate"])
+
+
+
 
 router.add_api_route("/wordcloud", generate_wordcloud, methods=["GET"])
 router.add_api_route("/images/{filename}", get_image, methods=["GET"])
@@ -25,5 +34,8 @@ router.add_api_route("/update-domestic-indices", update_indices, methods=["POST"
 router.add_api_route("/update-rec-stk", update_rec_stk, methods=["POST"])
 router.add_api_route("/get-update-timestamps", get_update_timestamps, methods=["GET"])
 router.add_api_route("/save-update-timestamp", save_update_timestamp, methods=["POST"])
+router.add_api_route("/update-trait-stk", update_trait_stk, methods=["POST"])
+router.add_api_route("/update-trait-sec", update_trait_sec, methods=["POST"])
+router.add_api_route("/update-trait-rec-sec", update_trait_rec_sec, methods=["POST"])
 
 
