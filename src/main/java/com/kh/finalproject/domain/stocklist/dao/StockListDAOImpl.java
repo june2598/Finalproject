@@ -48,7 +48,10 @@ public class StockListDAOImpl implements StockListDAO{
     sql.append("     SELECT r1.* FROM rt_stk r1 ");
     sql.append("     WHERE r1.cdate = (SELECT MAX(r2.cdate) FROM rt_stk r2 WHERE r1.stk_id = r2.stk_id) ");
     sql.append(" ) r ON m.stk_id = r.stk_id ");
-    sql.append(" JOIN trait_stk t ON r.stk_id = t.stk_id ");
+    sql.append(" JOIN ( ");
+    sql.append("     SELECT t1.* FROM trait_stk t1 ");
+    sql.append("     WHERE t1.cdate = (SELECT MAX(t2.cdate) FROM trait_stk t2 WHERE t1.stk_id = t2.stk_id) ");
+    sql.append(" ) t ON r.stk_id = t.stk_id ");
     sql.append(" WHERE m.market_id = :marketId ");
     sql.append(" AND t.trait_stk_risk <= :risk ");
 

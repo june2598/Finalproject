@@ -10,7 +10,7 @@ from app.repositories.stock_repository import (
     get_existing_sectors, insert_new_sector, update_or_insert_stock
 )
 
-# ✅ 네이버 금융에서 업종 데이터 크롤링
+# 네이버 금융에서 업종 데이터 크롤링
 def fetch_sector_data():
     chrome_option = Options()
     chrome_option.add_experimental_option('detach', True)
@@ -56,13 +56,13 @@ def fetch_stock_data(sector_df):
 
 
 def update_stocks(market, market_id):
-  print(f"📌 update_stocks() 호출됨: market={market}, market_id={market_id}")
+  print(f"update_stocks() 호출됨: market={market}, market_id={market_id}")
 
   sector_df = fetch_sector_data()
   stock_df = fetch_stock_data(sector_df)
 
   # stock_df에 '업종명' 컬럼이 있는지 확인
-  print(f"📌 stock_df.columns: {stock_df.columns}")
+  print(f"stock_df.columns: {stock_df.columns}")
   print(f"stock_df.head: {stock_df}")
 
   if market == 'ETF' :
@@ -74,17 +74,17 @@ def update_stocks(market, market_id):
   market_data = market_data.merge(stock_df, left_on='Name', right_on='종목명', how='left')
 
   # 컬럼명 변경 확인
-  print(f"📌 market_data.columns (before rename): {market_data.columns}")
+  print(f"market_data.columns (before rename): {market_data.columns}")
 
   market_data.rename(columns={'업종명': 'Sector'}, inplace=True)
 
   # Sector 컬럼이 없을 경우 기본값 추가
   if 'Sector' not in market_data.columns:
-    print("⚠️ market_data에서 'Sector' 컬럼이 없음 → 기본값 설정")
+    print("market_data에서 'Sector' 컬럼이 없음 → 기본값 설정")
     market_data['Sector'] = '기타'
 
   # 최종 데이터 확인
-  print(f"📌 market_data.columns (after rename): {market_data.columns}")
+  print(f"market_data.columns (after rename): {market_data.columns}")
   print(market_data.head())
 
   # KOSDAQ이면 '*' 추가 (동명의 KOSPI 업종과 구분하기 위함)

@@ -12,7 +12,7 @@ async def update_rt_stk(request: MarketRequest):
     """
     JSON 요청을 받아 RT_STK 테이블을 업데이트하는 API 엔드포인트
     """
-    market = request.market  # ✅ JSON 본문에서 market 값 가져오기
+    market = request.market  # JSON 본문에서 market 값 가져오기
 
     if market == "KOSPI":
         result = process_market_data('KOSPI', 'Code', 'Close', 'Changes', 'ChagesRatio', 'Volume', 'Amount', 'Marcap', include_market=True)

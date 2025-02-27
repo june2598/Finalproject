@@ -81,7 +81,7 @@ def insert_trait_stk():
         )
         SELECT stkId, recRtn, recVol, recRisk FROM STOCK_RISK
     ) 
-    WHERE recRtn IS NOT NULL;
+    WHERE recRtn IS NOT NULL
     """
 
     try:
