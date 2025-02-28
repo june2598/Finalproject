@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 public class StockNewsDto {
   private String title;                 // 뉴스 기사 제목
   private Long stkId;                   // 종목 ID
-  private String stkCode;
+  private String stkCode;               // 종목 코드
   private String mediaName;             // 언론사
-  private String newsUrl;                   // 뉴스 링크
+  private String newsUrl;               // 뉴스 링크
   private LocalDateTime publishedDate;  // 기사 제공 날짜
 }
