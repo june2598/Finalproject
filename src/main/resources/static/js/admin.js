@@ -13,6 +13,8 @@ const traitStkUpdateBtn = document.getElementById('trait-stk-update');
 const traitSecUpdateBtn = document.getElementById('trait-sec-update');
 const traitRecSecUpdateBtn = document.getElementById('trait-rec-sec-update');
 
+const communityUpdateBtn = document.getElementById('community-update');
+
 // 서버에서 저장된 마지막 업데이트 시간을 불러오기
 async function loadTimestamps() {
   const buttons = [
@@ -26,7 +28,8 @@ async function loadTimestamps() {
     'update-rec-stk',
     'trait-stk-update',
     'trait-sec-update',
-    'trait-rec-sec-update'
+    'trait-rec-sec-update',
+    'community-update'
   ];
 
   try {
@@ -258,6 +261,33 @@ traitRecSecUpdateBtn.addEventListener('click', async (event) => {
   traitRecSecUpdateBtn.disabled = false;
   traitRecSecUpdateBtn.textContent = 'TRAIT-REC-SEC 업데이트';
 });
+
+// COMMUNITY 업데이트 영역
+communityUpdateBtn.addEventListener('click', async (event) =>{
+  event.preventDefault();
+  const buttonId = 'community-update';
+
+  communityUpdateBtn.disabled = true;
+  communityUpdateBtn.textContent = 'COMMUNITY 테이블 업데이트중...';
+
+  try {
+    const response = await ajax.get(`http://localhost:8000/scrape`, {});
+
+    if (response && response.success) {
+      alert('TRAIT_REC_SEC 테이블이 업데이트 되었습니다.');
+      updateTimestamp(buttonId);
+    } else {
+      alert(response?.message || 'COMMUNITY 테이블 업데이트 중 오류가 발생했습니다.');
+    }
+  } catch (error) {
+    console.error('COMMUNITY 테이블 업데이트 중 오류', error);
+    alert('COMMUNITY 테이블 업데이트중 오류발생(catch)');
+  }
+  communityUpdateBtn.disabled = false;
+  communityUpdateBtn.textContent = 'COMMUNITY 업데이트';
+});
+
+
 
 
 async function updateRtStk(market) {
