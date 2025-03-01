@@ -8,15 +8,15 @@ from app.core.database import pool
 from contextlib import asynccontextmanager
 import os
 
-# ✅ Lifespan 이벤트 핸들러 정의
+# Lifespan 이벤트 핸들러 정의
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("🚀 FastAPI 서버 시작됨")
+    print("FastAPI 서버 시작")
     yield  # 여기가 실행되면서 서버가 동작함
-    print("🛑 FastAPI 서버 종료됨, DB 연결 풀 닫기")
-    pool.close()  # ✅ FastAPI 종료 시 DB 연결 풀 닫기
+    print("FastAPI 서버 종료, DB 연결 풀 닫기")
+    pool.close()  # FastAPI 종료 시 DB 연결 풀 닫기
 
-# ✅ Lifespan 적용
+# Lifespan 적용
 app = FastAPI(lifespan=lifespan)
 
 # CORS 설정 추가

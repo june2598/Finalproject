@@ -79,8 +79,8 @@ const loadTrendData = async (marketId, orderBy) => {
       const row = document.createElement('tr'); // 새로운 행 생성
       row.innerHTML = `
                 <td>${item.secNm}</td> <!-- 업종명 -->
-                <td>${item.newsIncreaseRate + '%' || 'N/A'}</td> <!-- 뉴스 증가율 --> 
-                <td>${item.communityIncreaseRate + '%' || 'N/A'}</td> <!-- 커뮤니티 증가율 -->
+                <td>${item.newsIncreaseRate ? item.newsIncreaseRate + '%' : '0%'}</td> <!-- 뉴스 증가율 -->
+                <td>${item.communityIncreaseRate ? item.communityIncreaseRate + '%' : '0%'}</td> <!-- 커뮤니티 증가율 -->
             `;
       tbody.appendChild(row); // 생성한 행을 테이블에 추가
     });
@@ -113,8 +113,8 @@ const loadStocksTrend = async (orderBy) => {
                   ${item.stkNm}
                   </a>
                 </td> <!-- 주식명 -->
-                <td>${item.newsIncreaseRate + '%' || 'N/A'}</td> <!-- 뉴스 증가율 -->
-                <td>${item.communityIncreaseRate + '%' || 'N/A'}</td> <!-- 커뮤니티 증가율 -->
+                <td>${item.newsIncreaseRate ? item.newsIncreaseRate + '%' : '0%'}</td> <!-- 뉴스 증가율 -->
+                <td>${item.communityIncreaseRate ? item.communityIncreaseRate + '%' : '0%'}</td> <!-- 커뮤니티 증가율 -->
             `;
       stocksTableBody.appendChild(row); // 생성한 행을 테이블에 추가
     });
