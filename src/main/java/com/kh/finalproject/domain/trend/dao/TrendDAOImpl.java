@@ -143,6 +143,8 @@ public class TrendDAOImpl implements TrendDAO {
     return getStocksTrend("COMMUNITY_INCREASE_RATE");
   }
 
+
+  // 실시간 국내 지수 조회
   @Override
   public List<DomesticIndicesVO> getDomesticIndices(int marketId) {
 

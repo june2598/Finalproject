@@ -136,6 +136,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     return Optional.ofNullable(maxRtn); // 결과가 null일 경우 Optional.empty() 반환
   }
 
+  // 관심 업종 있을때 희망수익률 최대치 조회
   @Override
   public Optional<Double> findMaxRtn(int memberRisk, String intSec) {
     StringBuffer sql = new StringBuffer();
