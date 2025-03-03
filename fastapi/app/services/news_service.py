@@ -205,14 +205,12 @@ def crawl_and_save_news():
         for future in as_completed(future_to_index):
             index = future_to_index[future]
             content = future.result()
-
-            if content is None:  # 중복 기사는 건너뜀
-                all_news[index]["content"] = "중복 기사"
-            else:
-                all_news[index]["content"] = content
+            all_news[index]["content"] = content  # 중복 기사는 None으로 설정됨
             pbar.update(1)
 
+    # 중복 기사 제거
     df = pd.DataFrame(all_news)
+    df = df.dropna(subset=["content"])  # content가 None인 행 제거
 
     # 감성 분석 수행
     df["news_pos_label"] = batch_predict_sentiment(df["content"].tolist())
@@ -224,6 +222,6 @@ def crawl_and_save_news():
         news_data = row.to_dict()
         print(type(news_data["date"]))
         print("news_data:", news_data)  # 딕셔너리 출력
-        insert_news(row.to_dict())  # DB 저장
+        insert_news(news_data)  # DB 저장
 
     return {"message": "뉴스 크롤링 완료", "news_count": len(df)}
