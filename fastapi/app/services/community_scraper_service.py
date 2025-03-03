@@ -30,7 +30,7 @@ class ScraperService:
     TOKENIZER_PATH = os.path.join(MODEL_DIR, "tokenizer.pkl")
     PREPROCESSING_INFO_PATH = os.path.join(MODEL_DIR, "preprocessing_info.json")
 
-    print(f"📂 모델 경로: {MODEL_PATH}")  # ✅ 디버깅용 출력
+    print(f"모델 경로: {MODEL_PATH}")  # 디버깅용 출력
 
     # 모델 로드 (파일 존재 여부 확인 후 로드)
     if not os.path.exists(MODEL_PATH):
@@ -43,7 +43,7 @@ class ScraperService:
     with open(TOKENIZER_PATH, 'rb') as handle:
       self.tokenizer = pickle.load(handle)
 
-    # ✅ 전처리 정보 로드
+    # 전처리 정보 로드
     if not os.path.exists(PREPROCESSING_INFO_PATH):
       raise FileNotFoundError(f"전처리 정보 파일이 존재하지 않습니다: {PREPROCESSING_INFO_PATH}")
     with open(PREPROCESSING_INFO_PATH, 'r') as json_file:
@@ -84,7 +84,7 @@ class ScraperService:
     end_date = pd.to_datetime(end_date).date()
     request_count = 0
 
-    with tqdm(total=100, desc=f"📡 {stock_code} 댓글 크롤링", leave=False) as pbar:
+    with tqdm(total=100, desc=f"{stock_code} 댓글 크롤링", leave=False) as pbar:
       while request_count < 100:
         payload = {"commentSortType": "RECENT", "subjectId": subject_id, "subjectType": "STOCK"}
         if last_comment_id:
@@ -129,14 +129,14 @@ class ScraperService:
     for market in markets:
       stock_df = code_list_by_market(market)
 
-      # ✅ 멀티스레딩으로 subjectId 가져오기
+      # 멀티스레딩으로 subjectId 가져오기
       with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         subject_id_results = list(tqdm(executor.map(get_subject_id, stock_df["Code"]), total=len(stock_df)))
 
-      # ✅ None 값 제거 후 딕셔너리 변환
+      # None 값 제거 후 딕셔너리 변환
       subject_ids = {code: sid for code, sid in subject_id_results if sid}
 
-      # ✅ 멀티스레딩으로 댓글 크롤링
+      # 멀티스레딩으로 댓글 크롤링
       with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         results = executor.map(lambda args: self.fetch_comments(*args, start_date, end_date), subject_ids.items())
 
@@ -147,7 +147,7 @@ class ScraperService:
     df["댓글_토큰"] = df["댓글"].apply(self.extract_nouns)
     df["긍정라벨"] = self.predict_sentiment_batch(df["댓글"].tolist())  # 배치 처리로 속도 개선
 
-    # ✅ DB에 저장
+    # DB에 저장
     for _, row in df.iterrows():
       formatted_date = self.format_timestamp(row["날짜"])  # 날짜 변환
       if formatted_date:  # 변환 성공한 경우만 저장

@@ -4,6 +4,7 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.api.endpoints import community
+from app.api.endpoints import news
 from app.core.database import pool
 from contextlib import asynccontextmanager
 import os
@@ -38,6 +39,8 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 # 라우터 등록
 app.include_router(router)
 app.include_router(community.router)
+
+app.include_router(news.router)
 
 
 
