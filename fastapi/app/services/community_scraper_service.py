@@ -57,6 +57,10 @@ class ScraperService:
     comments_list = []
     last_comment_id = None
 
+    # start_date와 end_date를 datetime.date 객체로 변환
+    start_date = parser.parse(start_date).date() if isinstance(start_date, str) else start_date
+    end_date = parser.parse(end_date).date() if isinstance(end_date, str) else end_date
+
     for _ in tqdm(range(100), desc=f"{stock_code} 댓글 크롤링", leave=False):
       payload = {"commentSortType": "RECENT", "subjectId": subject_id, "subjectType": "STOCK"}
       if last_comment_id:

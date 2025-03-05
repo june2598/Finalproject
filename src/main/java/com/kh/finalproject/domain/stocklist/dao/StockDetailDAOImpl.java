@@ -79,22 +79,28 @@ public class StockDetailDAOImpl implements StockDetailDAO{
 
     StringBuffer sql = new StringBuffer();
 
-    sql.append(" SELECT ");
-    sql.append(" t.STK_ID, ");
+    sql.append(" WITH LatestData AS (");
+    sql.append("     SELECT ");
+    sql.append("         r.*, ");
+    sql.append("         ROW_NUMBER() OVER (PARTITION BY r.STK_ID ORDER BY r.CDATE DESC) AS rn ");
+    sql.append("     FROM RT_STK r ");
+    sql.append(") ");
+    sql.append(" SELECT DISTINCT ");
+    sql.append("     t.STK_ID, ");
     sql.append("     m.STK_CODE, ");
     sql.append("     m.STK_NM, ");
-    sql.append("     r.PRICE, ");
-    sql.append("     r.CHANGE, ");
-    sql.append("     r.CHANGE_RATIO, ");
-    sql.append("     r.VOLUME, ");
-    sql.append("     TO_CHAR(r.amount / 1000000, 'FM9,999,999') AS AMOUNT, ");
-    sql.append(" TO_CHAR(r.marcap / 100000000, 'FM9,999,999') AS MARCAP, ");
-    sql.append(" t.TRAIT_STK_RISK ");
+    sql.append("     ld.PRICE, ");
+    sql.append("     ld.CHANGE, ");
+    sql.append("     ld.CHANGE_RATIO, ");
+    sql.append("     ld.VOLUME, ");
+    sql.append("     TO_CHAR(ld.amount / 1000000, 'FM9,999,999') AS AMOUNT, ");
+    sql.append("     TO_CHAR(ld.marcap / 100000000, 'FM9,999,999') AS MARCAP, ");
+    sql.append("     t.TRAIT_STK_RISK ");
     sql.append(" FROM MKT_SEC_STK m ");
-    sql.append(" JOIN RT_STK r ON m.STK_ID = r.STK_ID ");
-    sql.append(" JOIN TRAIT_STK t ON r.STK_ID = t.STK_ID ");
-    sql.append(" WHERE STK_CODE = :stkCode ");
-    sql.append(" AND r.CDATE = (SELECT MAX(CDATE) FROM RT_STK WHERE STK_ID = m.STK_ID) ");
+    sql.append(" JOIN LatestData ld ON m.STK_ID = ld.STK_ID ");
+    sql.append(" JOIN TRAIT_STK t ON ld.STK_ID = t.STK_ID ");
+    sql.append(" WHERE m.STK_CODE = :stkCode ");
+    sql.append(" AND ld.rn = 1 ");
 
     SqlParameterSource param = new MapSqlParameterSource()
         .addValue("stkCode", stkCode);
