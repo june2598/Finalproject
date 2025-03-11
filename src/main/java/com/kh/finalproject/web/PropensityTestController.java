@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,19 +24,18 @@ import java.util.stream.Collectors;
 @Controller
 @Slf4j
 @RequiredArgsConstructor          // final 필드에 대한 생성자 자동 생성
+@RequestMapping("/propensity-test")
 
 public class PropensityTestController {
 
   private final PropensityTestSVC propensityTestSVC;
-  // URL 경로 상수 정의
-  private static final String PROPENSITY_TEST_PREFIX = "/propensity-test/";
-  private static final String propensity_test_root = "/propensityTest/";
+  private static final String propensity_test_root = "/propensity_test/";
   private final LoginController loginController;
   private final StockRecommendationSVC stockRecommendationSVC;
 
   // 위험단계 검사 요청
-  @GetMapping(PROPENSITY_TEST_PREFIX + "risks")
-  public String showRiskTest(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+  @GetMapping("/risks")
+  public String showRiskLevelForm(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
@@ -45,14 +45,14 @@ public class PropensityTestController {
     }
 
     model.addAttribute("memberTraitsDto",new MemberTraitsDto());
-    return propensity_test_root + "riskTest"; // 위험 단계 설정 페이지
+    return propensity_test_root + "set_risk_level"; // 위험 단계 설정 페이지
   }
 
   // 위험단계 제출
-  @PostMapping(PROPENSITY_TEST_PREFIX + "risks")
-  public String selectRisk(MemberTraitsDto memberTraitsDto,
-                           RedirectAttributes redirectAttributes,
-                           HttpSession session) {
+  @PostMapping("/risks")
+  public String submitRiskLevel(MemberTraitsDto memberTraitsDto,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
 
     log.info("위험단계 설정 : {}", memberTraitsDto.getMemberRisk());
 
@@ -64,8 +64,8 @@ public class PropensityTestController {
   }
 
   // 관심 업종 페이지 요청
-  @GetMapping(PROPENSITY_TEST_PREFIX + "sectors")
-  public String showInterestSectors(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+  @GetMapping("/sectors")
+  public String showSectorSelectionForm(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
@@ -105,13 +105,13 @@ public class PropensityTestController {
     model.addAttribute("topSectors", topSectors); // 모델에 추천 업종 추가
     model.addAttribute("marketNames", marketNames); // 모델에 MARKET_ID와 이름 매핑 추가
 
-    return propensity_test_root + "interestSectors"; // 관심 업종 설정 페이지
+    return propensity_test_root + "select_sectors"; // 관심 업종 설정 페이지
   }
   // 관심 업종 정보 제출
-  @PostMapping(PROPENSITY_TEST_PREFIX + "sectors")
-  public String selectSectors(@RequestParam(name = "intSec", required = false) List<String> intSec,
-                              RedirectAttributes redirectAttributes,
-                              HttpSession session) {
+  @PostMapping("/sectors")
+  public String submitSelectedSectors(@RequestParam(name = "intSec", required = false) List<String> intSec,
+                                      RedirectAttributes redirectAttributes,
+                                      HttpSession session) {
     //세션에서 memberTraits 가져오기
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
 
@@ -165,12 +165,12 @@ public class PropensityTestController {
       redirectAttributes.addFlashAttribute("maxRtn", maxRtn);
     }
     // 희망 수익률 페이지로
-    return "redirect:/propensity-test/min-return";
+    return "redirect:/propensity-test/expected-return";
   }
 
   // 희망 수익률 설정 요청
-  @GetMapping(PROPENSITY_TEST_PREFIX + "min-return")
-  public String showMinReturn(RedirectAttributes redirectAttributes, Model model, HttpSession session) {
+  @GetMapping("/expected-return")
+  public String getExpectedReturnSettingPage(RedirectAttributes redirectAttributes, Model model, HttpSession session) {
 
     // 세션에서 성향 정보 가져오기
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
@@ -183,14 +183,14 @@ public class PropensityTestController {
 
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
     model.addAttribute("memberTraitsDto", memberTraitsDto); // 모델에 memberTraits 추가
-    return propensity_test_root + "setMinReturn"; // 최소 수익률 설정 페이지
+    return propensity_test_root + "set_expected_return"; // 최소 수익률 설정 페이지
 
   }
 
-  @PostMapping(PROPENSITY_TEST_PREFIX + "min-return")
-  public String selectMinReturn(@RequestParam("expRtn") Double expRtn,
-                                HttpSession session,
-                                RedirectAttributes redirectAttributes){
+  @PostMapping("/expected-return")
+  public String saveExpectedReturn(@RequestParam("expRtn") Double expRtn,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes){
 
     // 세션에서 memberTraits 가져오기
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
@@ -227,11 +227,11 @@ public class PropensityTestController {
 
     redirectAttributes.addFlashAttribute("minReturn",expRtn);
     redirectAttributes.addFlashAttribute("traitId", traitId);
-    return "redirect:/propensity-test/finish";
+    return "redirect:/propensity-test/completed";
   }
 
-  @GetMapping(PROPENSITY_TEST_PREFIX + "finish")
-  public String showTestFinish(Model model, HttpSession session, HttpServletRequest request) {
+  @GetMapping("/completed")
+  public String completePropensityTest(Model model, HttpSession session, HttpServletRequest request) {
     // 세션에서 저장된 memberTraitsDto 가져오기
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
 
@@ -247,12 +247,12 @@ public class PropensityTestController {
     loginController.storeMemberTraitsInSession(request, memberSeq);
 
 
-    return propensity_test_root + "testFinish"; // 결과 페이지 경로
+    return propensity_test_root + "test_complete"; // 결과 페이지 경로
   }
 
 
 
-  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page")
+  @GetMapping("/my-traits")
   public String showMyTraits(Model model, HttpSession session, HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
@@ -266,12 +266,12 @@ public class PropensityTestController {
       model.addAttribute("intSecNm", "없음");
     }
 
-    return propensity_test_root + "myPage";
+    return propensity_test_root + "view_traits";
 
   }
 
-  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify")
-  public String modifyMyTraits(Model model, HttpSession session, HttpServletRequest request) {
+  @GetMapping("/my-traits/edit")
+  public String editTraits(Model model, HttpSession session, HttpServletRequest request) {
 
     // 1️⃣ DTO가 있으면 가져오기, 없으면 엔터티에서 변환
     MemberTraitsDto memberTraitsDto = (MemberTraitsDto) session.getAttribute("memberTraitsDto");
@@ -317,13 +317,13 @@ public class PropensityTestController {
     // 모델에 추가
     model.addAttribute("memberTraitsDto", memberTraitsDto);
 
-    return propensity_test_root + "modifyTraits";
+    return propensity_test_root + "edit_traits";
 
   }
 
   // 위험도 수정 화면
-  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify/risk")
-  public String modifyMyRisk(Model model, HttpSession session) {
+  @GetMapping("/my-traits/edit/risk")
+  public String editRiskLevel(Model model, HttpSession session) {
 
     MemberTraitsDto memberTraitsDto;
 
@@ -353,14 +353,14 @@ public class PropensityTestController {
     model.addAttribute("currentRisk", currentRisk);
     model.addAttribute("memberTraitsDto", memberTraitsDto);
 
-    return propensity_test_root + "modifyTraits/risk";
+    return propensity_test_root + "edit_traits/edit_risk_level";
 
   }
 
   // 관심 업종 수정 화면
 
-  @GetMapping(PROPENSITY_TEST_PREFIX + "my-page/modify/sectors")
-  public String modifyMyTraitSectors(Model model, HttpSession session) {
+  @GetMapping("/my-traits/edit/sectors")
+  public String editInterestedSectors(Model model, HttpSession session) {
 
 
     MemberTraitsDto memberTraitsDto;
@@ -418,12 +418,12 @@ public class PropensityTestController {
     model.addAttribute("topSectors", topSectors);
     model.addAttribute("marketNames", marketNames);
 
-    return propensity_test_root + "modifyTraits/traitSectors";
+    return propensity_test_root + "edit_traits/edit_sectors";
 
   }
 
-  @GetMapping (PROPENSITY_TEST_PREFIX + "my-page/modify/exp-return")
-  public String modifyMyExpReturn(Model model, HttpSession session) {
+  @GetMapping ("/my-traits/edit/expected-return")
+  public String editExpectedReturn(Model model, HttpSession session) {
 
     MemberTraitsDto memberTraitsDto;
 
@@ -478,7 +478,7 @@ public class PropensityTestController {
 
     // 모델에 추가
     model.addAttribute("memberTraitsDto", memberTraitsDto);
-    return propensity_test_root + "modifyTraits/expReturn";
+    return propensity_test_root + "edit_traits/edit_expected_return";
     }
 
 }

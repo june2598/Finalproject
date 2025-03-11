@@ -80,6 +80,7 @@ public class PropensityTestDAOImpl implements PropensityTestDAO {
     sql.append(" FROM TRAIT_REC_SEC trs ");
     sql.append(" JOIN MKT_SEC_STK m ON trs.SEC_ID = m.SEC_ID ");
     sql.append(" WHERE trs.TRAIT_REC_SEC_RISK <= :memberRisk ");
+    sql.append(" AND trs.cdate = (SELECT MAX(CDATE) FROM TRAIT_REC_SEC) ");
     sql.append(" ORDER BY ");
     sql.append(" m.MARKET_ID ASC, ");
     sql.append(" trs.IS_REC DESC, ");

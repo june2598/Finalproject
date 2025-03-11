@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,12 +23,13 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/investment-traits/recommendations")
 
 public class StockRecommendationController {
 
   private final StockRecommendationSVC stockRecommendationSVC;
 
-  @GetMapping("/recstk")
+  @GetMapping
   public String showRecStkPage(Model model, HttpServletRequest request, HttpSession session,
                                RedirectAttributes redirectAttributes) {
     // 세션에서 성향정보 조회
@@ -43,10 +45,10 @@ public class StockRecommendationController {
     } else {
       model.addAttribute("intSecNm", "없음");
     }
-    return "/stockRecommendation/stockRecommendation";
+    return "/member_traits_recommend/recommendation_prep";
   }
 
-  @PostMapping("recstk")
+  @PostMapping
   public String nextPage(@RequestParam("inputDate") String inputDate,
                          HttpSession session) {
 
@@ -59,13 +61,13 @@ public class StockRecommendationController {
 
     // 입력 받은 기간을 세션에 저장
     session.setAttribute("inputDate", inputDate);
-    session.setAttribute("period",period);
+    session.setAttribute("period", period);
 
-    return "redirect:/recstk/list";
+    return "redirect:/investment-traits/recommendations/list";
   }
 
   // 기간 제출
-  @GetMapping("/recstk/list")
+  @GetMapping("/list")
   public String recommendList(Model model, HttpServletRequest request, HttpSession session) {
     MemberTraits memberTraits = (MemberTraits) session.getAttribute("memberTraits");
 
@@ -107,18 +109,15 @@ public class StockRecommendationController {
     String formattedToday = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
     model.addAttribute("inputDate", inputDate);
-    model.addAttribute("period",period);
+    model.addAttribute("period", period);
     model.addAttribute("today", formattedToday);
-    model.addAttribute("memberId",memberId);
+    model.addAttribute("memberId", memberId);
 
     // 모델에 추천 종목 추가
     model.addAttribute("recommendedStocks", recommendedStocks);
-    return "/stockRecommendation/recommendList";
+    return "/member_traits_recommend/member_traits_recommendations";
 
   }
-
-
-
 
 
 }

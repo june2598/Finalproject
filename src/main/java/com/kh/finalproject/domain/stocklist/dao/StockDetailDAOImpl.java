@@ -99,6 +99,7 @@ public class StockDetailDAOImpl implements StockDetailDAO{
     sql.append(" FROM MKT_SEC_STK m ");
     sql.append(" JOIN LatestData ld ON m.STK_ID = ld.STK_ID ");
     sql.append(" JOIN TRAIT_STK t ON ld.STK_ID = t.STK_ID ");
+    sql.append(" AND t.CDATE = (SELECT MAX(CDATE) FROM TRAIT_STK) ");
     sql.append(" WHERE m.STK_CODE = :stkCode ");
     sql.append(" AND ld.rn = 1 ");
 

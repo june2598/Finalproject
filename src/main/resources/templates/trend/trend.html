@@ -1,50 +1,99 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>업종별 트렌드 조회</title>
+  <title>실시간 이슈 정보</title>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <script th:src="@{/js/common.js}" defer></script>
   <script th:src="@{/js/trend.js}" defer></script>
+
   <style>
     body {
-        font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;
     }
+
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
-    th, td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 6px;
-        font-size:0.8rem;
+
+    th,
+    td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 6px;
+      font-size: 0.8rem;
     }
+
     th {
-        background-color: #f2f2f2;
+      background-color: #f2f2f2;
     }
   </style>
 </head>
-<body class="bg-gray-200">
-<div class="container mx-auto max-w-screen-xl flex flex-col">
+<body>
+  <!-- 페이지 제목 설정 -->
+  <th:block th:replace="~{base :: layout(pageTitle='실시간 이슈 정보')}">
+    <th:block th:fragment="content">
+      <!-- 트렌드 콘텐츠 -->
+      <div id="trend-container" class="w-full h-full min-h-[65vh] bg-white flex flex-col items-center justify-between">
+        <div id="upper-contents" class="px-6 pt-6 w-full flex-1 flex">
+          <div id="word-cloud-container" class="flex-1 flex justify-center items-center">
+            <img id="wordcloud" src="" alt="Word Cloud" class="pr-4 flex-1 max-w-[50vw] max-h-[50vh]">
+          </div>
+          <div id="sector-trend-container" class="flex-1 flex flex-col justify-center">
+            <h1 class="font-extrabold text-xl mb-4">실시간 이슈 업종</h1>
+            <div id="marketSelection" class="flex space-x-4">
+              <span id="kospi"
+                class="font-bold text-black market-option cursor-pointer p-2 border border-transparent">KOSPI</span>
+              <span class="p-2">|</span>
+              <span id="kosdaq"
+                class="text-gray-300 market-option cursor-pointer p-2 border border-transparent">KOSDAQ</span>
+            </div>
+            <input type="hidden" id="marketId" value="1"> <!-- 기본값 설정 -->
+            <table id="trendTable">
+              <thead>
+                <tr>
+                  <th class="text-sm">업종명</th>
+                  <th class="text-sm">
+                    뉴스 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+                  </th>
+                  <th class="text-sm">
+                    여론 증가율 <span class="text-xs arrow sortable cursor-pointer"
+                      data-order="COMMUNITY_INCREASE_RATE">▼</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 업종 데이터-->
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-  <!-- 헤더 영역 -->
-  <th:block th:replace="~{fragments/header :: header}"></th:block>
-  <!-- 검색 영역 -->
-  <th:block th:replace="~{fragments/search :: search}"></th:block>
-  <!-- Nav 영역 -->
-  <th:block th:replace="~{fragments/nav :: nav}"></th:block>
-
-  <!-- Main 영역 -->
-
-  <th:block th:replace="~{fragments/main-header :: main-header(title='실시간 이슈 정보')}"></th:block>
-  <th:block th:replace="~{fragments/trend/trend-content :: trend-content}"></th:block>
-
-  <!-- footer 영역-->
-  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-
-</div>
+        <div id="lower-content-container" class="px-6 pt-6 w-full h-full flex-1">
+          <h1 class="font-extrabold text-xl mb-4">실시간 이슈 종목</h1>
+          <table id="stocksTable">
+            <thead>
+              <tr>
+                <th class="text-sm">종목명</th>
+                <th class="text-sm">
+                  뉴스 증가율 <span class="text-xs arrow sortable cursor-pointer" data-order="NEWS_INCREASE_RATE">▼</span>
+                </th>
+                <th class="text-sm">
+                  여론 증가율 <span class="text-xs arrow sortable cursor-pointer"
+                    data-order="COMMUNITY_INCREASE_RATE">▼</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 주식 데이터 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </th:block>
+  </th:block>
 </body>
+
 </html>

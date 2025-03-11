@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">공통 레이아웃</title>
+  <script th:src="@{/js/common.js}" defer></script>
+</head>
+
+<body class="bg-gray-200">
+
+  <th:block th:fragment="layout">
+
+    <div class="container mx-auto max-w-screen-xl flex flex-col">
+
+      <!-- 헤더 -->
+      <th:block th:replace="~{fragments/layout/header :: header}"></th:block>
+
+      <!-- 검색 -->
+      <th:block th:replace="~{fragments/layout/search :: search}"></th:block>
+
+      <!-- 네비게이션 -->
+      <th:block th:replace="~{fragments/layout/nav :: nav}"></th:block>
+
+      <!-- 메인 헤더 -->
+      <th:block th:if="${showHeader}" th:replace="~{fragments/layout/main-header :: main-header(title=${pageTitle})}"></th:block>
+
+      <!-- 메인 컨텐츠 영역 -->
+      <div th:replace="~{::content}"></div>
+
+      <!-- 푸터 -->
+      <th:block th:replace="~{fragments/layout/footer :: footer}"></th:block>
+
+    </div>
+  </th:block>
+
+</body>
+
+</html>

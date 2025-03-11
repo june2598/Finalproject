@@ -271,10 +271,10 @@ communityUpdateBtn.addEventListener('click', async (event) =>{
   communityUpdateBtn.textContent = 'COMMUNITY 테이블 업데이트중...';
 
   try {
-    const response = await ajax.get(`http://localhost:8000/scrape`, {});
+    const response = await ajax.post(`http://localhost:8000/scrape`, {});
 
     if (response && response.success) {
-      alert('TRAIT_REC_SEC 테이블이 업데이트 되었습니다.');
+      alert('COMMUNITY 테이블이 업데이트 되었습니다.');
       updateTimestamp(buttonId);
     } else {
       alert(response?.message || 'COMMUNITY 테이블 업데이트 중 오류가 발생했습니다.');

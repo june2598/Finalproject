@@ -110,7 +110,7 @@ class ScraperService:
         all_data.clear()
 
     self.save_to_db(all_data)
-    return {"message": "데이터 수집 및 저장 완료!", "count": len(all_data)}
+    return {"success": True, "message": "데이터 수집 및 저장 완료!", "count": len(all_data)}
 
   def save_to_db(self, data):
     df = pd.DataFrame(data)

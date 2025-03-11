@@ -1,9 +1,9 @@
 import cx_Oracle
 
-# ✅ Oracle DSN 설정
+# Oracle DSN 설정
 dsn = cx_Oracle.makedsn('localhost', 1521, service_name='xe')
 
-# ✅ Oracle 연결 풀 생성 (최대 10개까지 연결 유지)
+# Oracle 연결 풀 생성 (최대 10개까지 연결 유지)
 pool = cx_Oracle.SessionPool(user='c##PROJECT', password='k5002', dsn=dsn,
                              min=2, max=10, increment=1, threaded=True)
 

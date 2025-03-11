@@ -8,7 +8,6 @@ import com.kh.finalproject.web.form.login.LoginForm;
 import com.kh.finalproject.web.form.login.LoginMember;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,13 +62,13 @@ public class IndexController {
       redirectAttributes.addFlashAttribute("isExistTraitError", "이미 성향검사를 진행하셨습니다. 조회나 수정을 이용해주세요.");
       return "redirect:/propensity-test/my-page"; // 성향 조회 페이지로 리다이렉트
     }
-    return "/propensityTest/testInfo"; // 성향 검사 소개 페이지
+    return "/propensity_test/intro"; // 성향 검사 소개 페이지
   }
 
   // 종목리스트 페이지로 이동
   @GetMapping("/stockList")
   public String showStockList() {
-    return "stockList/stockList"; // stockList.html을 반환
+    return "stock_info/stock_list"; // stockList.html을 반환
   }
 
   // 트렌드 페이지로 이동
@@ -100,7 +99,7 @@ public class IndexController {
     model.addAttribute("stkNm",stkNm);
     model.addAttribute("stkCode",stkCode);
 
-    return "stockList/stockDetail";
+    return "stock_info/stock_detail";
   }
 
   // 관리자 영역
